@@ -39,9 +39,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable(); // post requests can come from outside the api...(signup kinda)
         http.authorizeRequests()
-                .antMatchers("/add")
+                .antMatchers("/signup")
                 .permitAll()
-                .antMatchers("/authenticate")
+                .antMatchers("/login")
                 .permitAll()
                 .anyRequest()
                 .authenticated();
