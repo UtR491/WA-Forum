@@ -1,8 +1,8 @@
 create database Wa_Forum;
 use Wa_Forum;
-create table User(id int primary key,reg_no int,contribution int,displayName varchar(100),aboutMe varchar(1000),
+create table User(id int primary key,registrationNumber int,contribution int,displayName varchar(100),aboutMe varchar(1000),
 github varchar(100),codechef varchar(100),codeforces varchar(100),
-email varchar(32),password int, lastOnline datetime);
+email varchar(32),password varchar_ignorecase(100), lastOnline datetime);
 
 create table Posts(id int primary key,postTypeID int,acceptedAnswerID int, parentID int,  creationDate datetime, upvoteCount int,
  body text,ownerUserID int ,ownerDisplayName varchar(100),lastEditorUserID int , lastEditorDisplayName varchar(100),
