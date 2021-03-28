@@ -49,7 +49,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public EntityModel<LoginResponse> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
         try {
             new UsernamePasswordAuthenticationToken(authenticationRequest.getRegistrationNumber(), authenticationRequest.getPassword());
             UserDetails userDetails = userDetailsService.loadUserByRegistrationNumber(Integer.parseInt(authenticationRequest.getRegistrationNumber()));
