@@ -7,7 +7,7 @@ import javax.persistence.Id;
 
 @Entity
 public class User {
-    private @Id @GeneratedValue(strategy = GenerationType.AUTO) Long id;
+    private @Id @GeneratedValue(strategy = GenerationType.AUTO) Integer id;
     private Integer registrationNumber;
     private Long contribution;
     private String displayName;
@@ -18,11 +18,11 @@ public class User {
     private String email;
     private String password;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

@@ -24,9 +24,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @RestController
 public class PostsController {
-
     @Autowired
     PostsRepository postsRepository;
 
@@ -50,7 +50,7 @@ public class PostsController {
 
     @GetMapping("/posts/questions/{id}/answers/")
     public CollectionModel<EntityModel<Posts>> getAnswerByQuestionId(@PathVariable Integer id) {
-        List<EntityModel<Posts>> answers = postsRepository.findAllByParentID(id).stream()
+        List<EntityModel<Posts>> answers = postsRepository.findAllByParentId(id).stream()
                 .map((answer) -> postsAssembler.toModel(answer)).collect(Collectors.toList());
         return CollectionModel.of(answers,
                 WebMvcLinkBuilder
