@@ -1,10 +1,14 @@
 package com.waforum.backend.controllers;
 
 import com.waforum.backend.assemblers.PostsAssembler;
+import com.waforum.backend.assemblers.QuestionWithAllAnswerWrapperAssembler;
+import com.waforum.backend.assemblers.SingleQuestionAnswerWrapperAssembler;
 import com.waforum.backend.exceptions.AnswerNotForQuestionException;
 import com.waforum.backend.exceptions.AnswerNotFoundException;
 import com.waforum.backend.exceptions.QuestionNotFoundException;
 import com.waforum.backend.models.Posts;
+import com.waforum.backend.models.QuestionWithAllAnswerWrapper;
+import com.waforum.backend.models.SingleQuestionAnswerWrapper;
 import com.waforum.backend.repository.PostsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -12,13 +16,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
@@ -32,6 +30,12 @@ public class PostsController {
 
     @Autowired
     PostsAssembler postsAssembler;
+
+    @Autowired
+    QuestionWithAllAnswerWrapperAssembler questionWithAllAnswerWrapperAssembler;
+
+    @Autowired
+    SingleQuestionAnswerWrapperAssembler singleQuestionAnswerWrapperAssembler;
 
     @GetMapping("/posts/questions")
     public CollectionModel<EntityModel<Posts>> getQuestions() {
@@ -48,22 +52,18 @@ public class PostsController {
         return postsAssembler.toModel(postsRepository.findById(id).orElseThrow(() -> new QuestionNotFoundException(id)));
     }
 
-    @GetMapping("/posts/questions/{id}/answers/")
-    public CollectionModel<EntityModel<Posts>> getAnswerByQuestionId(@PathVariable Integer id) {
-        List<EntityModel<Posts>> answers = postsRepository.findAllByParentId(id).stream()
-                .map((answer) -> postsAssembler.toModel(answer)).collect(Collectors.toList());
-        return CollectionModel.of(answers,
-                WebMvcLinkBuilder
-                        .linkTo(WebMvcLinkBuilder.methodOn(PostsController.class).getAnswerByQuestionId(id))
-                        .withSelfRel());
+    @GetMapping("/posts/questions/{id}/answers")
+    public EntityModel<QuestionWithAllAnswerWrapper> getAnswerByQuestionId(@PathVariable Integer id) {
+        return questionWithAllAnswerWrapperAssembler.toModel(new QuestionWithAllAnswerWrapper(
+                postsRepository.findById(id).orElseThrow(()->new QuestionNotFoundException(id)),
+                postsRepository.findAllByParentId(id)));
     }
 
     @GetMapping("/posts/questions/{qid}/answers/{aid}")
-    public EntityModel<Posts> getAnswerByIdByQuestionId(@PathVariable Integer qid, @PathVariable Integer aid) {
-        Posts answer = postsRepository.findById(aid).orElseThrow(() -> new AnswerNotFoundException(aid));
-        if(!answer.getParentId().equals(qid))
-            throw new AnswerNotForQuestionException(aid, qid);
-        return postsAssembler.toModel(answer);
+    public EntityModel<SingleQuestionAnswerWrapper> getAnswerByIdByQuestionId(@PathVariable Integer qid, @PathVariable Integer aid) {
+        return singleQuestionAnswerWrapperAssembler.toModel(new SingleQuestionAnswerWrapper(
+                postsRepository.findById(qid).orElseThrow(()->new QuestionNotFoundException(qid)),
+                postsRepository.findById(aid).orElseThrow(()->new AnswerNotForQuestionException(aid,qid))));
     }
 
     @PostMapping("/posts/create/questions")
