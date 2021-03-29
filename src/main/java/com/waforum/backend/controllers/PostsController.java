@@ -66,15 +66,16 @@ public class PostsController {
         return postsAssembler.toModel(answer);
     }
 
-    @PostMapping("/posts/create/questions/")
+    @PostMapping("/posts/create/questions")
     public ResponseEntity<EntityModel<Posts>> askQuestion(@RequestBody Posts post) {
+        System.out.println("Hellooooooooooo");
         EntityModel<Posts> postEntityModel = postsAssembler.toModel(postsRepository.save(post));
         return ResponseEntity
                 .created(postEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(postEntityModel);
     }
 
-    @PostMapping("/posts/create/questions/{id}/answers/")
+    @PostMapping("/posts/create/questions/{id}/answers")
     public ResponseEntity<EntityModel<Posts>> answerQuestion(@PathVariable Integer id, @RequestBody Posts posts) {
         posts.setParentId(id);
         EntityModel<Posts> postsEntityModel = postsAssembler.toModel(postsRepository.save(posts));

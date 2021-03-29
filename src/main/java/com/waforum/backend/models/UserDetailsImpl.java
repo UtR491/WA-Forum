@@ -11,7 +11,7 @@ import java.util.Collections;
 public class UserDetailsImpl implements UserDetails {
 
     private Integer registrationNumber;
-    private Long contribution;
+    private Integer contribution;
     private String displayName;
     private String aboutMe;
     private String github;
@@ -52,7 +52,7 @@ public class UserDetailsImpl implements UserDetails {
         return registrationNumber;
     }
 
-    public Long getContribution() {
+    public Integer getContribution() {
         return contribution;
     }
 

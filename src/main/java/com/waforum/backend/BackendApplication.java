@@ -1,5 +1,7 @@
 package com.waforum.backend;
 
+import com.waforum.backend.assemblers.PostsAssembler;
+import com.waforum.backend.assemblers.ProfileAssembler;
 import com.waforum.backend.filters.JwtRequestFilter;
 import com.waforum.backend.repository.UserRepository;
 import org.springframework.boot.SpringApplication;
@@ -18,5 +20,15 @@ public class BackendApplication {
 	@Bean
 	public JwtRequestFilter getJwtRequestFilter() {
 		return new JwtRequestFilter();
+	}
+
+	@Bean
+	public PostsAssembler getPostsAssembler() {
+		return new PostsAssembler();
+	}
+
+	@Bean
+	public ProfileAssembler getProfileAssembler() {
+		return new ProfileAssembler();
 	}
 }

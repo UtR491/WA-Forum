@@ -9,7 +9,7 @@ import javax.persistence.Id;
 public class User {
     private @Id @GeneratedValue(strategy = GenerationType.AUTO) Integer id;
     private Integer registrationNumber;
-    private Long contribution;
+    private Integer contribution;
     private String displayName;
     private String aboutMe;
     private String github;
@@ -35,11 +35,11 @@ public class User {
         this.registrationNumber = registrationNumber;
     }
 
-    public Long getContribution() {
+    public Integer getContribution() {
         return contribution;
     }
 
-    public void setContribution(Long contribution) {
+    public void setContribution(Integer contribution) {
         this.contribution = contribution;
     }
 

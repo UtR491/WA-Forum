@@ -33,20 +33,20 @@ public class ProfileController {
     PostsAssembler postsAssembler;
 
     @GetMapping("/profile/{id}")
-    public EntityModel<User> getProfileInfoById(@PathVariable Integer Id){
-        return profileAssembler.toModel(userRepository.findById(Id).orElseThrow(()->new ProfileNotFoundException(Id)));
+    public EntityModel<User> getProfileInfoById(@PathVariable Integer id){
+        return profileAssembler.toModel(userRepository.findById(id).orElseThrow(()->new ProfileNotFoundException(id)));
 
     }
     @GetMapping("/profile/{id}/questions")
-    public CollectionModel<EntityModel<Posts>>getQuestionsById(@PathVariable Integer Id){
-        List<EntityModel<Posts>> questions=postsRepository.findAllByOwnerUserIdByPostTypeId(Id,1).stream().
+    public CollectionModel<EntityModel<Posts>>getQuestionsById(@PathVariable Integer id){
+        List<EntityModel<Posts>> questions=postsRepository.findAllByOwnerUserIdAndPostTypeId(id,1).stream().
                 map((ques)->postsAssembler.toModel(ques)).collect(Collectors.toList());
-        return CollectionModel.of(questions, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ProfileController.class).getQuestionsById(Id)).withSelfRel());
+        return CollectionModel.of(questions, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ProfileController.class).getQuestionsById(id)).withSelfRel());
     }
     @GetMapping("/profile/{id}/answers")
-    public CollectionModel<EntityModel<Posts>>getAnswersById(@PathVariable Integer Id){
-        List<EntityModel<Posts>> answers=postsRepository.findAllByOwnerUserIdByPostTypeId(Id,1).stream().
+    public CollectionModel<EntityModel<Posts>>getAnswersById(@PathVariable Integer id){
+        List<EntityModel<Posts>> answers=postsRepository.findAllByOwnerUserIdAndPostTypeId(id,1).stream().
                 map((ans)->postsAssembler.toModel(ans)).collect(Collectors.toList());
-        return CollectionModel.of(answers, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ProfileController.class).getQuestionsById(Id)).withSelfRel());
+        return CollectionModel.of(answers, WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ProfileController.class).getQuestionsById(id)).withSelfRel());
     }
 }
