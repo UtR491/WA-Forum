@@ -32,6 +32,7 @@ userDisplayName varchar(100),userID int,foreign key(postID) references Posts(id)
 foreign key(userID) references User(id) on delete set null); 
 
 create table Votes(id int primary key ,postID int, typeOf int, userID int,
+unique(postID, userID)
 foreign key(postID) references Posts(id) on delete cascade,foreign key(userID) references User(id) on delete cascade);
 
 create table passwordSalt(userID int, salt binary(64),foreign key(userID) references User(id) on delete cascade);
