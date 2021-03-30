@@ -1,6 +1,7 @@
 package com.waforum.backend.filters;
 
 import com.waforum.backend.models.UserDetailsImpl;
+import com.waforum.backend.repository.UserRepository;
 import com.waforum.backend.services.UserDetailsServiceImpl;
 import com.waforum.backend.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Autowired
     JwtUtil jwtUtil;
 
+    @Autowired
+    UserRepository userRepository;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        System.out.println("Inside doFilterInternal of JwtRequestFilter. This method will get the authorization header" +
+                "and do the validation before letting any request get processed. This should not run while logging in.");
         final String authorizationHeader = request.getHeader("Authorization");
         String jwt = null;
         String registrationNumber = null;
@@ -36,7 +42,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             System.out.println("The jwt on extracting registration number == " + registrationNumber);
         }
         if(registrationNumber != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(registrationNumber);
+            UserDetailsImpl userDetails = (UserDetailsImpl) this.userDetailsService.loadUserByUsername(registrationNumber);
+            userDetails.setId(userRepository.findByRegistrationNumber(Integer.parseInt(registrationNumber)).getId());
             System.out.println("Userdetails = " + userDetails);
             if(jwtUtil.validateToken(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(

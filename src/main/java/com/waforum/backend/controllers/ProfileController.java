@@ -51,7 +51,7 @@ public class ProfileController {
     //method to show all the questions asked by the user
     @GetMapping("/profile/{id}/questions")
     public CollectionModel<EntityModel<Posts>> getQuestionsByUserId(@PathVariable Integer Id) {
-        List<EntityModel<Posts>> questions = postsRepository.findAllByOwnerUserIdByPostTypeId(Id, 1).stream().
+        List<EntityModel<Posts>> questions = postsRepository.findAllByPostTypeIdAndOwnerUserId(1, Id).stream().
                 map((ques) -> postsAssembler.toModel(ques)).collect(Collectors.toList());
         return CollectionModel.of(questions,
                 linkTo(methodOn(ProfileController.class).getQuestionsByUserId(Id)).withSelfRel(),
@@ -62,7 +62,7 @@ public class ProfileController {
     @GetMapping("/profile/{id}/answers")
     public CollectionModel<EntityModel<SingleQuestionAnswerWrapper>> getAnswersById(@PathVariable Integer Id) {
         List<SingleQuestionAnswerWrapper>wrappers=new ArrayList<>();
-        for (Posts ans: postsRepository.findAllByOwnerUserIdByPostTypeId(Id,2)) {
+        for (Posts ans: postsRepository.findAllByPostTypeIdAndOwnerUserId(2, Id)) {
             wrappers.add(new SingleQuestionAnswerWrapper(
                     postsRepository.findById(ans.getParentId()).orElseThrow(()->new QuestionNotFoundException(ans.getParentId())), ans));
         }

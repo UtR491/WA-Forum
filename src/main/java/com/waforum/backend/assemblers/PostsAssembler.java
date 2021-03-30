@@ -2,6 +2,7 @@ package com.waforum.backend.assemblers;
 
 import com.waforum.backend.controllers.PostsController;
 import com.waforum.backend.controllers.ProfileController;
+import com.waforum.backend.controllers.VotesController;
 import com.waforum.backend.models.Posts;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
@@ -13,6 +14,9 @@ public class PostsAssembler implements RepresentationModelAssembler<Posts, Entit
     @Override
     public EntityModel<Posts> toModel(Posts entity) {
         EntityModel<Posts> post = EntityModel.of(entity);
+        post.add(
+                linkTo(methodOn(VotesController.class).addVoteOnPost(null)).withRel("addVotePost"),
+                linkTo(methodOn(VotesController.class).removeVoteOnPost(null)).withRel("removeVotePost"));
         if(entity.getPostTypeId() == 1) {
             post.add(
                     linkTo(methodOn(PostsController.class).getQuestionById(entity.getId())).withSelfRel(), // self link

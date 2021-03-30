@@ -24,4 +24,12 @@ public class AuthenticationRequest {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    @Override
+    public String toString() {
+        return "AuthenticationRequest{" +
+                "registrationNumber='" + registrationNumber + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }

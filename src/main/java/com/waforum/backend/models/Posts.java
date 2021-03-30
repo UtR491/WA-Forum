@@ -3,6 +3,7 @@ package com.waforum.backend.models;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.util.Date;
 
 @Entity
@@ -23,6 +24,8 @@ public class Posts {
     private Date lastActivityDate;
     private int answerCount;
     private int commentCount;
+    @Transient
+    private VoteType currentHasVoted;
 
     public Integer getId() {
         return id;
@@ -142,6 +145,14 @@ public class Posts {
 
     public void setCommentCount(int commentCount) {
         this.commentCount = commentCount;
+    }
+
+    public VoteType getCurrentHasVoted() {
+        return currentHasVoted;
+    }
+
+    public void setCurrentHasVoted(VoteType currentHasVoted) {
+        this.currentHasVoted = currentHasVoted;
     }
 
     @Override

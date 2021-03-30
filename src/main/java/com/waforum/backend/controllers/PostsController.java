@@ -9,17 +9,25 @@ import com.waforum.backend.exceptions.QuestionNotFoundException;
 import com.waforum.backend.models.Posts;
 import com.waforum.backend.models.QuestionWithAllAnswerWrapper;
 import com.waforum.backend.models.SingleQuestionAnswerWrapper;
+import com.waforum.backend.models.UserDetailsImpl;
+import com.waforum.backend.models.VoteType;
+import com.waforum.backend.models.Votes;
 import com.waforum.backend.repository.PostsRepository;
+import com.waforum.backend.repository.VotesRepository;
+import com.waforum.backend.util.JwtUtil;
+import com.waforum.backend.util.PostsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -37,10 +45,24 @@ public class PostsController {
     @Autowired
     SingleQuestionAnswerWrapperAssembler singleQuestionAnswerWrapperAssembler;
 
+    @Autowired
+    VotesRepository votesRepository;
+
+    @Autowired
+    JwtUtil jwtUtil;
+
+    @Autowired
+    PostsUtil postsUtil;
+
+
     @GetMapping("/posts/questions")
     public CollectionModel<EntityModel<Posts>> getQuestions() {
         List<EntityModel<Posts>> questions = postsRepository.findAll().stream()
-                .map((question) -> postsAssembler.toModel(question)).collect(Collectors.toList());
+                .map((question) -> {
+                    postsUtil.setVoteStatus(question, null);
+                    System.out.println("Adding post = " + question + " to the list.");
+                    return postsAssembler.toModel(question);
+                }).collect(Collectors.toList());
         return CollectionModel.of(questions,
                 WebMvcLinkBuilder
                         .linkTo(WebMvcLinkBuilder.methodOn(PostsController.class).getQuestions())
@@ -49,21 +71,29 @@ public class PostsController {
 
     @GetMapping("/posts/questions/{id}")
     public EntityModel<Posts> getQuestionById(@PathVariable Integer id) {
-        return postsAssembler.toModel(postsRepository.findById(id).orElseThrow(() -> new QuestionNotFoundException(id)));
+        Optional<Posts> post = Optional.ofNullable(postsRepository.findById(id).orElseThrow(() -> new QuestionNotFoundException(id)));
+        postsUtil.setVoteStatus(post.get(), null);
+        return postsAssembler.toModel(post.get());
     }
 
     @GetMapping("/posts/questions/{id}/answers")
     public EntityModel<QuestionWithAllAnswerWrapper> getAnswerByQuestionId(@PathVariable Integer id) {
-        return questionWithAllAnswerWrapperAssembler.toModel(new QuestionWithAllAnswerWrapper(
-                postsRepository.findById(id).orElseThrow(()->new QuestionNotFoundException(id)),
-                postsRepository.findAllByParentId(id)));
+        Optional<Posts> question = Optional.ofNullable(postsRepository.findById(id).orElseThrow(() -> new QuestionNotFoundException(id)));
+        postsUtil.setVoteStatus(question.get(), null);
+        List<Posts> answers = postsRepository.findAllByParentId(id).stream().map(answer -> {
+            postsUtil.setVoteStatus(answer, null);
+            return answer;
+        }).collect(Collectors.toList());
+        return questionWithAllAnswerWrapperAssembler.toModel(new QuestionWithAllAnswerWrapper(question.get(), answers));
     }
 
     @GetMapping("/posts/questions/{qid}/answers/{aid}")
     public EntityModel<SingleQuestionAnswerWrapper> getAnswerByIdByQuestionId(@PathVariable Integer qid, @PathVariable Integer aid) {
-        return singleQuestionAnswerWrapperAssembler.toModel(new SingleQuestionAnswerWrapper(
-                postsRepository.findById(qid).orElseThrow(()->new QuestionNotFoundException(qid)),
-                postsRepository.findById(aid).orElseThrow(()->new AnswerNotForQuestionException(aid,qid))));
+        Optional<Posts> question = Optional.ofNullable(postsRepository.findById(qid).orElseThrow(() -> new QuestionNotFoundException(qid)));
+        postsUtil.setVoteStatus(question.get(), null);
+        Optional<Posts> answer = Optional.ofNullable(postsRepository.findById(aid).orElseThrow(() -> new AnswerNotForQuestionException(aid, qid)));
+        postsUtil.setVoteStatus(answer.get(), null);
+        return singleQuestionAnswerWrapperAssembler.toModel(new SingleQuestionAnswerWrapper(question.get(), answer.get()));
     }
 
     @PostMapping("/posts/create/questions")

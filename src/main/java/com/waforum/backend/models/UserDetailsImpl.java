@@ -10,6 +10,7 @@ import java.util.Collections;
 
 public class UserDetailsImpl implements UserDetails {
 
+    private Integer id;
     private Integer registrationNumber;
     private Integer contribution;
     private String displayName;
@@ -113,5 +114,13 @@ public class UserDetailsImpl implements UserDetails {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 '}';
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 }
