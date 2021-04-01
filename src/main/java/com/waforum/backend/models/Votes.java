@@ -43,4 +43,14 @@ public class Votes {
     public void setUserId(Integer userId) {
         this.userId = userId;
     }
+
+    @Override
+    public String toString() {
+        return "Votes{" +
+                "id=" + id +
+                ", postId=" + postId +
+                ", typeOf=" + typeOf +
+                ", userId=" + userId +
+                '}';
+    }
 }

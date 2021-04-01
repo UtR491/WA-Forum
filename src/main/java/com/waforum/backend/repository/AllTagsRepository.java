@@ -9,4 +9,5 @@ import java.util.List;
 public interface AllTagsRepository extends JpaRepository<AllTags, Integer> {
     List<AllTags> findAllByTagIn(List<String> tag);
     List<AllTags> findByTagIn(List<String> tag);
+    AllTags findByTag(String tag);
 }

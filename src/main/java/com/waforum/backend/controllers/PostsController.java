@@ -10,6 +10,7 @@ import com.waforum.backend.models.AllTags;
 import com.waforum.backend.models.Posts;
 import com.waforum.backend.models.QuestionWithAllAnswerWrapper;
 import com.waforum.backend.models.SingleQuestionAnswerWrapper;
+import com.waforum.backend.models.Tags;
 import com.waforum.backend.repository.AllTagsRepository;
 import com.waforum.backend.repository.PostsRepository;
 import com.waforum.backend.repository.TagsRepository;
@@ -109,10 +110,10 @@ public class PostsController {
         Optional<Posts> question = Optional.ofNullable(postsRepository.findById(id).orElseThrow(() -> new QuestionNotFoundException(id)));
         postsUtil.setVoteStatus(question.get(), null);
         postsUtil.setPostTags(question.get());
-        List<Posts> answers = postsRepository.findAllByParentId(id).stream().map(answer -> {
+        List<EntityModel<Posts>> answers = postsRepository.findAllByParentId(id).stream().map(answer -> {
             postsUtil.setVoteStatus(answer, null);
             postsUtil.setPostTags(answer);
-            return answer;
+            return postsAssembler.toModel(answer);
         }).collect(Collectors.toList());
         return questionWithAllAnswerWrapperAssembler.toModel(new QuestionWithAllAnswerWrapper(question.get(), answers));
     }
@@ -132,6 +133,7 @@ public class PostsController {
     public ResponseEntity<EntityModel<Posts>> askQuestion(@RequestBody Posts post) {
         System.out.println("Hellooooooooooo");
         EntityModel<Posts> postEntityModel = postsAssembler.toModel(postsRepository.save(post));
+        handleQuestionTags(post);
         return ResponseEntity
                 .created(postEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(postEntityModel);
@@ -153,6 +155,8 @@ public class PostsController {
         question.setLastEditDate(new Date());
         question.setLastEditorUserId(editedQuestion.getLastEditorUserId());
         question.setLastEditorDisplayName(editedQuestion.getLastEditorDisplayName());
+        question.setTags(editedQuestion.getTags());
+        handleQuestionTags(editedQuestion);
 
         EntityModel<Posts> postsEntityModel = postsAssembler.toModel(postsRepository.save(question));
 
@@ -190,5 +194,25 @@ public class PostsController {
             throw new AnswerNotForQuestionException(aid, qid);
         postsRepository.delete(answer);
         return ResponseEntity.noContent().build();
+    }
+
+    private void handleQuestionTags(Posts post) {
+        allTagsRepository.saveAll(
+                post.getTags().stream().map(tag -> {
+                    AllTags allTags = new AllTags();
+                    allTags.setTag(tag);
+                    if(allTagsRepository.findByTag(tag) != null)
+                        allTags.setId(allTagsRepository.findByTag(tag).getId());
+                    return allTags;
+                }).collect(Collectors.toList()));
+        List<Integer> tagIds = allTagsRepository.findAllByTagIn(post.getTags())
+                .stream().map(AllTags::getId).collect(Collectors.toList());
+        tagIds.stream().map(tagIdElement -> {
+            Tags tag = new Tags();
+            tag.setPostId(post.getId());
+            tag.setPostTypeId(post.getPostTypeId());
+            tag.setTagId(tagIdElement);
+            return tag;
+        }).forEach(tags -> tagsRepository.save(tags));
     }
 }
