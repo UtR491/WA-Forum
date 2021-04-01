@@ -17,7 +17,7 @@ public class LoginResponse {
     public LoginResponse(String jwt, List<EntityModel<Posts>> questions) {
         this.jwt = new AuthenticationResponse(jwt);
         this.questions = CollectionModel.of(questions,
-                linkTo(methodOn(PostsController.class).getQuestions()).withSelfRel());
+                linkTo(methodOn(PostsController.class).getQuestions(null)).withSelfRel());
     }
 
     public AuthenticationResponse getJwt() {

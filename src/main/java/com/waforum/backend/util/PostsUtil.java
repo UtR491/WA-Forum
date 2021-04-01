@@ -4,16 +4,26 @@ import com.waforum.backend.models.Posts;
 import com.waforum.backend.models.UserDetailsImpl;
 import com.waforum.backend.models.VoteType;
 import com.waforum.backend.models.Votes;
+import com.waforum.backend.repository.AllTagsRepository;
+import com.waforum.backend.repository.TagsRepository;
 import com.waforum.backend.repository.VotesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.stream.Collectors;
 
 @Service
 public class PostsUtil {
 
     @Autowired
     VotesRepository votesRepository;
+
+    @Autowired
+    TagsRepository tagsRepository;
+
+    @Autowired
+    AllTagsRepository allTagsRepository;
 
     public boolean postIsAnswer(Posts posts) {
         Integer postTypeId = posts.getPostTypeId();
@@ -39,5 +49,13 @@ public class PostsUtil {
             posts.setCurrentHasVoted(VoteType.UPVOTE);
         else
             posts.setCurrentHasVoted(VoteType.DOWNVOTE);
+    }
+
+    public void setPostTags(Posts posts) {
+        posts.setTags(tagsRepository.findAllByPostId(posts.getId())
+                .stream()
+                .map(tags ->
+                        allTagsRepository.findById(tags.getTagId()).get().getTag())
+                .collect(Collectors.toList()));
     }
 }

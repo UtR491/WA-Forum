@@ -12,7 +12,7 @@ public class ProfileAssembler implements RepresentationModelAssembler<User, Enti
     @Override
     public EntityModel<User> toModel(User profile) {
         EntityModel<User> entityModel = EntityModel.of(profile,
-                linkTo(methodOn(PostsController.class).getQuestions()).withRel("home"),
+                linkTo(methodOn(PostsController.class).getQuestions(null)).withRel("home"),
                 linkTo(methodOn(ProfileController.class).getProfileInfoById(profile.getId())).withSelfRel(),
                 linkTo(methodOn(ProfileController.class).getQuestionsByUserId(profile.getId())).withRel("userQuestions"),
                 linkTo(methodOn(ProfileController.class).getAnswersById(profile.getId())).withRel("userAnswers"));

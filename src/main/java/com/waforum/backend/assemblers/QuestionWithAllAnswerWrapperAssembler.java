@@ -13,7 +13,7 @@ public class QuestionWithAllAnswerWrapperAssembler implements RepresentationMode
     public EntityModel<QuestionWithAllAnswerWrapper> toModel(QuestionWithAllAnswerWrapper entity) {
         return EntityModel.of(entity,
                 linkTo(methodOn(PostsController.class).getAnswerByQuestionId(entity.getQuestion().getId())).withSelfRel(),
-                linkTo(methodOn(PostsController.class).getQuestions()).withRel("home"),
+                linkTo(methodOn(PostsController.class).getQuestions(null)).withRel("home"),
                 linkTo(methodOn(ProfileController.class).getProfileInfoById(entity.getQuestion().getOwnerUserId())).withRel("userProfile"));
     }
 }

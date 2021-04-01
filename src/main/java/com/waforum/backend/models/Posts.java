@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Posts {
@@ -26,6 +27,8 @@ public class Posts {
     private int commentCount;
     @Transient
     private VoteType currentHasVoted;
+    @Transient
+    private List<String> tags;
 
     public Integer getId() {
         return id;
@@ -153,6 +156,14 @@ public class Posts {
 
     public void setCurrentHasVoted(VoteType currentHasVoted) {
         this.currentHasVoted = currentHasVoted;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
     }
 
     @Override

@@ -18,7 +18,7 @@ public class CommentsAssembler implements RepresentationModelAssembler<Comments,
     @Override
     public EntityModel<Comments> toModel(Comments comments) {
         return EntityModel.of(comments,
-                linkTo(methodOn(PostsController.class).getQuestions()).withRel("home"),
+                linkTo(methodOn(PostsController.class).getQuestions(null)).withRel("home"),
                 linkTo(methodOn(CommentsController.class).getCommentsByAnswerId(postsRepository.findOneByParentId(comments.getPostId()).getId(),comments.getPostId())).withSelfRel(),
                 linkTo(methodOn(ProfileController.class).getProfileInfoById(comments.getUserId())).withRel("userProfile"));
     }

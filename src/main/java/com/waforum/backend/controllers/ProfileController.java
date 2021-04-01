@@ -55,7 +55,7 @@ public class ProfileController {
                 map((ques) -> postsAssembler.toModel(ques)).collect(Collectors.toList());
         return CollectionModel.of(questions,
                 linkTo(methodOn(ProfileController.class).getQuestionsByUserId(Id)).withSelfRel(),
-                linkTo(methodOn(PostsController.class).getQuestions()).withRel("home"));
+                linkTo(methodOn(PostsController.class).getQuestions(null)).withRel("home"));
     }
 
 
@@ -69,7 +69,7 @@ public class ProfileController {
         List<EntityModel<SingleQuestionAnswerWrapper>> wrapperEntityModel=wrappers.stream().map(w->singleQuestionAnswerWrapperAssembler.toModel(w)).collect(Collectors.toList());
         return CollectionModel.of(wrapperEntityModel,
                 linkTo(methodOn(ProfileController.class)).withSelfRel(),
-                linkTo(methodOn(PostsController.class).getQuestions()).withRel("home"),
+                linkTo(methodOn(PostsController.class).getQuestions(null)).withRel("home"),
                 linkTo(methodOn(ProfileController.class).getProfileInfoById(Id)).withRel("userProfile"));
     } 
 

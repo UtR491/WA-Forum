@@ -12,14 +12,14 @@ foreign key (parentID) references Posts(id) on delete cascade,
 foreign key (ownerUserID) references User(id) on delete set null,
 foreign key (lastEditorUserID) references User(id) on delete set null);
 
-create table allTags(id int primary key,tag varchar(100));
+create table AllTags(id int primary key,tag varchar(100));
 
 create table Tags(id int primary key,postID int,tagID int, foreign key(postID) references Posts(id) on delete cascade,
-foreign key(tagID) references allTags(id));
+foreign key(tagID) references AllTags(id));
 
 create table suggestedEdits(id int,postID int, creationDate datetime, apporvalDate datetime,rejectionDate datetime,
  ownerUserID int,comment text,body text , suggestedTags int,foreign key(suggestedTags) 
- references allTags(id), foreign key(ownerUserID) references User(id) on delete set null);
+ references AllTags(id), foreign key(ownerUserID) references User(id) on delete set null);
  
 create table followerData(userID int, followerID int, foreign key(followerID) references User(id) on delete cascade,
 foreign key(userID) references User(id) on delete cascade);

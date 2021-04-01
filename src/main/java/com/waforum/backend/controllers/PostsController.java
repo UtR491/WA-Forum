@@ -6,13 +6,13 @@ import com.waforum.backend.assemblers.SingleQuestionAnswerWrapperAssembler;
 import com.waforum.backend.exceptions.AnswerNotForQuestionException;
 import com.waforum.backend.exceptions.AnswerNotFoundException;
 import com.waforum.backend.exceptions.QuestionNotFoundException;
+import com.waforum.backend.models.AllTags;
 import com.waforum.backend.models.Posts;
 import com.waforum.backend.models.QuestionWithAllAnswerWrapper;
 import com.waforum.backend.models.SingleQuestionAnswerWrapper;
-import com.waforum.backend.models.UserDetailsImpl;
-import com.waforum.backend.models.VoteType;
-import com.waforum.backend.models.Votes;
+import com.waforum.backend.repository.AllTagsRepository;
 import com.waforum.backend.repository.PostsRepository;
+import com.waforum.backend.repository.TagsRepository;
 import com.waforum.backend.repository.VotesRepository;
 import com.waforum.backend.util.JwtUtil;
 import com.waforum.backend.util.PostsUtil;
@@ -22,7 +22,6 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -54,18 +53,46 @@ public class PostsController {
     @Autowired
     PostsUtil postsUtil;
 
+    @Autowired
+    AllTagsRepository allTagsRepository;
+
+    @Autowired
+    TagsRepository tagsRepository;
+
 
     @GetMapping("/posts/questions")
-    public CollectionModel<EntityModel<Posts>> getQuestions() {
-        List<EntityModel<Posts>> questions = postsRepository.findAll().stream()
-                .map((question) -> {
-                    postsUtil.setVoteStatus(question, null);
-                    System.out.println("Adding post = " + question + " to the list.");
-                    return postsAssembler.toModel(question);
-                }).collect(Collectors.toList());
+    public CollectionModel<EntityModel<Posts>> getQuestions(@RequestParam(required = false) List<String> tags) {
+        List<EntityModel<Posts>> questions;
+        if(tags == null) {
+            questions = postsRepository.findAll().stream()
+                    .map((question) -> {
+                        postsUtil.setVoteStatus(question, null);
+                        postsUtil.setPostTags(question);
+                        System.out.println("Adding post = " + question + " to the list.");
+                        return postsAssembler.toModel(question);
+                    }).collect(Collectors.toList());
+        } else {
+            System.out.println("Tags are " + tags);
+            System.out.println("Tags from which are in the database " + allTagsRepository.findByTagIn(tags));
+            System.out.println("Lessee " + allTagsRepository.findByTagIn(List.of("abc", "xyz")));
+            List<Integer> tagIds = allTagsRepository.findByTagIn(tags).stream().map(AllTags::getId).collect(Collectors.toList());
+            System.out.println("Tag IDs are " + tagIds);
+            if(tagIds.size() != tags.size()) // not all tags were found.
+                return CollectionModel.empty(WebMvcLinkBuilder
+                                .linkTo(WebMvcLinkBuilder.methodOn(PostsController.class).getQuestions(null))
+                                .withSelfRel());
+            System.out.println("postsRepo.findAllByTags = " + postsRepository.findAllByTags(tagIds, tagIds.size()));
+            questions = postsRepository.findAllByTags(tagIds, tagIds.size()).stream()
+                    .map((question) -> {
+                        System.out.println("Questions are = " + question);
+                        postsUtil.setVoteStatus(question, null);
+                        postsUtil.setPostTags(question);
+                        return postsAssembler.toModel(question);
+                    }).collect(Collectors.toList());
+        }
         return CollectionModel.of(questions,
                 WebMvcLinkBuilder
-                        .linkTo(WebMvcLinkBuilder.methodOn(PostsController.class).getQuestions())
+                        .linkTo(WebMvcLinkBuilder.methodOn(PostsController.class).getQuestions(null))
                         .withSelfRel());
     }
 
@@ -73,6 +100,7 @@ public class PostsController {
     public EntityModel<Posts> getQuestionById(@PathVariable Integer id) {
         Optional<Posts> post = Optional.ofNullable(postsRepository.findById(id).orElseThrow(() -> new QuestionNotFoundException(id)));
         postsUtil.setVoteStatus(post.get(), null);
+        postsUtil.setPostTags(post.get());
         return postsAssembler.toModel(post.get());
     }
 
@@ -80,8 +108,10 @@ public class PostsController {
     public EntityModel<QuestionWithAllAnswerWrapper> getAnswerByQuestionId(@PathVariable Integer id) {
         Optional<Posts> question = Optional.ofNullable(postsRepository.findById(id).orElseThrow(() -> new QuestionNotFoundException(id)));
         postsUtil.setVoteStatus(question.get(), null);
+        postsUtil.setPostTags(question.get());
         List<Posts> answers = postsRepository.findAllByParentId(id).stream().map(answer -> {
             postsUtil.setVoteStatus(answer, null);
+            postsUtil.setPostTags(answer);
             return answer;
         }).collect(Collectors.toList());
         return questionWithAllAnswerWrapperAssembler.toModel(new QuestionWithAllAnswerWrapper(question.get(), answers));
@@ -91,8 +121,10 @@ public class PostsController {
     public EntityModel<SingleQuestionAnswerWrapper> getAnswerByIdByQuestionId(@PathVariable Integer qid, @PathVariable Integer aid) {
         Optional<Posts> question = Optional.ofNullable(postsRepository.findById(qid).orElseThrow(() -> new QuestionNotFoundException(qid)));
         postsUtil.setVoteStatus(question.get(), null);
+        postsUtil.setPostTags(question.get());
         Optional<Posts> answer = Optional.ofNullable(postsRepository.findById(aid).orElseThrow(() -> new AnswerNotForQuestionException(aid, qid)));
         postsUtil.setVoteStatus(answer.get(), null);
+        postsUtil.setPostTags(answer.get());
         return singleQuestionAnswerWrapperAssembler.toModel(new SingleQuestionAnswerWrapper(question.get(), answer.get()));
     }
 
