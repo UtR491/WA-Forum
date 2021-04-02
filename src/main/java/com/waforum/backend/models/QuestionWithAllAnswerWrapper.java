@@ -6,11 +6,13 @@ import java.util.List;
 
 
 public class QuestionWithAllAnswerWrapper {
-    Posts question;
-    List<EntityModel<Posts>> answers;
 
-    public QuestionWithAllAnswerWrapper(Posts question, List<EntityModel<Posts>> answers) {
+    List<EntityModel<Posts>> answers;
+    Posts question, acceptedAnswer;
+
+    public QuestionWithAllAnswerWrapper(Posts question, Posts acceptedAnswer, List<EntityModel<Posts>> answers) {
         this.question = question;
+        this.acceptedAnswer = acceptedAnswer;
         this.answers = answers;
     }
 
