@@ -1,14 +1,7 @@
 package com.waforum.backend;
 
-import com.waforum.backend.assemblers.CommentsAssembler;
-import com.waforum.backend.assemblers.PostsAssembler;
-import com.waforum.backend.assemblers.ProfileAssembler;
-import com.waforum.backend.assemblers.QuestionWithAllAnswerWrapperAssembler;
-import com.waforum.backend.assemblers.SingleAnswerAllCommentsWrapperAssembler;
-import com.waforum.backend.assemblers.SingleQuestionAnswerWrapperAssembler;
+import com.waforum.backend.assemblers.*;
 import com.waforum.backend.filters.JwtRequestFilter;
-import com.waforum.backend.models.QuestionWithAllAnswerWrapper;
-import com.waforum.backend.models.SingleAnswerAllCommentsWrapper;
 import com.waforum.backend.repository.UserRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -58,5 +51,13 @@ public class BackendApplication {
 	@Bean
 	public SingleQuestionAnswerWrapperAssembler getSingleQuestionAnswerWrapperAssembler() {
 		return new SingleQuestionAnswerWrapperAssembler();
+	}
+	@Bean
+	public FollowersAssembler getFollowersAssembler(){
+		return new FollowersAssembler();
+	}
+	@Bean
+	public FollowingAssembler getFollowingAssembler(){
+		return new FollowingAssembler();
 	}
 }

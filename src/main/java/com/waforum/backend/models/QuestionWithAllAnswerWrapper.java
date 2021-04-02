@@ -4,11 +4,12 @@ import java.util.List;
 
 
 public class QuestionWithAllAnswerWrapper {
-    Posts question;
+    Posts question,acceptedAnswer;
     List<Posts>answers;
 
-    public QuestionWithAllAnswerWrapper(Posts question, List<Posts> answers) {
+    public QuestionWithAllAnswerWrapper(Posts question, Posts acceptedAnswer, List<Posts> answers) {
         this.question = question;
+        this.acceptedAnswer = acceptedAnswer;
         this.answers = answers;
     }
 

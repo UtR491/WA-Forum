@@ -8,6 +8,6 @@ import java.util.List;
 public interface PostsRepository extends JpaRepository<Posts, Integer> {
     List<Posts> findAllByParentId(Integer parentId);
     List<Posts> findAllByPostTypeIdOrderByLastActivityDate(Integer postTypeId);
-    List<Posts> findAllByPostTypeIdAndOwnerUserId(Integer postTypeId, Integer ownerUserId);
+    List<Posts> findAllByOwnerUserIdAndPostTypeId(Integer ownerUserId, Integer postTypeId);
     Posts findOneByParentId(Integer parentId);
 }
