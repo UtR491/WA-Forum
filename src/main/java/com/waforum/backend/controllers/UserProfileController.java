@@ -9,6 +9,7 @@ import com.waforum.backend.repository.PostsRepository;
 import com.waforum.backend.repository.UserRepository;
 import com.waforum.backend.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-public class ProfileController {
+@RequestMapping("/api")
+public class UserProfileController {
     @Autowired
     UserRepository userRepository;
 
@@ -67,7 +69,7 @@ public class ProfileController {
         List<EntityModel<Posts>> questions = postsRepository.findAllByPostTypeIdAndOwnerUserId(1, id).stream().
                 map((ques) -> postsAssembler.toModel(ques)).collect(Collectors.toList());
         return CollectionModel.of(questions,
-                linkTo(methodOn(ProfileController.class).getQuestionsByUserId(id)).withSelfRel(),
+                linkTo(methodOn(UserProfileController.class).getQuestionsByUserId(id)).withSelfRel(),
                 linkTo(methodOn(PostsController.class).getQuestions(null)).withRel("home"));
     }
 
@@ -80,9 +82,9 @@ public class ProfileController {
         }
         List<EntityModel<SingleQuestionAnswerWrapper>> wrapperEntityModel=wrappers.stream().map(w->singleQuestionAnswerWrapperAssembler.toModel(w)).collect(Collectors.toList());
         return CollectionModel.of(wrapperEntityModel,
-                linkTo(methodOn(ProfileController.class)).withSelfRel(),
+                linkTo(methodOn(UserProfileController.class).getAnswersById(id)).withSelfRel(),
                 linkTo(methodOn(PostsController.class).getQuestions(null)).withRel("home"),
-                linkTo(methodOn(ProfileController.class).getProfileInfoById(id)).withRel("userProfile"));
+                linkTo(methodOn(UserProfileController.class).getProfileInfoById(id)).withRel("userProfile"));
     }
     @PutMapping("/profile/{id}/questions/{qid}/answers/{aid}")
     public ResponseEntity<?> acceptAnswer(@PathVariable Integer id, @PathVariable Integer qid, @PathVariable Integer aid){
@@ -98,8 +100,8 @@ public class ProfileController {
         List<EntityModel<Followers>>followerList= followersRepository.findAllByUserId(id).stream().
                 map(fr->followersAssembler.toModel(fr)).collect(Collectors.toList());
         return CollectionModel.of(followerList,
-                linkTo(methodOn(ProfileController.class).getFollowersById(id)).withSelfRel(),
-                linkTo(methodOn(ProfileController.class).getProfileInfoById(id)).withRel("userProfile"));
+                linkTo(methodOn(UserProfileController.class).getFollowersById(id)).withSelfRel(),
+                linkTo(methodOn(UserProfileController.class).getProfileInfoById(id)).withRel("userProfile"));
     }
 
     @GetMapping("/profile/{id}/following")
@@ -107,8 +109,8 @@ public class ProfileController {
         List<EntityModel<Following>>followingList=followingRepository.findAllByUserId(id).stream().
                 map(fg->followingAssembler.toModel(fg)).collect(Collectors.toList());
         return CollectionModel.of(followingList,
-                linkTo(methodOn(ProfileController.class).getFollowingById(id)).withSelfRel(),
-                linkTo(methodOn(ProfileController.class).getProfileInfoById(id)).withRel("userProfile"));
+                linkTo(methodOn(UserProfileController.class).getFollowingById(id)).withSelfRel(),
+                linkTo(methodOn(UserProfileController.class).getProfileInfoById(id)).withRel("userProfile"));
     }
 
     @PostMapping("/profile/{id}/follow")
