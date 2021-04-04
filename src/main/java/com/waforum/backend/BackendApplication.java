@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
+@EnableJpaRepositories(basePackageClasses = UserRepository.class)
 @EnableScheduling
 public class BackendApplication {
 

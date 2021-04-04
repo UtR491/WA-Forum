@@ -7,14 +7,12 @@ import com.waforum.backend.models.Messages;
 import com.waforum.backend.repository.MessageRepository;
 import com.waforum.backend.services.ChatRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -22,7 +20,6 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api")
 public class ChatController {
     @Autowired
     SimpMessagingTemplate simpMessagingTemplate;

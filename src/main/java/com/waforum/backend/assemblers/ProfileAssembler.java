@@ -1,7 +1,7 @@
 package com.waforum.backend.assemblers;
 
 import com.waforum.backend.controllers.PostsController;
-import com.waforum.backend.controllers.UserProfileController;
+import com.waforum.backend.controllers.ProfileController;
 import com.waforum.backend.models.User;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
@@ -13,9 +13,9 @@ public class ProfileAssembler implements RepresentationModelAssembler<User, Enti
     public EntityModel<User> toModel(User profile) {
         EntityModel<User> entityModel = EntityModel.of(profile,
                 linkTo(methodOn(PostsController.class).getQuestions(null)).withRel("home"),
-                linkTo(methodOn(UserProfileController.class).getProfileInfoById(profile.getId())).withSelfRel(),
-                linkTo(methodOn(UserProfileController.class).getQuestionsByUserId(profile.getId())).withRel("userQuestions"),
-                linkTo(methodOn(UserProfileController.class).getAnswersById(profile.getId())).withRel("userAnswers"));
+                linkTo(methodOn(ProfileController.class).getProfileInfoById(profile.getId())).withSelfRel(),
+                linkTo(methodOn(ProfileController.class).getQuestionsByUserId(profile.getId())).withRel("userQuestions"),
+                linkTo(methodOn(ProfileController.class).getAnswersById(profile.getId())).withRel("userAnswers"));
         return entityModel;
     }
 }

@@ -8,7 +8,6 @@ class BackendApplicationTests {
 
 	@Test
 	void contextLoads() {
-		assert true;
 	}
 
 }
