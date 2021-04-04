@@ -9,7 +9,11 @@ class QuestionService {
     }
 
     getQuestions() {
-        return axios.get(QUESTIONS_ENDPOINT);
+        return axios.get(QUESTIONS_ENDPOINT, {
+            headers : {
+                Authorization: "Bearer " + localStorage.getItem('jwt')
+            }
+        });
     }
 }
 

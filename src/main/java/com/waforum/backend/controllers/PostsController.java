@@ -18,7 +18,6 @@ import com.waforum.backend.repository.VotesRepository;
 import com.waforum.backend.util.JwtUtil;
 import com.waforum.backend.util.PostsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -68,7 +67,7 @@ public class PostsController {
         System.out.println("Hello inside /posts/questions function");
         List<EntityModel<Posts>> questions;
         if(tags == null) {
-            questions = postsRepository.findAll().stream()
+            questions = postsRepository.findAllByPostTypeIdOrderByLastActivityDate(1).stream()
                     .map((question) -> {
                         postsUtil.setVoteStatus(question, null);
                         postsUtil.setPostTags(question);

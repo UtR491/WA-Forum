@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react';
 import React from 'react';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import './App.css';
 import LoginComponent from './components/LoginComponent';
 import QuestionComponent from './components/QuestionComponent.jsx';
@@ -21,19 +22,16 @@ class App extends React.Component {
   }
 
   render() {
-    if (this.state.onScreen === "login") {
-      return (
-        <div className="App">
-          <LoginComponent changeScreen={this.changeScreenState}/>
-        </div>
-      );
-    } else if(this.state.onScreen === "questions") {
-      return (
-        <div className="App">
-          <QuestionComponent changeScreen={this.changeScreenState}/>
-        </div>
-      );
-    }
+    return (
+      <div className="routes">
+        <BrowserRouter>
+        <Switch>
+          <Route exact path={"/"} component={LoginComponent}/>
+          <Route exact path={"/home"} component={QuestionComponent}/>
+        </Switch>
+        </BrowserRouter>
+      </div>
+    );
   }
 }
 

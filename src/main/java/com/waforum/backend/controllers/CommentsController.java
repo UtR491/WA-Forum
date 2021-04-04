@@ -8,7 +8,6 @@ import com.waforum.backend.models.SingleAnswerAllCommentsWrapper;
 import com.waforum.backend.repository.CommentsRepository;
 import com.waforum.backend.repository.PostsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;

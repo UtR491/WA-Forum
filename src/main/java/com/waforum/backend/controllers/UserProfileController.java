@@ -9,7 +9,6 @@ import com.waforum.backend.repository.PostsRepository;
 import com.waforum.backend.repository.UserRepository;
 import com.waforum.backend.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;

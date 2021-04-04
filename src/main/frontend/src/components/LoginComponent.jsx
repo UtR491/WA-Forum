@@ -1,4 +1,5 @@
 import React from "react";
+import { Redirect } from "react-router";
 import loginService from "../services/LoginService";
 
 class LoginComponent extends React.Component {
@@ -21,7 +22,9 @@ class LoginComponent extends React.Component {
   handleSubmit(event) {
     loginService.loginAndGetJwt(this.state).then((response) => {
       console.log(response);
-      this.props.changeScreen('questions');
+      console.log('JWT received ', response.data.jwt.jwt);
+      localStorage.setItem('jwt', response.data.jwt.jwt);
+      this.props.history.push("/home")
     });
   }
 
