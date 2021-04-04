@@ -1,6 +1,6 @@
 package com.waforum.backend.assemblers;
 
-import com.waforum.backend.controllers.ProfileController;
+import com.waforum.backend.controllers.UserProfileController;
 import com.waforum.backend.models.Following;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
@@ -10,7 +10,7 @@ public class FollowingAssembler implements RepresentationModelAssembler<Followin
     @Override
     public EntityModel<Following> toModel(Following entity) {
         return EntityModel.of(entity,
-                linkTo(methodOn(ProfileController.class).getFollowingById(entity.getUserId())).withSelfRel(),
-                linkTo(methodOn(ProfileController.class).getProfileInfoById(entity.getFollowingId())).withRel("followerProfile"));
+                linkTo(methodOn(UserProfileController.class).getFollowingById(entity.getUserId())).withSelfRel(),
+                linkTo(methodOn(UserProfileController.class).getProfileInfoById(entity.getFollowingId())).withRel("followerProfile"));
     }
 }

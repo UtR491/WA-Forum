@@ -32,23 +32,24 @@ public class PostsUtil {
     }
 
     public void setVoteStatus(Posts posts, UserDetailsImpl userDetails) {
-        Integer userId;
-        if(userDetails == null) {
-            System.out.println("UserDetails is null.");
-            System.out.println("So userdetails impl is :::::::");
-            System.out.println(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-            userId = ((UserDetailsImpl)SecurityContextHolder.getContext().getAuthentication().getPrincipal())
-                    .getId();
-        }
-        else
-            userId = userDetails.getId();
-        Votes vote = votesRepository.findByUserIdAndPostId(userId, posts.getId());
-        if(vote == null)
-            posts.setCurrentHasVoted(VoteType.NOTHING);
-        else if(vote.getTypeOf() == 1)
-            posts.setCurrentHasVoted(VoteType.UPVOTE);
-        else
-            posts.setCurrentHasVoted(VoteType.DOWNVOTE);
+        return;
+//        Integer userId;
+//        if(userDetails == null) {
+//            System.out.println("UserDetails is null.");
+//            System.out.println("So userdetails impl is :::::::");
+//            System.out.println(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+//            userId = ((UserDetailsImpl)SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+//                    .getId();
+//        }
+//        else
+//            userId = userDetails.getId();
+//        Votes vote = votesRepository.findByUserIdAndPostId(userId, posts.getId());
+//        if(vote == null)
+//            posts.setCurrentHasVoted(VoteType.NOTHING);
+//        else if(vote.getTypeOf() == 1)
+//            posts.setCurrentHasVoted(VoteType.UPVOTE);
+//        else
+//            posts.setCurrentHasVoted(VoteType.DOWNVOTE);
     }
 
     public void setPostTags(Posts posts) {

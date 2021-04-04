@@ -18,6 +18,7 @@ import com.waforum.backend.repository.VotesRepository;
 import com.waforum.backend.util.JwtUtil;
 import com.waforum.backend.util.PostsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -30,7 +31,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 
+@CrossOrigin(origins = "http://localhost:3000/")
 @RestController
+@RequestMapping("/api")
 public class PostsController {
     @Autowired
     PostsRepository postsRepository;
@@ -60,10 +63,9 @@ public class PostsController {
     @Autowired
     TagsRepository tagsRepository;
 
-
-
     @GetMapping("/posts/questions")
     public CollectionModel<EntityModel<Posts>> getQuestions(@RequestParam(required = false) List<String> tags) {
+        System.out.println("Hello inside /posts/questions function");
         List<EntityModel<Posts>> questions;
         if(tags == null) {
             questions = postsRepository.findAll().stream()
