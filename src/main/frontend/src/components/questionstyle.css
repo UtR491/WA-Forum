@@ -1,0 +1,35 @@
+#questioncard{
+    padding: 10px;
+    margin-bottom: 60px;
+    
+    
+}
+
+#cardbody{
+    background-color: #56768F;
+    border: #707070;
+    border-radius: 15px;
+    ;
+}
+
+.customCard {
+    background-color: #364153 !important;
+    box-shadow: none !important;
+    
+}
+
+
+
+.asker{
+    margin-left: 10px;
+    border-radius: 50%;
+}
+
+#ansicon{
+    margin-right: 5px;
+}
+
+#tags{
+       
+    font-size:10px;
+}

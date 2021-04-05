@@ -1,6 +1,7 @@
 import React from "react";
-import { Redirect } from "react-router";
+//import { Redirect } from "react-router";
 import loginService from "../services/LoginService";
+import {Form} from 'react-bootstrap'
 
 class LoginComponent extends React.Component {
   constructor(props) {
@@ -32,14 +33,17 @@ class LoginComponent extends React.Component {
     return (
       <div>
         <h1>Login to get answers from simps</h1>
-        <form>
-          <input
+        <Form>
+        <Form.Label>Registration number</Form.Label>
+          <Form.Control
             type="text"
             name="registrationNumber"
+            placeholder="Enter your Registration number"
             onChange={this.handleInput}
           />
           <br />
-          <input type="password" name="password" onChange={this.handleInput} />
+          <Form.Label>Password</Form.Label>
+          <Form.Control type="password" name="password" onChange={this.handleInput} />
           <br />
           <input
             type="button"
@@ -47,7 +51,7 @@ class LoginComponent extends React.Component {
             onClick={this.handleSubmit}
             value="Login"
           />
-        </form>
+        </Form>
       </div>
     );
   }
