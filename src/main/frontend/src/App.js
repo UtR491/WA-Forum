@@ -1,9 +1,10 @@
-import { render } from '@testing-library/react';
+//import { render } from '@testing-library/react';
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import './App.css';
 import LoginComponent from './components/LoginComponent';
-import QuestionComponent from './components/QuestionComponent.jsx';
+//import QuestionComponent from './components/QuestionComponent.jsx';
+import HomePage from './components/HomePage';
 
 class App extends React.Component {
 
@@ -27,7 +28,7 @@ class App extends React.Component {
         <BrowserRouter>
         <Switch>
           <Route exact path={"/"} component={LoginComponent}/>
-          <Route exact path={"/home"} component={QuestionComponent}/>
+          <Route exact path={"/home"} component={HomePage}/>
         </Switch>
         </BrowserRouter>
       </div>
