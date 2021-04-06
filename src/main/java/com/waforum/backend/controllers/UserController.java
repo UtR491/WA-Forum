@@ -12,6 +12,8 @@ import com.waforum.backend.services.UserDetailsServiceImpl;
 import com.waforum.backend.util.JwtUtil;
 import com.waforum.backend.util.PostsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,6 +25,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @CrossOrigin(origins = "http://localhost:3000/")
 @RestController
@@ -63,18 +68,19 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+    public ResponseEntity<EntityModel<LoginResponse>> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
         System.out.println("Sending the login request with body " + authenticationRequest);
         try {
             UserDetailsImpl userDetails = userDetailsService.loadUserByRegistrationNumber(Integer.parseInt(authenticationRequest.getRegistrationNumber()));
             if(bCryptPasswordEncoder.matches(authenticationRequest.getPassword(), userDetails.getPassword()))
-                return ResponseEntity.ok(new LoginResponse(jwtTokenUtil.generateToken(userDetails),
-                        postsRepository.findAllByPostTypeIdOrderByLastActivityDate(1)
-                                .stream().map(post -> {
-                            postsUtil.setVoteStatus(post, userDetails);
-                            postsUtil.setPostTags(post);
-                            return postsAssembler.toModel(post);
-                        }).collect(Collectors.toList())));
+               // return ResponseEntity.ok(new LoginResponse(jwtTokenUtil.generateToken(userDetails)));
+            {
+                System.out.println("User id is "+userDetails.getId());
+                return ResponseEntity.ok(EntityModel.of(new LoginResponse(jwtTokenUtil.generateToken(userDetails)),
+                        linkTo(methodOn(UserProfileController.class).getProfileInfoById(userDetails.getId())).withRel("ownerId")));
+
+            }
+
             else
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         } catch (Exception e) {

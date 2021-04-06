@@ -22,15 +22,15 @@ public class UpdateDifferentCountsCron {
 
     @Scheduled(cron = "0/15 * * ? * *") // updates every 15 seconds.
     public void updateVotesCount() {
-        System.out.println("Updating votes count at " + new SimpleDateFormat().format(new Date()));
-        System.out.println("All posts are " + postsRepository.findAll());
+       // System.out.println("Updating votes count at " + new SimpleDateFormat().format(new Date()));
+      //  System.out.println("All posts are " + postsRepository.findAll());
         List<Posts> allPosts = postsRepository.findAll();
         for(Posts post : allPosts) {
             post.setUpvoteCount(
                     votesRepository.findAllByPostIdAndTypeOf(post.getId(), 1).size()
                             - votesRepository.findAllByPostIdAndTypeOf(post.getId(), -1).size());
-            System.out.println("new post = " + post);
-            System.out.println("Saving it in the repo");
+           // System.out.println("new post = " + post);
+           // System.out.println("Saving it in the repo");
             postsRepository.save(post);
         }
     }
