@@ -5,25 +5,24 @@ import "./Tags.css";
 class Tags extends React.Component {
   render() {
     return (
-      <Row sm>
-        <Col xs={6} align-items-end sm>
-          <ListGroup horizontal id="tags">
-            {
-              // eslint-disable-next-line array-callback-return
-              this.props.tags.map((tag) => (
-                <ListGroup.Item
-                  id="tag"
-                  type="button"
-                  variant="primary"
-                  className="list-group-item list-group-item-action"
-                >
-                  {tag}
-                </ListGroup.Item>
-              ))
-            }
-          </ListGroup>
-        </Col>
-      </Row>
+      <Container>
+        <Row sm>
+          <Col sm></Col>
+          <Col sm></Col>
+          <Col xs={6} sm>
+            <Row>
+              {
+                // eslint-disable-next-line array-callback-return
+                this.props.tags.map((tag) => (
+                  <div className="individualTag">
+                    <text className="tagText">{tag}</text>
+                  </div>
+                ))
+              }
+            </Row>
+          </Col>
+        </Row>
+      </Container>
     );
   }
 }

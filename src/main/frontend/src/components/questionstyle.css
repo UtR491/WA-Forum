@@ -31,3 +31,25 @@
 #quesSubTitle {
   font-family: "Poppins", sans-serif;
 }
+.upvote:hover {
+    cursor: pointer;
+    color: yellowgreen;
+}
+
+.downvote:hover {
+    cursor: pointer;
+    color: pink;
+}
+
+
+#answercard{
+    padding: 10px;
+    margin-bottom: max(5px, 1%);
+    margin-top: max(5px, 1%);
+}
+
+.clickable-paragraph:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
