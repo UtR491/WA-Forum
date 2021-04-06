@@ -1,21 +1,14 @@
 package com.waforum.backend.models;
 
-import com.waforum.backend.controllers.PostsController;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
-
-import java.util.List;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 public class LoginResponse {
 
     private AuthenticationResponse jwt;
+    private Integer id;
 
 
-    public LoginResponse(String jwt) {
+    public LoginResponse(String jwt, Integer id) {
         this.jwt = new AuthenticationResponse(jwt);
+        this.id = id;
     }
 
     public AuthenticationResponse getJwt() {
@@ -26,4 +19,11 @@ public class LoginResponse {
         this.jwt = jwt;
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 }

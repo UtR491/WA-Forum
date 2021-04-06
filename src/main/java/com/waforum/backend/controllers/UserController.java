@@ -13,7 +13,6 @@ import com.waforum.backend.util.JwtUtil;
 import com.waforum.backend.util.PostsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,8 +22,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -76,7 +73,7 @@ public class UserController {
                // return ResponseEntity.ok(new LoginResponse(jwtTokenUtil.generateToken(userDetails)));
             {
                 System.out.println("User id is "+userDetails.getId());
-                return ResponseEntity.ok(EntityModel.of(new LoginResponse(jwtTokenUtil.generateToken(userDetails)),
+                return ResponseEntity.ok(EntityModel.of(new LoginResponse(jwtTokenUtil.generateToken(userDetails), userDetails.getId()),
                         linkTo(methodOn(UserProfileController.class).getProfileInfoById(userDetails.getId())).withRel("ownerId")));
 
             }

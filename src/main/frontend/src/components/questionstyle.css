@@ -1,8 +1,29 @@
 #questioncard{
     padding: 10px;
-    margin-bottom: 60px;
-    
-    
+    margin-bottom: max(5px, 5%);
+    margin-top: max(5px, 5%);
+}
+
+.upvote:hover {
+    cursor: pointer;
+    color: yellowgreen;
+}
+
+.downvote:hover {
+    cursor: pointer;
+    color: pink;
+}
+
+
+#answercard{
+    padding: 10px;
+    margin-bottom: max(5px, 1%);
+    margin-top: max(5px, 1%);
+}
+
+.clickable-paragraph:hover {
+    text-decoration: underline;
+    cursor: pointer;
 }
 
 #cardbody{
@@ -15,9 +36,7 @@
 .customCard {
     background-color: #364153 !important;
     box-shadow: none !important;
-    
 }
-
 
 
 .asker{

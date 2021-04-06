@@ -18,6 +18,10 @@ public class VotesController {
 
     @PostMapping("/vote/add")
     public ResponseEntity<?> addVoteOnPost(@RequestBody Votes votes) {
+        Votes currentVote = votesRepository.findByUserIdAndPostId(votes.getUserId(), votes.getPostId());
+        if(currentVote != null)
+            votes.setId(currentVote.getId());
+
         votesRepository.save(votes);
         return ResponseEntity.ok(votes);
     }
