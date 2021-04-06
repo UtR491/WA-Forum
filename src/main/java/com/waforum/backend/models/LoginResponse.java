@@ -12,12 +12,10 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class LoginResponse {
 
     private AuthenticationResponse jwt;
-    private CollectionModel<EntityModel<Posts>> questions;
 
-    public LoginResponse(String jwt, List<EntityModel<Posts>> questions) {
+
+    public LoginResponse(String jwt) {
         this.jwt = new AuthenticationResponse(jwt);
-        this.questions = CollectionModel.of(questions,
-                linkTo(methodOn(PostsController.class).getQuestions(null)).withSelfRel());
     }
 
     public AuthenticationResponse getJwt() {
@@ -28,11 +26,4 @@ public class LoginResponse {
         this.jwt = jwt;
     }
 
-    public CollectionModel<EntityModel<Posts>> getQuestions() {
-        return questions;
-    }
-
-    public void setQuestions(CollectionModel<EntityModel<Posts>> questions) {
-        this.questions = questions;
-    }
 }
