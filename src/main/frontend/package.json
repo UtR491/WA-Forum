@@ -43,5 +43,11 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:8080"
+  "proxy": "http://localhost:8080",
+  "devDependencies": {
+    "@iconify-icons/akar-icons": "^1.1.6",
+    "@iconify-icons/logos": "^1.1.9",
+    "@iconify-icons/simple-icons": "^1.1.19",
+    "@iconify/react": "^1.1.4"
+  }
 }

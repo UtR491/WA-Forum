@@ -5,6 +5,7 @@ import './App.css';
 import LoginComponent from './components/LoginComponent';
 //import QuestionComponent from './components/QuestionComponent.jsx';
 import HomePage from './components/HomePage';
+import ProfilePage from './components/ProfilePage';
 
 class App extends React.Component {
 
@@ -29,6 +30,7 @@ class App extends React.Component {
         <Switch>
           <Route exact path={"/"} component={LoginComponent}/>
           <Route exact path={"/home"} component={HomePage}/>
+          <Route exact path={"/profile/my"} component={ProfilePage}/>
         </Switch>
         </BrowserRouter>
       </div>
