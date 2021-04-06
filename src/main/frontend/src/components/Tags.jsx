@@ -1,6 +1,6 @@
 import React from "react";
 import { ListGroup, Row, Col, Container } from "react-bootstrap";
-import './Tags.css'
+import "./Tags.css";
 
 class Tags extends React.Component {
   render() {

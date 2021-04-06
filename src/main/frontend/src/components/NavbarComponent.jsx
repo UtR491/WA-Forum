@@ -3,10 +3,20 @@ import { Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { MDBCol, MDBIcon } from "mdbreact";
 
 class NavbarComponent extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.goToHome = this.goToHome.bind(this);
+  }
+  goToHome(event) {
+    if (this.props.isHome) this.props.history.go(0);
+    else this.props.history.push("/home");
+  }
+
   render() {
     return (
       <Navbar bg="#364153" expand="lg">
-        <Navbar.Brand href="#home" style={{ color: "white" }}>
+        <Navbar.Brand onClick={this.goToHome} style={{ color: "white" }}>
           WA-Forum
         </Navbar.Brand>
 

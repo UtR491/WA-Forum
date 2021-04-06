@@ -1,3 +1,14 @@
+#row {
+  height: 10px !important;
+}
+#tags {
+  font-size: 10px;
+}
+
+.list-group-item {
+  font-size: 10px !important;
+  font-family: "Poppins", sans-serif;
+}
 .individualTag {
     border-radius: 10px;
     border-width: 5px;

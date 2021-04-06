@@ -1,15 +1,14 @@
 //import { render } from '@testing-library/react';
-import React from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import './App.css';
-import LoginComponent from './components/LoginComponent';
+import React from "react";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import "./App.css";
+import LoginComponent from "./components/LoginComponent";
 //import QuestionComponent from './components/QuestionComponent.jsx';
-import HomePage from './components/HomePage';
-import AllAnswersComponent from './components/AllAnswersComponent';
-import ProfilePage from './components/ProfilePage';
+import HomePage from "./components/HomePage";
+import AllAnswersComponent from "./components/AllAnswersComponent";
+import ProfilePage from "./components/ProfilePage";
 
 class App extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -20,7 +19,7 @@ class App extends React.Component {
 
   changeScreenState(newScreen) {
     this.setState({
-      onScreen : newScreen
+      onScreen: newScreen,
     });
   }
 
@@ -28,12 +27,13 @@ class App extends React.Component {
     return (
       <div className="routes">
         <BrowserRouter>
-        <Switch>
-          <Route exact path={"/"} component={LoginComponent}/>
-          <Route exact path={"/home"} component={HomePage}/>
-          <Route path={"/posts/questions/"} component={AllAnswersComponent}/>
-          <Route path={"/profile/"} component={ProfilePage}/>
-        </Switch>
+          <Switch>
+            <Route exact path={"/"} component={LoginComponent} />
+            <Route exact path={"/home"} component={HomePage} />
+            <Route exact path={"/profile/my"} component={ProfilePage} />
+            <Route path={"/posts/questions/"} component={AllAnswersComponent} />
+            <Route path={"/profile/"} component={ProfilePage} />
+          </Switch>
         </BrowserRouter>
       </div>
     );

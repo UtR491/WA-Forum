@@ -26,7 +26,9 @@ class LoginComponent extends React.Component {
       console.log("JWT received ", response.data.jwt.jwt);
       localStorage.setItem("jwt", response.data.jwt.jwt);
       localStorage.setItem("userId", response.data.id);
-      this.props.history.push("/home");
+      this.props.history.push("/home", {
+        getOwnerProfile: response.data._links.ownerId,
+      });
     });
   }
 

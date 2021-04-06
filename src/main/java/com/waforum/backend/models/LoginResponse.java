@@ -5,7 +5,6 @@ public class LoginResponse {
     private AuthenticationResponse jwt;
     private Integer id;
 
-
     public LoginResponse(String jwt, Integer id) {
         this.jwt = new AuthenticationResponse(jwt);
         this.id = id;

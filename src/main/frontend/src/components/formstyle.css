@@ -7,7 +7,6 @@ body {
   font-family: Nunito, Roboto, Arial, sans-serif;
   background: #4D6FE5;
   height: 100vh;
-  
 }
 
 #app {
@@ -20,7 +19,6 @@ body {
   text-align: center;
   color: #fff;
   margin-top: 100px;
-  
 }
 .container > header {
   font-size: 1.3rem;
@@ -31,9 +29,6 @@ body {
   width: 250px;
   overflow: hidden;
 }
-
-
-
 .header-headings {
   display: flex;
   flex-direction: column;
@@ -41,7 +36,6 @@ body {
   width: 100%;
   height: 200%;
   background-color: #000;
-  
   transition: all 0.4s cubic-bezier(0.785, 0.135, 0.15, 0.86);
 }
 .header-headings > span {
@@ -90,8 +84,6 @@ body {
   flex-direction: column;
   margin-top: 30px;
   max-width: 300px;
-  
-  
 }
 
 .account-form-fields {
@@ -102,12 +94,11 @@ body {
 }
 .account-form-fields.sign-in {
   max-height: 123px;
-  min-width:300px;
-  
+  min-width: 300px;
 }
 .account-form-fields.sign-up {
   max-height: 600px;
-  min-width:300px;
+  min-width: 300px;
 }
 .account-form-fields.forgot {
   max-height: 61px;
@@ -169,7 +160,8 @@ ul {
 .btn-submit-form:hover {
   background: #4468e4;
 }
-.btn-submit-form:active, .btn-submit-form:focus {
+.btn-submit-form:active,
+.btn-submit-form:focus {
   outline: none;
   background: #2e56e0;
 }

@@ -26,6 +26,9 @@ import org.springframework.web.bind.annotation.RestController;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @CrossOrigin(origins = "http://localhost:3000/")
 @RestController
 @RequestMapping("/api")
@@ -73,8 +76,10 @@ public class UserController {
                // return ResponseEntity.ok(new LoginResponse(jwtTokenUtil.generateToken(userDetails)));
             {
                 System.out.println("User id is "+userDetails.getId());
+
+
                 return ResponseEntity.ok(EntityModel.of(new LoginResponse(jwtTokenUtil.generateToken(userDetails), userDetails.getId()),
-                        linkTo(methodOn(UserProfileController.class).getProfileInfoById(userDetails.getId())).withRel("ownerId")));
+                 linkTo(methodOn(UserProfileController.class).getProfileInfoById(userDetails.getId())).withRel("ownerId")));
 
             }
 
