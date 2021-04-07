@@ -1,16 +1,15 @@
-//import { render } from '@testing-library/react';
-import React from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import './App.css';
-import LoginComponent from './components/LoginComponent';
-//import QuestionComponent from './components/QuestionComponent.jsx';
-import HomePage from './components/HomePage';
+import React from "react";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import "./App.css";
+import LoginComponent from "./components/LoginComponent";
+import HomePage from "./components/HomePage";
+import AllAnswersComponent from "./components/AllAnswersComponent";
+import ProfilePage from "./components/ProfilePage";
 import CreateQuestion from './components/CreateQuestion';
 import Chat from './components/Chat/chat/Chat';
 import TextEditor from './components/TextEditor';
 
 class App extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -21,7 +20,7 @@ class App extends React.Component {
 
   changeScreenState(newScreen) {
     this.setState({
-      onScreen : newScreen
+      onScreen: newScreen,
     });
   }
 
@@ -29,12 +28,15 @@ class App extends React.Component {
     return (
       <div className="routes">
         <BrowserRouter>
-        <Switch>
-          <Route exact path={"/"} component={LoginComponent}/>
-          <Route exact path={"/home"} component={HomePage}/>
-          <Route exact path="/chat" render={(props) => <Chat {...props} />} />
+          <Switch>
+            <Route exact path={"/"} component={LoginComponent} />
+            <Route exact path={"/home"} component={HomePage} />
+            <Route exact path={"/profile/my"} component={ProfilePage} />
+            <Route path={"/posts/questions/"} component={AllAnswersComponent} />
+            <Route path={"/profile/"} component={ProfilePage} />
+            <Route exact path="/chat" render={(props) => <Chat {...props} />} />
           <Route exact path="/ask" component={CreateQuestion}/>
-        </Switch>
+          </Switch>
         </BrowserRouter>
       </div>
     );

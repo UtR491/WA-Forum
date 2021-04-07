@@ -1,0 +1,52 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500&display=swap");
+
+.profile-image {
+  margin: 10px !important;
+  border-radius: 50%;
+  border: 1px solid #707070;
+  box-shadow: 0 0 0 1px #707070;
+}
+
+h2 {
+  font-family: "Poppins", sans-serif;
+  color: white;
+  font-weight: normal;
+}
+
+p {
+  font-family: "Poppins", sans-serif;
+  color: white;
+  font-size: smaller;
+}
+
+#follow {
+  color: white;
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-size: smaller;
+}
+
+#followNumber {
+  color: white;
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+}
+#codechef {
+  height: 40px !important;
+}
+
+#links {
+  margin-top: 15px;
+}
+
+#followedit {
+  font-size: 30px !important;
+  margin-top: 20px !important;
+  height: 10px;
+  font-family: "Poppins", sans-serif;
+}
+
+#sidedetails {
+  margin-bottom: 15px;
+}

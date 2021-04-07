@@ -23,6 +23,7 @@ public class UserDetailsImpl implements UserDetails {
     public UserDetailsImpl() {}
 
     public UserDetailsImpl(User user) {
+        this.id = user.getId();
         this.registrationNumber = user.getRegistrationNumber();
         this.contribution = user.getContribution();
         this.displayName = user.getDisplayName();

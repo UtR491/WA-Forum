@@ -1,23 +1,13 @@
 package com.waforum.backend.models;
 
-import com.waforum.backend.controllers.PostsController;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
-
-import java.util.List;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 public class LoginResponse {
 
     private AuthenticationResponse jwt;
-    private CollectionModel<EntityModel<Posts>> questions;
+    private Integer id;
 
-    public LoginResponse(String jwt, List<EntityModel<Posts>> questions) {
+    public LoginResponse(String jwt, Integer id) {
         this.jwt = new AuthenticationResponse(jwt);
-        this.questions = CollectionModel.of(questions,
-                linkTo(methodOn(PostsController.class).getQuestions(null)).withSelfRel());
+        this.id = id;
     }
 
     public AuthenticationResponse getJwt() {
@@ -28,11 +18,11 @@ public class LoginResponse {
         this.jwt = jwt;
     }
 
-    public CollectionModel<EntityModel<Posts>> getQuestions() {
-        return questions;
+    public Integer getId() {
+        return id;
     }
 
-    public void setQuestions(CollectionModel<EntityModel<Posts>> questions) {
-        this.questions = questions;
+    public void setId(Integer id) {
+        this.id = id;
     }
 }

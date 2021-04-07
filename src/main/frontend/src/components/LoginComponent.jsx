@@ -1,7 +1,7 @@
 import React from "react";
 //import { Redirect } from "react-router";
 import loginService from "../services/LoginService";
-import {Form} from 'react-bootstrap'
+import { Form } from "react-bootstrap";
 
 class LoginComponent extends React.Component {
   constructor(props) {
@@ -23,9 +23,12 @@ class LoginComponent extends React.Component {
   handleSubmit(event) {
     loginService.loginAndGetJwt(this.state).then((response) => {
       console.log(response);
-      console.log('JWT received ', response.data.jwt.jwt);
-      localStorage.setItem('jwt', response.data.jwt.jwt);
-      this.props.history.push("/home")
+      console.log("JWT received ", response.data.jwt.jwt);
+      localStorage.setItem("jwt", response.data.jwt.jwt);
+      localStorage.setItem("userId", response.data.id);
+      this.props.history.push("/home", {
+        getOwnerProfile: response.data._links.ownerId,
+      });
     });
   }
 
@@ -34,7 +37,7 @@ class LoginComponent extends React.Component {
       <div>
         <h1>Login to get answers from simps</h1>
         <Form>
-        <Form.Label>Registration number</Form.Label>
+          <Form.Label>Registration number</Form.Label>
           <Form.Control
             type="text"
             name="registrationNumber"
@@ -43,7 +46,11 @@ class LoginComponent extends React.Component {
           />
           <br />
           <Form.Label>Password</Form.Label>
-          <Form.Control type="password" name="password" onChange={this.handleInput} />
+          <Form.Control
+            type="password"
+            name="password"
+            onChange={this.handleInput}
+          />
           <br />
           <input
             type="button"

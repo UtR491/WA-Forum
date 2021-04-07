@@ -1,35 +1,55 @@
-#questioncard{
-    padding: 10px;
-    margin-bottom: 60px;
-    
-    
+#questioncard {
+  padding: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px !important;
 }
 
-#cardbody{
-    background-color: #56768F;
-    border: #707070;
-    border-radius: 15px;
-    ;
+#cardbody {
+  background-color: #56768f;
+  border: #707070;
+  border-radius: 15px;
 }
 
 .customCard {
-    background-color: #364153 !important;
-    box-shadow: none !important;
-    
+  background-color: #364153 !important;
+  box-shadow: none !important;
+}
+
+.asker {
+  margin-left: 10px;
+  border-radius: 50%;
+}
+
+#ansicon {
+  margin-right: 5px;
+}
+
+#tags {
+  font-size: 10px;
+}
+
+#quesSubTitle {
+  font-family: "Poppins", sans-serif;
+}
+.upvote:hover {
+    cursor: pointer;
+    color: yellowgreen;
+}
+
+.downvote:hover {
+    cursor: pointer;
+    color: pink;
 }
 
 
-
-.asker{
-    margin-left: 10px;
-    border-radius: 50%;
+#answercard{
+    padding: 10px;
+    margin-bottom: max(5px, 1%);
+    margin-top: max(5px, 1%);
 }
 
-#ansicon{
-    margin-right: 5px;
+.clickable-paragraph:hover {
+    text-decoration: underline;
+    cursor: pointer;
 }
 
-#tags{
-       
-    font-size:10px;
-}

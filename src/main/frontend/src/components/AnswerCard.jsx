@@ -1,23 +1,15 @@
 import React from "react";
-// import ReactDOM from 'react-dom';
-import "./questionstyle.css";
-//import questionService from '../services/QuestionService';
-import { Card, Row, Col, Container } from "react-bootstrap";
-
+import { Card, Col, Container, Row } from "react-bootstrap";
 import ChatBubbleOutlineOutlinedIcon from "@material-ui/icons/ChatBubbleOutlineOutlined";
-import Tags from "./Tags";
 import votingService from "../services/VotingService";
 
-class QuestionCard extends React.Component {
+class AnswerCard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       vote: "NOTHING",
       upvoteCount: 0,
     };
-    this.questionClickedShowAnswers = this.questionClickedShowAnswers.bind(
-      this
-    );
     this.upvoteClicked = this.upvoteClicked.bind(this);
     this.downvoteClicked = this.downvoteClicked.bind(this);
   }
@@ -72,14 +64,6 @@ class QuestionCard extends React.Component {
         })
       );
     }
-  }
-
-  questionClickedShowAnswers(event) {
-    this.props.history.push("/posts/questions/" + this.props.id + "/answers", {
-      getAnswers: this.props.links.answers,
-      getAskerProfile: this.props.links.ownerProfile,
-      ownerUserId: this.props.ownerUserId,
-    });
   }
 
   componentDidMount() {
@@ -141,7 +125,6 @@ class QuestionCard extends React.Component {
                       {" "}
                       <Card.Subtitle>
                         <p
-                          className="clickable-paragraph"
                           onClick={this.questionClickedShowAnswers}
                           color="white"
                         >
@@ -150,8 +133,6 @@ class QuestionCard extends React.Component {
                       </Card.Subtitle>
                     </Col>
                   </Row>
-                  <Tags tags={this.props.tags} />
-
                   <hr />
                   <Row>
                     <Col md="auto">
@@ -183,6 +164,4 @@ class QuestionCard extends React.Component {
   }
 }
 
-// ReactDOM.render(<App/>, document.getElementById("root"));
-
-export default QuestionCard;
+export default AnswerCard;
