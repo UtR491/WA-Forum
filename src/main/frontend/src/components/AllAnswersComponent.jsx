@@ -52,9 +52,12 @@ class AllAnswersComponent extends React.Component {
             <Col></Col>
             <Col xs={7}>
               <div>
-                <h3 style={{ color: "white" }}>
-                  <strong>{this.state.answers.data.question.body}</strong>
-                </h3>
+                <div
+                  style={{ color: "white" }}
+                  dangerouslySetInnerHTML={{
+                    __html: this.state.answers.data.question.body,
+                  }}
+                ></div>
                 <p style={{ color: "white" }}>
                   {" "}
                   - Asked By{""}

@@ -57,6 +57,8 @@ public class CommentsController {
         Integer userId = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
         comment.setUserId(userId);
         comment.setPostId(aid);
+        Integer userId=userRepository.findByRegistrationNumber(Integer.parseInt(jwtUtil.extractRegistrationNumber((String) SecurityContextHolder.getContext().getAuthentication().getCredentials()))).getId();
+        comment.setUserId(userId);
         EntityModel<Comments> commentsEntityModel=commentsAssembler.toModel(commentsRepository.save(comment));
         return ResponseEntity.created(commentsEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(commentsEntityModel);
     }
