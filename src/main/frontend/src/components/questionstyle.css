@@ -48,8 +48,13 @@
     margin-top: max(5px, 1%);
 }
 
-.clickable-paragraph:hover {
+/* .clickable-paragraph:hover {
     text-decoration: underline;
     cursor: pointer;
+} */
+
+#cardbody:hover{
+  cursor: pointer;
+  background-color: #4285f4;
 }
 

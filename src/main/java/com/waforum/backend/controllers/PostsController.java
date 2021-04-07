@@ -137,9 +137,15 @@ public class PostsController {
 
     @PostMapping("/posts/create/questions")
     public ResponseEntity<EntityModel<Posts>> askQuestion(@RequestBody Posts post) {
-        System.out.println("Hellooooooooooo");
-        Integer userId=userRepository.findByRegistrationNumber(Integer.parseInt(jwtUtil.extractRegistrationNumber((String) SecurityContextHolder.getContext().getAuthentication().getCredentials()))).getId();
-        post.setOwnerUserId(userId);
+        System.out.println(post);
+        UserDetailsImpl user=((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        post.setOwnerUserId(user.getId());
+        post.setPostTypeId(1);
+        post.setOwnerDisplayName(user.getDisplayName());
+        post.setCreationDate(new Date());
+        post.setLastActivityDate(new Date());
+        post.setUpvoteCount(0);
+        post.setCommentCount(0);
         EntityModel<Posts> postEntityModel = postsAssembler.toModel(postsRepository.save(post));
         handleQuestionTags(post);
         return ResponseEntity
@@ -149,9 +155,14 @@ public class PostsController {
 
     @PostMapping("/posts/create/questions/{id}/answers")
     public ResponseEntity<EntityModel<Posts>> answerQuestion(@PathVariable Integer id, @RequestBody Posts posts) {
-        Integer userId=userRepository.findByRegistrationNumber(Integer.parseInt(jwtUtil.extractRegistrationNumber((String) SecurityContextHolder.getContext().getAuthentication().getCredentials()))).getId();
-        posts.setParentId(id);
-        posts.setOwnerUserId(userId);
+        UserDetailsImpl user=((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        posts.setOwnerUserId(user.getId());
+        posts.setPostTypeId(1);
+        posts.setOwnerDisplayName(user.getDisplayName());
+        posts.setCreationDate(new Date());
+        posts.setLastActivityDate(new Date());
+        posts.setUpvoteCount(0);
+        posts.setCommentCount(0);
         EntityModel<Posts> postsEntityModel = postsAssembler.toModel(postsRepository.save(posts));
         return ResponseEntity
                 .created(postsEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())

@@ -3,6 +3,7 @@ import { render } from 'react-dom';
 import {EditorState} from "draft-js";
 import {Editor} from "react-draft-wysiwyg";
 import './textEditor.css'
+import { stateToHTML } from "draft-js-export-html";
 class EditorContainer extends Component{
   constructor(props){
     super(props);
@@ -17,6 +18,7 @@ class EditorContainer extends Component{
     this.setState({
       editorState,
     });
+    this.props.onChange(stateToHTML(this.state.editorState.getCurrentContent()));
   };
 
   render(){

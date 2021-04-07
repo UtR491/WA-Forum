@@ -7,11 +7,15 @@ class CreateQuestionSerivce{
     }
     createQuestion(posts){
         console.log(posts)
-        return axios.post(POST_QUESTION,{
-            headers : {
-                Authorization: "Bearer " + localStorage.getItem('jwt')
-            }
-        },JSON.stringify(posts))
+        return axios({
+            url: POST_QUESTION,
+            data: JSON.stringify(posts),
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer " + localStorage.getItem("jwt")
+            },
+          });
     }
 }
 export default new CreateQuestionSerivce();
