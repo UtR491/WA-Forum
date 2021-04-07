@@ -7,11 +7,14 @@ import com.waforum.backend.models.Comments;
 import com.waforum.backend.models.SingleAnswerAllCommentsWrapper;
 import com.waforum.backend.repository.CommentsRepository;
 import com.waforum.backend.repository.PostsRepository;
+import com.waforum.backend.repository.UserRepository;
+import com.waforum.backend.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +34,10 @@ public class CommentsController {
     PostsRepository postsRepository;
     @Autowired
     SingleAnswerAllCommentsWrapperAssembler singleAnswerAllCommentsWrapperAssembler;
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    JwtUtil jwtUtil;
 
     @GetMapping("/posts/questions/{qid}/answers/{aid}/comments")
     public EntityModel<SingleAnswerAllCommentsWrapper> getCommentsByAnswerId(@PathVariable Integer qid,@PathVariable Integer aid){
@@ -45,6 +52,8 @@ public class CommentsController {
     @PostMapping("/comments/create/{aid}")
     public ResponseEntity<EntityModel<Comments>> commentOnAnswer(@PathVariable Integer aid, @RequestBody Comments comment){
         comment.setPostId(aid);
+        Integer userId=userRepository.findByRegistrationNumber(Integer.parseInt(jwtUtil.extractRegistrationNumber((String) SecurityContextHolder.getContext().getAuthentication().getCredentials()))).getId();
+        comment.setUserId(userId);
         EntityModel<Comments> commentsEntityModel=commentsAssembler.toModel(commentsRepository.save(comment));
         return ResponseEntity.created(commentsEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(commentsEntityModel);
     }

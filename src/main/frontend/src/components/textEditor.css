@@ -1,0 +1,14 @@
+.App {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin: 5em;
+    background-color: #ffffff;
+  }
+  
+  .editor {
+    margin-right: 10em;
+  }
+  
+  .ck-editor__editable_inline {
+    min-height: 500px;
+  }

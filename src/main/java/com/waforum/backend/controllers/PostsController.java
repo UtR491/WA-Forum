@@ -6,15 +6,8 @@ import com.waforum.backend.assemblers.SingleQuestionAnswerWrapperAssembler;
 import com.waforum.backend.exceptions.AnswerNotForQuestionException;
 import com.waforum.backend.exceptions.AnswerNotFoundException;
 import com.waforum.backend.exceptions.QuestionNotFoundException;
-import com.waforum.backend.models.AllTags;
-import com.waforum.backend.models.Posts;
-import com.waforum.backend.models.QuestionWithAllAnswerWrapper;
-import com.waforum.backend.models.SingleQuestionAnswerWrapper;
-import com.waforum.backend.models.Tags;
-import com.waforum.backend.repository.AllTagsRepository;
-import com.waforum.backend.repository.PostsRepository;
-import com.waforum.backend.repository.TagsRepository;
-import com.waforum.backend.repository.VotesRepository;
+import com.waforum.backend.models.*;
+import com.waforum.backend.repository.*;
 import com.waforum.backend.util.JwtUtil;
 import com.waforum.backend.util.PostsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +16,9 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -61,6 +56,9 @@ public class PostsController {
 
     @Autowired
     TagsRepository tagsRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     @GetMapping("/posts/questions")
     public CollectionModel<EntityModel<Posts>> getQuestions(@RequestParam(required = false) List<String> tags) {
@@ -140,6 +138,8 @@ public class PostsController {
     @PostMapping("/posts/create/questions")
     public ResponseEntity<EntityModel<Posts>> askQuestion(@RequestBody Posts post) {
         System.out.println("Hellooooooooooo");
+        Integer userId=userRepository.findByRegistrationNumber(Integer.parseInt(jwtUtil.extractRegistrationNumber((String) SecurityContextHolder.getContext().getAuthentication().getCredentials()))).getId();
+        post.setOwnerUserId(userId);
         EntityModel<Posts> postEntityModel = postsAssembler.toModel(postsRepository.save(post));
         handleQuestionTags(post);
         return ResponseEntity
@@ -149,7 +149,9 @@ public class PostsController {
 
     @PostMapping("/posts/create/questions/{id}/answers")
     public ResponseEntity<EntityModel<Posts>> answerQuestion(@PathVariable Integer id, @RequestBody Posts posts) {
+        Integer userId=userRepository.findByRegistrationNumber(Integer.parseInt(jwtUtil.extractRegistrationNumber((String) SecurityContextHolder.getContext().getAuthentication().getCredentials()))).getId();
         posts.setParentId(id);
+        posts.setOwnerUserId(userId);
         EntityModel<Posts> postsEntityModel = postsAssembler.toModel(postsRepository.save(posts));
         return ResponseEntity
                 .created(postsEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())

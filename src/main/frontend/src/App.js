@@ -5,6 +5,9 @@ import './App.css';
 import LoginComponent from './components/LoginComponent';
 //import QuestionComponent from './components/QuestionComponent.jsx';
 import HomePage from './components/HomePage';
+import CreateQuestion from './components/CreateQuestion';
+import Chat from './components/Chat/chat/Chat';
+import TextEditor from './components/TextEditor';
 
 class App extends React.Component {
 
@@ -29,6 +32,8 @@ class App extends React.Component {
         <Switch>
           <Route exact path={"/"} component={LoginComponent}/>
           <Route exact path={"/home"} component={HomePage}/>
+          <Route exact path="/chat" render={(props) => <Chat {...props} />} />
+          <Route exact path="/ask" component={CreateQuestion}/>
         </Switch>
         </BrowserRouter>
       </div>
