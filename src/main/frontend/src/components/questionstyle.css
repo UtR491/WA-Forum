@@ -49,9 +49,9 @@
   margin-top: max(5px, 1%);
 }
 
-.clickable-paragraph:hover {
-  text-decoration: underline;
+#cardbody:hover {
   cursor: pointer;
+  background-color: #4285f4;
 }
 
 #upvoteCount {

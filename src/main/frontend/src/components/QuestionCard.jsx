@@ -99,7 +99,8 @@ class QuestionCard extends React.Component {
         <Card className="customCard" text={"white"} style={{ height: "10rem" }}>
           {/* <Card.Img variant="top" src="holder.js/100px180" /> */}
           <div className="shadow-box-example z-depth-1-half">
-            <Card.Body id="cardbody">
+            <Card.Body id="cardbody"
+             onClick={this.questionClickedShowAnswers}>
               <Row>
                 <Col className="votingColumn" xs={1}>
                   <Row>
@@ -184,13 +185,14 @@ class QuestionCard extends React.Component {
                     <Col>
                       {" "}
                       <Card.Subtitle>
-                        <p
+                        <div
+                          dangerouslySetInnerHTML={{ __html: this.props.body }}
                           className="clickable-paragraph"
                           onClick={this.questionClickedShowAnswers}
                           color="white"
                         >
-                          {this.props.body}
-                        </p>
+                          {/* {this.props.body} */}
+                        </div>
                       </Card.Subtitle>
                     </Col>
                   </Row>
