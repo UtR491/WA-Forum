@@ -7,6 +7,13 @@ body {
   border-bottom: 1px solid #707070;
 }
 
+#brandText {
+  cursor: pointer;
+}
+#brandText:hover {
+  color: #4285f4 !important;
+}
+
 form {
   text-align: left;
   margin-left: auto;

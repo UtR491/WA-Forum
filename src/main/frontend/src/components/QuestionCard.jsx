@@ -8,6 +8,10 @@ import ChatBubbleOutlineOutlinedIcon from "@material-ui/icons/ChatBubbleOutlineO
 import Tags from "./Tags";
 import votingService from "../services/VotingService";
 
+import { Icon, InlineIcon } from "@iconify/react";
+import bxUpvote from "@iconify-icons/bx/bx-upvote";
+import bxDownvote from "@iconify-icons/bx/bx-downvote";
+
 class QuestionCard extends React.Component {
   constructor(props) {
     super(props);
@@ -98,35 +102,75 @@ class QuestionCard extends React.Component {
             <Card.Body id="cardbody">
               <Row>
                 <Col className="votingColumn" xs={1}>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill={
-                      this.state.vote === "UPVOTE" ? "green" : "currentColor"
-                    }
-                    className="bi bi-arrow-up-circle-fill upvote"
-                    viewBox="0 0 16 16"
-                    onClick={this.upvoteClicked}
-                  >
-                    <path d="M16 8A8 8 0 1 0 0 8a8 8 0 0 0 16 0zm-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V11.5z" />
-                  </svg>
-                  <br />
-                  <strong>{this.state.upvoteCount}</strong>
-                  <br />
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill={
-                      this.state.vote === "DOWNVOTE" ? "red" : "currentColor"
-                    }
-                    className="bi bi-arrow-down-circle-fill downvote"
-                    viewBox="0 0 16 16"
-                    onClick={this.downvoteClicked}
-                  >
-                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z" />
-                  </svg>
+                  <Row>
+                    <Col>
+                      <Icon
+                        icon={bxUpvote}
+                        color={
+                          this.state.vote === "UPVOTE"
+                            ? "green"
+                            : "currentColor"
+                        }
+                        height="20"
+                        width="20"
+                        className="bi bi-arrow-up-circle-fill upvote"
+                        onClick={this.upvoteClicked}
+                      />
+
+                      {/* <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill={
+                          this.state.vote === "UPVOTE"
+                            ? "green"
+                            : "currentColor"
+                        }
+                        className="bi bi-arrow-up-circle-fill upvote"
+                        viewBox="0 0 16 16"
+                        onClick={this.upvoteClicked}
+                      >
+                        <path d="M16 8A8 8 0 1 0 0 8a8 8 0 0 0 16 0zm-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V11.5z" />
+                      </svg> */}
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <text id="upvoteCount">{this.state.upvoteCount}</text>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <Icon
+                        icon={bxDownvote}
+                        color={
+                          this.state.vote === "DOWNVOTE"
+                            ? "red"
+                            : "currentColor"
+                        }
+                        height="20"
+                        width="20"
+                        className="bi bi-arrow-down-circle-fill downvote"
+                        onClick={this.downvoteClicked}
+                      />
+
+                      {/* <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill={
+                          this.state.vote === "DOWNVOTE"
+                            ? "red"
+                            : "currentColor"
+                        }
+                        className="bi bi-arrow-down-circle-fill downvote"
+                        viewBox="0 0 16 16"
+                        onClick={this.downvoteClicked}
+                      >
+                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z" />
+                      </svg> */}
+                    </Col>
+                  </Row>
                 </Col>
                 <Col>
                   <Row
@@ -168,7 +212,10 @@ class QuestionCard extends React.Component {
                     </Col>
 
                     <Col>5 Days ago</Col>
-                    <Col>
+                    <Col
+                      onClick={this.questionClickedShowAnswers}
+                      id="showansicon"
+                    >
                       <ChatBubbleOutlineOutlinedIcon />
                       50+
                     </Col>
