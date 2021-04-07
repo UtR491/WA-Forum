@@ -16,7 +16,7 @@ public class SingleAnswerAllCommentsWrapperAssembler implements RepresentationMo
     @Override
     public EntityModel<SingleAnswerAllCommentsWrapper> toModel(SingleAnswerAllCommentsWrapper entity) {
         return EntityModel.of(entity,
-                linkTo(methodOn(CommentsController.class).getCommentsByAnswerId(entity.getAnswer().getParentId(),entity.getAnswer().getId())).withSelfRel(),
+                linkTo(methodOn(CommentsController.class).getCommentsByAnswerId(entity.getAnswer().getId())).withSelfRel(),
                 linkTo(methodOn(PostsController.class).getAnswerByIdByQuestionId(postsRepository.findOneByParentId(entity.getAnswer().getParentId()).getId(),
                         entity.getAnswer().getParentId())).withRel("answers"),
                 linkTo(methodOn(UserProfileController.class).getProfileInfoById(entity.getAnswer().getOwnerUserId())).withRel("answeredBy"));

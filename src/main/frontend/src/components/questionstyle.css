@@ -53,3 +53,7 @@
     cursor: pointer;
 }
 
+.commentButton:hover{
+  cursor: pointer;
+  color: #364153;
+}

@@ -129,12 +129,17 @@ class ProfilePage extends React.Component {
             <Col xs={8} id="col2">
               {this.state.questions._embedded.postses.map((question) => (
                 <QuestionCard
-                  key={question.id}
+                  id={question.id}
                   body={question.body}
+                  ownerUserId={question.ownerUserId}
                   ownerDisplayName={question.ownerDisplayName}
                   upvoteCount={question.upvoteCount}
                   creationDate={question.creationDate}
                   tags={question.tags}
+                  links={question._links}
+                  currentHasVoted={question.currentHasVoted}
+                  previousPageLink={this.state.questions._links.self.href}
+                  history={this.props.history}
                 />
               ))}
             </Col>

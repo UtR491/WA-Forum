@@ -16,6 +16,6 @@ public class SingleQuestionAnswerWrapperAssembler implements RepresentationModel
                 linkTo(methodOn(UserProfileController.class).getProfileInfoById(entity.getQuestion().getOwnerUserId())).withRel("answeredBy"),
                 linkTo(methodOn(UserProfileController.class).getProfileInfoById(entity.getAnswer().getOwnerUserId())).withRel("askedBy"),
                 linkTo(methodOn(PostsController.class).getQuestions(null)).withRel("home"),
-                linkTo(methodOn(CommentsController.class).getCommentsByAnswerId(entity.getQuestion().getId(),entity.getAnswer().getId())).withRel("comments"));
+                linkTo(methodOn(CommentsController.class).getCommentsByAnswerId(entity.getAnswer().getId())).withRel("comments"));
     }
 }

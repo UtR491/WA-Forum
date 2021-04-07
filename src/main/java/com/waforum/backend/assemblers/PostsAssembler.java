@@ -1,5 +1,6 @@
 package com.waforum.backend.assemblers;
 
+import com.waforum.backend.controllers.CommentsController;
 import com.waforum.backend.controllers.PostsController;
 import com.waforum.backend.controllers.UserProfileController;
 import com.waforum.backend.controllers.VotesController;
@@ -24,7 +25,8 @@ public class PostsAssembler implements RepresentationModelAssembler<Posts, Entit
                     linkTo(methodOn(UserProfileController.class).getProfileInfoById(entity.getOwnerUserId())).withRel("ownerProfile"));
         } else {
             post.add(linkTo(methodOn(PostsController.class).getAnswerByIdByQuestionId(entity.getParentId(), entity.getId())).withSelfRel(),
-                    linkTo(methodOn(UserProfileController.class).getProfileInfoById(entity.getOwnerUserId())).withRel("ownerProfile"));
+                    linkTo(methodOn(UserProfileController.class).getProfileInfoById(entity.getOwnerUserId())).withRel("ownerProfile"),
+                    linkTo(methodOn(CommentsController.class).getCommentsByAnswerId(entity.getId())).withRel("getComments"));
         }
         return post;
     }

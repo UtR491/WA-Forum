@@ -1,7 +1,8 @@
 import React from "react";
-import { Card, Col, Container, Row } from "react-bootstrap";
-import ChatBubbleOutlineOutlinedIcon from "@material-ui/icons/ChatBubbleOutlineOutlined";
+import { Card, Col, ListGroup, Row } from "react-bootstrap";
 import votingService from "../services/VotingService";
+import commentsService from "../services/CommentsService";
+import './questionstyle.css'
 
 class AnswerCard extends React.Component {
   constructor(props) {
@@ -9,9 +10,11 @@ class AnswerCard extends React.Component {
     this.state = {
       vote: "NOTHING",
       upvoteCount: 0,
+      comments : [],
     };
     this.upvoteClicked = this.upvoteClicked.bind(this);
     this.downvoteClicked = this.downvoteClicked.bind(this);
+    this.commentClicked = this.commentClicked.bind(this);
   }
 
   upvoteClicked() {
@@ -66,11 +69,21 @@ class AnswerCard extends React.Component {
     }
   }
 
+  commentClicked() {
+    console.log("comment clicked");
+    console.log("the link to get comments is ", this.props.links.getComments.href);
+    commentsService.getCommentsForAnswer(this.props.links.getComments.href).then((response) => {
+      console.log("The comments are ", response);
+    });
+  }
+
   componentDidMount() {
     this.setState({
       upvoteCount: this.props.upvoteCount,
       vote: this.props.currentHasVoted,
     });
+    console.log("current has voted = ", this.props.currentHasVoted);
+    console.log("current has voted = ", this.state.vote);
   }
 
   render() {
@@ -80,6 +93,7 @@ class AnswerCard extends React.Component {
           {/* <Card.Img variant="top" src="holder.js/100px180" /> */}
           <div className="shadow-box-example z-depth-1-half">
             <Card.Body id="cardbody">
+              <Col>
               <Row>
                 <Col className="votingColumn" xs={1}>
                   <svg
@@ -149,13 +163,28 @@ class AnswerCard extends React.Component {
                     </Col>
 
                     <Col>5 Days ago</Col>
-                    <Col>
-                      <ChatBubbleOutlineOutlinedIcon />
-                      50+
+                    <Col className="commentButton" onClick={this.commentClicked}>
+                      {" " + this.props.commentCount + " "}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        class="bi bi-chat-left-text"
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+                        <path d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6zm0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z" />
+                      </svg>
                     </Col>
                   </Row>
                 </Col>
               </Row>
+              <Row>
+                <ListGroup>
+                </ListGroup>
+              </Row>
+              </Col>
             </Card.Body>
           </div>
         </Card>
