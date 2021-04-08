@@ -3,6 +3,9 @@ import { Button } from "antd";
 import React, { Component } from "react";
 import CreateQuestionService from "../services/CreateQuestionService";
 import TextEditor from "./TextEditor";
+import "./CreateQuestion.css";
+import { MDBCol } from "mdbreact";
+
 class CreateQuestion extends Component {
   constructor(props) {
     super(props);
@@ -18,16 +21,18 @@ class CreateQuestion extends Component {
   }
   askQuestion(event) {
     console.log(this.state);
-    if (this.state.body.length !==0)
-      CreateQuestionService.createQuestion(this.state).then((response) =>{
+    if (this.state.body.length !== 0)
+      CreateQuestionService.createQuestion(this.state).then((response) => {
         this.props.history.push("/home");
       });
   }
   render() {
     return (
       <div>
-        <Button value="submit" text="submit" onClick={this.askQuestion} />
-        <TextEditor onChange={this.setBody} />
+        <TextEditor onEditorStateChange={this.setBody} />
+        <Button className="submit" onClick={this.askQuestion}>
+          <span>Submit</span>
+        </Button>
       </div>
     );
   }
