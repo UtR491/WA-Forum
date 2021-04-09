@@ -3,13 +3,25 @@ import axios from 'axios'
 class CommentsService {
     constructor() {
         this.getCommentsForAnswer = this.getCommentsForAnswer.bind(this);
+        this.sendCommentToAnswer = this.sendCommentToAnswer.bind(this);
     }
     getCommentsForAnswer(link) {
-        axios({
+        return axios({
             url : link,
-            method : "POST",
+            method : "GET",
             headers: {
-                Authorization : "Bearer " + localStorage.getItem('jwt')
+                Authorization : "Bearer " + localStorage.getItem('jwt'),
+            }
+        })
+    }
+    sendCommentToAnswer(comment, link) {
+        return axios({
+            url: link,
+            method: "POST",
+            data: JSON.stringify(comment),
+            headers: {
+                Authorization : "Bearer " + localStorage.getItem('jwt'),
+                "Content-Type": "application/json",
             }
         })
     }

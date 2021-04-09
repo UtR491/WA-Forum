@@ -1,4 +1,5 @@
 import React from "react";
+import  { Redirect } from 'react-router-dom'
 // import ReactDOM from 'react-dom';
 import "./homestyle.css";
 import QuestionCard from "./QuestionCard";
@@ -49,6 +50,18 @@ class HomePage extends React.Component {
   }
 
   render() {
+    
+    console.log("The jwt is ", localStorage.getItem("jwt"));
+    if(localStorage.getItem("jwt") === null) {
+      console.log("so it is undefined");
+      return <Redirect to={{
+        pathname : "/",
+        state: {
+          redirected : true
+        }
+      }}/>;
+    }
+
     return (
       <div className="App">
         <NavbarComponent history={this.props.history} isHome={true} />

@@ -2,6 +2,7 @@ import React from "react";
 import { Col, Row } from "react-bootstrap";
 import allAnswersService from "../services/AllAnswersService";
 import NavbarComponent from "./NavbarComponent";
+import {Redirect} from "react-router-dom"
 import AnswerCard from "./AnswerCard";
 import "./AnswerStyle.css";
 
@@ -27,10 +28,6 @@ class AllAnswersComponent extends React.Component {
   }
 
   componentDidMount() {
-    console.log(
-      "The link to get answers is ",
-      this.props.location.state.getAnswers.href
-    );
     allAnswersService
       .getAllAnswersForAQuestion(this.props.location.state.getAnswers.href)
       .then((response) => {
@@ -41,12 +38,22 @@ class AllAnswersComponent extends React.Component {
 
   render() {
     console.log("Inside render of all answers component");
+    if(localStorage.getItem("jwt") === null) {
+      console.log("so it is undefined");
+      return <Redirect to={{
+        pathname : "/",
+        state: {
+          redirected : true
+        }
+      }}/>;
+    }
+
     if (this.state.answers === undefined || this.state.answers.length === 0) {
-      return <h1>There are no answers for this question.</h1>;
+      return <h1><strong>There are no answers for this question.</strong></h1>;
     } else {
       return (
         <div>
-          <NavbarComponent />
+          <NavbarComponent history={this.props.history}/>
           <br />
           <Row>
             <Col></Col>
@@ -73,8 +80,12 @@ class AllAnswersComponent extends React.Component {
                       id={answer.id}
                       upvoteCount={answer.upvoteCount}
                       currentHasVoted={answer.currentHasVoted}
+                      ownerDisplayName={answer.ownerDisplayName}
                       commentCount={answer.commentCount}
+                      ownerUserId={answer.ownerUserId}
                       links={answer._links}
+                      creationDate={answer.creationDate}
+                      history={this.props.history}
                     />
                   ))}
                 </div>

@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,11 +55,11 @@ public class CommentsController {
     @PostMapping("/comments/create/{aid}")
     public ResponseEntity<EntityModel<Comments>> commentOnAnswer(@PathVariable Integer aid, @RequestBody Comments comment){
         System.out.println("Timepass " + SecurityContextHolder.getContext().getAuthentication());
-        Integer userId = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-        comment.setUserId(userId);
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        comment.setUserId(userDetails.getId());
+        comment.setUserDisplayName(userDetails.getDisplayName());
         comment.setPostId(aid);
-        Integer userId=userRepository.findByRegistrationNumber(Integer.parseInt(jwtUtil.extractRegistrationNumber((String) SecurityContextHolder.getContext().getAuthentication().getCredentials()))).getId();
-        comment.setUserId(userId);
+        comment.setCreationDate(new Date());
         EntityModel<Comments> commentsEntityModel=commentsAssembler.toModel(commentsRepository.save(comment));
         return ResponseEntity.created(commentsEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(commentsEntityModel);
     }

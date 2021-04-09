@@ -18,7 +18,6 @@ public class CommentsAssembler implements RepresentationModelAssembler<Comments,
     @Override
     public EntityModel<Comments> toModel(Comments comments) {
         System.out.println("The comment " + comments);
-        System.out.println("postrep.findonebyparentid = " + postsRepository.findOneByParentId(comments.getPostId()));
         return EntityModel.of(comments,
                 linkTo(methodOn(PostsController.class).getQuestions(null)).withRel("home"),
                 linkTo(methodOn(CommentsController.class).getCommentsByAnswerId(comments.getPostId())).withSelfRel(),

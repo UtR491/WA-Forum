@@ -1,7 +1,5 @@
 #questioncard {
   padding: 10px;
-  margin-top: 20px;
-  margin-bottom: 20px !important;
 }
 
 #cardbody {
@@ -44,8 +42,6 @@
 
 #answercard{
     padding: 10px;
-    margin-bottom: max(5px, 1%);
-    margin-top: max(5px, 1%);
 }
 
 /* .clickable-paragraph:hover {
@@ -55,10 +51,18 @@
 
 #cardbody:hover{
   cursor: pointer;
+}
+
+#cardbody:active{
   background-color: #4285f4;
 }
 
 .commentButton:hover{
   cursor: pointer;
   color: #364153;
+}
+
+.answererName:hover{
+  cursor: pointer;
+  text-decoration: underline;
 }

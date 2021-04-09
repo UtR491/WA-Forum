@@ -7,7 +7,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-css-only/css/bootstrap.min.css";
 import "mdbreact/dist/css/mdb.css";
 import { Row, Container, Col, Button } from "react-bootstrap";
-
+import {Redirect} from "react-router-dom"
 import questionService from "../services/QuestionService";
 import SideNavPage from "./SideNavigation";
 
@@ -44,6 +44,15 @@ class ProfilePage extends React.Component {
   }
 
   render() {
+    if(localStorage.getItem("jwt") === null) {
+      console.log("so it is undefined");
+      return <Redirect to={{
+        pathname : "/",
+        state: {
+          redirected : true
+        }
+      }}/>;
+    }
     return (
       <div className="App">
         <NavbarComponent history={this.props.history} />

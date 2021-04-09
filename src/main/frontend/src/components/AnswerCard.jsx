@@ -1,8 +1,17 @@
 import React from "react";
-import { Card, Col, ListGroup, Row } from "react-bootstrap";
+import {
+  Accordion,
+  Button,
+  Card,
+  Col,
+  Container,
+  Row,
+  Form,
+} from "react-bootstrap";
+import ChatBubbleOutlineOutlinedIcon from "@material-ui/icons/ChatBubbleOutlineOutlined";
 import votingService from "../services/VotingService";
 import commentsService from "../services/CommentsService";
-import './questionstyle.css'
+import profileService from "../services/ProfileService";
 
 class AnswerCard extends React.Component {
   constructor(props) {
@@ -10,11 +19,15 @@ class AnswerCard extends React.Component {
     this.state = {
       vote: "NOTHING",
       upvoteCount: 0,
-      comments : [],
+      comments: [],
+      typedComment : "",
     };
     this.upvoteClicked = this.upvoteClicked.bind(this);
     this.downvoteClicked = this.downvoteClicked.bind(this);
     this.commentClicked = this.commentClicked.bind(this);
+    this.visitOwner = this.visitOwner.bind(this);
+    this.sendingComment = this.sendingComment.bind(this);
+    this.commentInput = this.commentInput.bind(this);
   }
 
   upvoteClicked() {
@@ -70,11 +83,45 @@ class AnswerCard extends React.Component {
   }
 
   commentClicked() {
-    console.log("comment clicked");
-    console.log("the link to get comments is ", this.props.links.getComments.href);
-    commentsService.getCommentsForAnswer(this.props.links.getComments.href).then((response) => {
-      console.log("The comments are ", response);
-    });
+    if (this.state.comments === undefined || this.state.comments.length === 0) {
+      commentsService
+        .getCommentsForAnswer(this.props.links.getComments.href)
+        .then((response) => {
+          console.log(response);
+          this.setState({
+            comments: response.data.comments._embedded.commentses,
+          });
+        });
+    } else {
+      this.setState({
+        comments: [],
+      });
+    }
+  }
+
+  visitOwner() {
+    console.log("answerer name clicked");
+    this.props.history.push("/profile/" + this.props.ownerUserId);
+  }
+
+  sendingComment(event) {
+    console.log("The event is event ", event)
+    console.log("sending comment written as ", this.state.typedComment);
+    if(this.state.typedComment.length > 0) {
+      commentsService.sendCommentToAnswer({body : this.state.typedComment}, this.props.links.postComment.href).then((response) => {
+        console.log(response);
+        if(response.status === 201) {
+          console.log("This is the history object ", this.props.history);
+          this.props.history.go(0);
+        }
+      })
+    }
+  }
+
+  commentInput(event) {
+    this.setState({
+      typedComment: event.target.value
+    })
   }
 
   componentDidMount() {
@@ -82,18 +129,14 @@ class AnswerCard extends React.Component {
       upvoteCount: this.props.upvoteCount,
       vote: this.props.currentHasVoted,
     });
-    console.log("current has voted = ", this.props.currentHasVoted);
-    console.log("current has voted = ", this.state.vote);
   }
 
   render() {
     return (
       <div id="questioncard">
-        <Card className="customCard" text={"white"} style={{ height: "10rem" }}>
-          {/* <Card.Img variant="top" src="holder.js/100px180" /> */}
+        <Card className="customCard" text={"white"}>
           <div className="shadow-box-example z-depth-1-half">
             <Card.Body id="cardbody">
-              <Col>
               <Row>
                 <Col className="votingColumn" xs={1}>
                   <svg
@@ -147,45 +190,106 @@ class AnswerCard extends React.Component {
                       </Card.Subtitle>
                     </Col>
                   </Row>
-                  <hr />
-                  <Row>
-                    <Col md="auto">
-                      <div>
-                        <img
-                          className="asker"
-                          src="https://upload.wikimedia.org/wikipedia/en/a/a1/NafSadh_Profile.jpg"
-                          alt="user pic"
-                          width="25"
-                          height="25"
-                        />
-                        <text> Posted by {this.props.ownerDisplayName}</text>
-                      </div>
-                    </Col>
-
-                    <Col>5 Days ago</Col>
-                    <Col className="commentButton" onClick={this.commentClicked}>
-                      {" " + this.props.commentCount + " "}
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        class="bi bi-chat-left-text"
-                        viewBox="0 0 16 16"
-                      >
-                        <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
-                        <path d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6zm0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z" />
-                      </svg>
-                    </Col>
-                  </Row>
                 </Col>
               </Row>
-              <Row>
-                <ListGroup>
-                </ListGroup>
-              </Row>
-              </Col>
             </Card.Body>
+            <Card.Footer style={{ padding: "0px" }}>
+              <Accordion style={{ padding: "0px" }}>
+                <Card style={{ padding: "0px" }}>
+                  <Card.Header style={{ padding: "0px" }}>
+                    <Row>
+                      <Col xs={2}>
+                        <Accordion.Toggle
+                          as={Button}
+                          variant="link"
+                          eventKey="0"
+                          style={{ padding: "1%" }}
+                        >
+                          <text>
+                            <strong>
+                              {" " + this.props.commentCount + " "}
+                            </strong>
+                          </text>
+                          <ChatBubbleOutlineOutlinedIcon
+                            onClick={this.commentClicked}
+                          />
+                        </Accordion.Toggle>
+                      </Col>
+                      <Col>
+                        <div style={{ padding: "3px" }}>
+                          <img
+                            className="asker"
+                            src="https://upload.wikimedia.org/wikipedia/en/a/a1/NafSadh_Profile.jpg"
+                            alt="user pic"
+                            width="25"
+                            height="25"
+                          />
+                          <text style={{ color: "black" }}>
+                            {" "}
+                            Answered by -{" "}
+                            <strong
+                              className="answererName"
+                              onClick={this.visitOwner}
+                            >
+                              {this.props.ownerDisplayName}
+                            </strong>
+                          </text>
+                        </div>
+                      </Col>
+                      <Col
+                        padding="3px"
+                        style={{ color: "black", padding: "3px" }}
+                      >
+                        Answered On - {this.props.creationDate.substring(0, 10)}
+                      </Col>
+                    </Row>
+                  </Card.Header>
+                  {this.state.comments.map((comment) => (
+                    <Accordion.Collapse eventKey="0">
+                      <Card.Body style={{ color: "black" }}>
+                        {comment.body}
+                      </Card.Body>
+                    </Accordion.Collapse>
+                  ))}
+                  <Card.Footer style={{ padding: "0px" }}>
+                    <Row style={{padding : "0px"}}>
+                      <Col>
+                        <Form.Group
+                          controlId="exampleForm.ControlTextarea1"
+                          style={{ margin: "0px" }}
+                        >
+                          <Form.Control
+                            type="text"
+                            placeholder="Your comment here..."
+                            onChange={this.commentInput}
+                          />
+                        </Form.Group>
+                      </Col>
+                      <Col md="auto" onClick={this.sendingComment}>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          fill="black"
+                          className="bi bi-chevron-double-right"
+                          viewBox="0 -2 16 16"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z"
+                          />
+                          <path
+                            fill-rule="evenodd"
+                            d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z"
+                          />
+                        </svg>
+                      </Col>
+                      <Col md="auto"><text> </text></Col>
+                    </Row>
+                  </Card.Footer>
+                </Card>
+              </Accordion>
+            </Card.Footer>
           </div>
         </Card>
       </div>

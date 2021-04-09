@@ -92,8 +92,7 @@ class QuestionCard extends React.Component {
   render() {
     return (
       <div id="questioncard">
-        <Card className="customCard" text={"white"} style={{ height: "10rem" }}>
-          {/* <Card.Img variant="top" src="holder.js/100px180" /> */}
+        <Card className="customCard" text={"white"}>
           <div className="shadow-box-example z-depth-1-half">
             <Card.Body id="cardbody"
              onClick={this.questionClickedShowAnswers}>
