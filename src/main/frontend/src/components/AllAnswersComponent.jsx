@@ -20,10 +20,12 @@ class AllAnswersComponent extends React.Component {
     console.log("ayopppp ", this.props.location.state);
     console.log(
       "The link to get the profile of the user is ",
-      this.props.location.state.getAskerProfile.href
+      localStorage.getItem("getOwnerProfile")
     );
+    console.log("this.props.location - ", this.props.location);
     this.props.history.push(
-      "/profile/" + this.props.location.state.ownerUserId
+      "/profile/" + this.props.location.state.ownerUserId,
+      { getOwnerProfile: this.props.location.state.ownerProfile.href }
     );
   }
 

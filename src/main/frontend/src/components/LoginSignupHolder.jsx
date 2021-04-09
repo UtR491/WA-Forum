@@ -9,11 +9,39 @@ class LoginSignupHolder extends React.Component {
     return (
       <div style={{ backgroundColor: "cadetblue" }}>
         <Row style={{ backgroundColor: "cadetblue" }}>
-          <Col xs={4}></Col>
+          <Col xs={4}>
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <Col>
+              <h1>
+                <strong style={{ color: "white", padding: "60px" }}>
+                  WA-Forum
+                </strong>
+              </h1>
+              <strong>
+                <text style={{ color: "white", padding: "60px" }}>
+                  Get all your doubts answered,
+                </text>
+                <br />
+                <text style={{ color: "white", padding: "60px" }}>
+                  {" "}
+                  by people you know.
+                </text>
+              </strong>
+            </Col>
+          </Col>
           <Col>
             {this.props.location.state !== undefined ? (
               this.props.location.state.redirected ? (
-                <Alert variant="danger">You must sign up or login to proceed.</Alert>
+                <Alert variant="danger">
+                  You must sign up or login to proceed.
+                </Alert>
               ) : (
                 <Alert variant="success">Signed Out Successfully!</Alert>
               )

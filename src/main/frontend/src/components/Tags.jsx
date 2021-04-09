@@ -1,5 +1,5 @@
 import React from "react";
-import { ListGroup, Row, Col, Container } from "react-bootstrap";
+import { ListGroup, Row, Col, Container, Button } from "react-bootstrap";
 import "./Tags.css";
 
 class Tags extends React.Component {
@@ -15,7 +15,7 @@ class Tags extends React.Component {
                 // eslint-disable-next-line array-callback-return
                 this.props.tags.map((tag) => (
                   <div className="individualTag">
-                    <text className="tagText">{tag}</text>
+                    <text className="tagText ">{tag}</text>
                   </div>
                 ))
               }

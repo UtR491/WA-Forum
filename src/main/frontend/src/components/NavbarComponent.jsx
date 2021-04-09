@@ -35,7 +35,11 @@ class NavbarComponent extends React.Component {
     }
     return (
       <Navbar bg="#364153" expand="lg">
-        <Navbar.Brand onClick={this.goToHome} style={{ color: "white" }}>
+        <Navbar.Brand
+          onClick={this.goToHome}
+          id="brandText"
+          style={{ color: "white" }}
+        >
           WA-Forum
         </Navbar.Brand>
 

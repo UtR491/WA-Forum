@@ -27,13 +27,15 @@ class LoginComponent extends React.Component {
     loginService
       .loginAndGetJwt(this.state)
       .then((response) => {
-        console.log("response isssss", response);
-        console.log("JWT received ", response.data.jwt.jwt);
-        localStorage.setItem("jwt", response.data.jwt.jwt);
-        localStorage.setItem("userId", response.data.id);
-        this.props.history.push("/home", {
-          getOwnerProfile: response.data._links.ownerId,
-        });
+      console.log(response);
+      console.log("JWT received ", response.data.jwt.jwt);
+      localStorage.setItem("jwt", response.data.jwt.jwt);
+      localStorage.setItem("userId", response.data.id);
+      localStorage.setItem(
+        "getOwnerProfile",
+        response.data._links.ownerId.href
+      );
+      this.props.history.push("/home", {});
       })
       .catch((error) => {
         console.log("the error is ", error);
@@ -87,15 +89,13 @@ class LoginComponent extends React.Component {
                   />
                 </Form.Group>
                 <br></br>
+              </Form>
               <Row>
                 <Col xs={2}></Col>
                 <button className="submitButton" onClick={this.handleSubmit}>
                   Login
                 </button>
               </Row>
-              </Form>
-              <br />
-              <br />
             </Col>
           </Row>
         </div>

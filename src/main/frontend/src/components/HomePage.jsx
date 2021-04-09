@@ -30,9 +30,10 @@ class HomePage extends React.Component {
   }
 
   myProfile(event) {
+    console.log("user url stored in local storage is ", localStorage.getItem("getOwnerProfile"))
     this.props.history.push("/profile/my", {
-      getOwnerProfile: this.props.getOwnerProfile,
       //history: this.props.history
+      getOwnerProfile: localStorage.getItem("getOwnerProfile"),
     });
   }
 

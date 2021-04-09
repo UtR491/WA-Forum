@@ -101,7 +101,14 @@ class AnswerCard extends React.Component {
 
   visitOwner() {
     console.log("answerer name clicked");
-    this.props.history.push("/profile/" + this.props.ownerUserId);
+    this.props.history.push("/profile/" + this.props.ownerUserId, 
+    {
+      getAnswers: this.props.links.answers,
+
+      ownerUserId: this.props.ownerUserId,
+      getOwnerProfile: this.props.links.ownerProfile.href,
+    }
+    );
   }
 
   sendingComment(event) {
