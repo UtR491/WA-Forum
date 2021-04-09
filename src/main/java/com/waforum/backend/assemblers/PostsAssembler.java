@@ -21,7 +21,8 @@ public class PostsAssembler implements RepresentationModelAssembler<Posts, Entit
             post.add(
                     linkTo(methodOn(PostsController.class).getQuestionById(entity.getId())).withSelfRel(), // self link
                     linkTo(methodOn(PostsController.class).getAnswerByQuestionId(entity.getId())).withRel("answers") ,// answers to question
-                    linkTo(methodOn(UserProfileController.class).getProfileInfoById(entity.getOwnerUserId())).withRel("ownerProfile"));
+                    linkTo(methodOn(UserProfileController.class).getProfileInfoById(entity.getOwnerUserId())).withRel("ownerProfile"),
+                    linkTo(methodOn(PostsController.class).answerQuestion(entity.getId(),null)).withRel("answerQuestion"));
         } else {
             post.add(linkTo(methodOn(PostsController.class).getAnswerByIdByQuestionId(entity.getParentId(), entity.getId())).withSelfRel(),
                     linkTo(methodOn(UserProfileController.class).getProfileInfoById(entity.getOwnerUserId())).withRel("ownerProfile"));
