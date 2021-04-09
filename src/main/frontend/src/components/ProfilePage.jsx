@@ -6,7 +6,16 @@ import NavbarComponent from "./NavbarComponent";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-css-only/css/bootstrap.min.css";
 import "mdbreact/dist/css/mdb.css";
-import { Row, Container, Col, Button } from "react-bootstrap";
+import {
+  Row,
+  Container,
+  Col,
+  Button,
+  Tabs,
+  Tab,
+  OverlayTrigger,
+  Popover,
+} from "react-bootstrap";
 
 import questionService from "../services/QuestionService";
 import SideNavPage from "./SideNavigation";
@@ -17,7 +26,7 @@ import codechefIcon from "@iconify-icons/simple-icons/codechef";
 import githubFill from "@iconify-icons/akar-icons/github-fill";
 
 import codeforcesIcon from "@iconify-icons/simple-icons/codeforces";
-
+import userService from "../services/UserService";
 class ProfilePage extends React.Component {
   constructor(props) {
     super(props);
@@ -27,11 +36,13 @@ class ProfilePage extends React.Component {
           postses: [],
         },
       },
+      displayName: "",
     };
   }
 
   componentDidMount() {
     console.log("Question service = ", questionService);
+
     questionService.getQuestions().then((response) => {
       console.log("The response was ", response);
       console.log("Resopnse.data = ", response.data);
@@ -41,9 +52,29 @@ class ProfilePage extends React.Component {
       });
       console.log("Question service = ", this.state.questions);
     });
+
+    console.log("User Service", userService);
+    userService
+      .getProfileData(this.props.location.state.getOwnerProfile.href)
+      .then((response) => {
+        console.log(response);
+        this.setState({
+          displayName: response.data.displayName,
+        });
+      });
   }
 
   render() {
+    const popover = (
+      <Popover id="popover-basic">
+        <Popover.Title as="h3">Popover right</Popover.Title>
+        <Popover.Content>
+          And here's some <strong>amazing</strong> content. It's very engaging.
+          right?
+        </Popover.Content>
+      </Popover>
+    );
+
     return (
       <div className="App">
         <NavbarComponent history={this.props.history} />
@@ -66,7 +97,7 @@ class ProfilePage extends React.Component {
 
               <Row>
                 <Col>
-                  <h2>Darpan Mittal</h2>
+                  <h2>{this.state.displayName}</h2>
                 </Col>
               </Row>
 
@@ -85,7 +116,15 @@ class ProfilePage extends React.Component {
               </Row>
 
               <Row id="followNumber">
-                <Col>12</Col>
+                <Col>
+                  <OverlayTrigger
+                    trigger="click"
+                    placement="right"
+                    overlay={popover}
+                  >
+                    <span variant="success">12</span>
+                  </OverlayTrigger>
+                </Col>
                 <Col>8</Col>
               </Row>
 
@@ -127,16 +166,37 @@ class ProfilePage extends React.Component {
             </Col>
 
             <Col xs={8} id="col2">
-              {this.state.questions._embedded.postses.map((question) => (
-                <QuestionCard
-                  key={question.id}
-                  body={question.body}
-                  ownerDisplayName={question.ownerDisplayName}
-                  upvoteCount={question.upvoteCount}
-                  creationDate={question.creationDate}
-                  tags={question.tags}
-                />
-              ))}
+              <Tabs defaultActiveKey="myQuestions" id="profile-tab" fill>
+                <Tab eventKey="myQuestions" title="My Questions">
+                  {this.state.questions._embedded.postses.map((question) => (
+                    <QuestionCard
+                      id={question.id}
+                      body={question.body}
+                      ownerUserId={question.ownerUserId}
+                      ownerDisplayName={question.ownerDisplayName}
+                      upvoteCount={question.upvoteCount}
+                      creationDate={question.creationDate}
+                      tags={question.tags}
+                      links={question._links}
+                      currentHasVoted={question.currentHasVoted}
+                      previousPageLink={this.state.questions._links.self.href}
+                      history={this.props.history}
+                    />
+                  ))}
+                </Tab>
+                <Tab eventKey="myAnswers" title="My Answers">
+                  {this.state.questions._embedded.postses.map((question) => (
+                    <QuestionCard
+                      key={question.id}
+                      body={question.body}
+                      ownerDisplayName={question.ownerDisplayName}
+                      upvoteCount={question.upvoteCount}
+                      creationDate={question.creationDate}
+                      tags={question.tags}
+                    />
+                  ))}
+                </Tab>
+              </Tabs>
             </Col>
             <Col id="col3"> </Col>
           </Row>
