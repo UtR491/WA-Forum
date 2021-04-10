@@ -1,7 +1,7 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500&display=swap");
+
 #questioncard {
   padding: 10px;
-  margin-top: 20px;
-  margin-bottom: 20px !important;
 }
 
 #cardbody {
@@ -32,29 +32,38 @@
   font-family: "Poppins", sans-serif;
 }
 .upvote:hover {
-    cursor: pointer;
-    color: yellowgreen;
+  cursor: pointer;
+  color: yellowgreen;
 }
 
 .downvote:hover {
-    cursor: pointer;
-    color: pink;
+  cursor: pointer;
+  color: pink;
 }
 
 
 #answercard{
     padding: 10px;
-    margin-bottom: max(5px, 1%);
-    margin-top: max(5px, 1%);
 }
 
-/* .clickable-paragraph:hover {
-    text-decoration: underline;
-    cursor: pointer;
-} */
+.clickable-paragraph:hover {
+  text-decoration: underline;
+}
 
-#cardbody:hover{
+.commentButton:hover{
   cursor: pointer;
-  background-color: #4285f4;
+  color: #364153;
 }
 
+.answererName:hover{
+  cursor: pointer;
+  text-decoration: underline;
+}
+#upvoteCount {
+  font-family: "Poppins", sans-serif;
+}
+
+#showansicon:hover {
+  cursor: pointer;
+  color: #4285f4;
+}

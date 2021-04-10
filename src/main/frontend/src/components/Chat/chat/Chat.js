@@ -33,8 +33,8 @@ const Chat = (props) => {
   const [messages, setMessages] = useRecoilState(chatMessages);
 
   useEffect(() => {
-    if (localStorage.getItem("jwt") === null) {
-      props.history.push("");
+    if (sessionStorage.getItem("jwt") === null) {
+      props.history.push("/");
     }
     connect();
     loadContacts();

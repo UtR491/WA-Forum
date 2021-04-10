@@ -5,6 +5,8 @@ import com.waforum.backend.assemblers.SingleAnswerAllCommentsWrapperAssembler;
 import com.waforum.backend.exceptions.AnswerNotForQuestionException;
 import com.waforum.backend.models.Comments;
 import com.waforum.backend.models.SingleAnswerAllCommentsWrapper;
+import com.waforum.backend.models.User;
+import com.waforum.backend.models.UserDetailsImpl;
 import com.waforum.backend.repository.CommentsRepository;
 import com.waforum.backend.repository.PostsRepository;
 import com.waforum.backend.repository.UserRepository;
@@ -17,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,21 +43,25 @@ public class CommentsController {
     @Autowired
     JwtUtil jwtUtil;
 
-    @GetMapping("/posts/questions/{qid}/answers/{aid}/comments")
-    public EntityModel<SingleAnswerAllCommentsWrapper> getCommentsByAnswerId(@PathVariable Integer qid,@PathVariable Integer aid){
+    @GetMapping("/posts/answers/{aid}/comments")
+    public EntityModel<SingleAnswerAllCommentsWrapper> getCommentsByAnswerId(@PathVariable Integer aid){
         List<EntityModel<Comments>> c=commentsRepository.findAllByPostId(aid).stream().
                 map(comments -> commentsAssembler.toModel(comments)).collect(Collectors.toList());
+        Collections.reverse(c);
         CollectionModel<EntityModel<Comments>> collectionModel=CollectionModel.of(c,
-                linkTo(methodOn(CommentsController.class).getCommentsByAnswerId(qid,aid)).withSelfRel());
+                linkTo(methodOn(CommentsController.class).getCommentsByAnswerId(aid)).withSelfRel());
          EntityModel<SingleAnswerAllCommentsWrapper> singleAnswerAllCommentsWrapperEntityModel=  singleAnswerAllCommentsWrapperAssembler.toModel(new SingleAnswerAllCommentsWrapper(postsRepository.findById(aid).
-                orElseThrow(()->new AnswerNotForQuestionException(aid,qid)),collectionModel));
+                orElseThrow(()->new AnswerNotForQuestionException(aid,-1)),collectionModel));
          return singleAnswerAllCommentsWrapperEntityModel;
     }
     @PostMapping("/comments/create/{aid}")
     public ResponseEntity<EntityModel<Comments>> commentOnAnswer(@PathVariable Integer aid, @RequestBody Comments comment){
+        System.out.println("Timepass " + SecurityContextHolder.getContext().getAuthentication());
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        comment.setUserId(userDetails.getId());
+        comment.setUserDisplayName(userDetails.getDisplayName());
         comment.setPostId(aid);
-        Integer userId=userRepository.findByRegistrationNumber(Integer.parseInt(jwtUtil.extractRegistrationNumber((String) SecurityContextHolder.getContext().getAuthentication().getCredentials()))).getId();
-        comment.setUserId(userId);
+        comment.setCreationDate(new Date());
         EntityModel<Comments> commentsEntityModel=commentsAssembler.toModel(commentsRepository.save(comment));
         return ResponseEntity.created(commentsEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(commentsEntityModel);
     }
