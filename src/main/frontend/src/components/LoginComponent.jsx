@@ -23,23 +23,18 @@ class LoginComponent extends React.Component {
   }
 
   handleSubmit(event) {
-    console.log("login data is ", this.state);
     loginService
       .loginAndGetJwt(this.state)
       .then((response) => {
-      console.log(response);
-      console.log("JWT received ", response.data.jwt.jwt);
-      localStorage.setItem("jwt", response.data.jwt.jwt);
-      localStorage.setItem("userId", response.data.id);
-      localStorage.setItem(
+      sessionStorage.setItem("jwt", response.data.jwt.jwt);
+      sessionStorage.setItem("userId", response.data.id);
+      sessionStorage.setItem(
         "getOwnerProfile",
         response.data._links.ownerId.href
       );
       this.props.history.push("/home", {});
       })
       .catch((error) => {
-        console.log("the error is ", error);
-        console.log("that was the error");
         this.setState({
           invalidCreds: true,
         });
@@ -47,8 +42,8 @@ class LoginComponent extends React.Component {
   }
 
   render() {
-    localStorage.removeItem("jwt");
-    localStorage.removeItem("userId");
+    sessionStorage.removeItem("jwt");
+    sessionStorage.removeItem("userId");
     return (
       <Container>
         <div>

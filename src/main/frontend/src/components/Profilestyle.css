@@ -56,3 +56,8 @@ p {
   margin-top: 40px !important;
   align-items: center;
 }
+
+.icon:hover{
+  color: gray !important;
+  cursor: pointer !important;
+}

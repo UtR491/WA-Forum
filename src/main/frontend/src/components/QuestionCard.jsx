@@ -22,10 +22,10 @@ class QuestionCard extends React.Component {
     );
     this.upvoteClicked = this.upvoteClicked.bind(this);
     this.downvoteClicked = this.downvoteClicked.bind(this);
+    this.visitOwner = this.visitOwner.bind(this);
   }
 
   upvoteClicked() {
-    console.log("upvote clicked");
     if (this.state.vote === "UPVOTE") {
       votingService.removeVote(this.props.id).then(
         this.setState({
@@ -51,7 +51,6 @@ class QuestionCard extends React.Component {
   }
 
   downvoteClicked() {
-    console.log("downvote clicked");
     if (this.state.vote === "DOWNVOTE") {
       votingService.removeVote(this.props.id).then(
         this.setState({
@@ -77,12 +76,19 @@ class QuestionCard extends React.Component {
   }
 
   questionClickedShowAnswers(event) {
-    console.log("the question is clicked now we will show answers. The links realted to the question is ", this.props.links)
     this.props.history.push("/posts/questions/" + this.props.id + "/answers", {
+      getAnswers: this.props.links.answers,
+      ownerUserId: this.props.ownerUserId,
+      ownerProfile: this.props.links.ownerProfile.href,
+    });
+  }
+
+  visitOwner() {
+    this.props.history.push("/profile/" + this.props.ownerUserId, {
       getAnswers: this.props.links.answers,
 
       ownerUserId: this.props.ownerUserId,
-      ownerProfile: this.props.links.ownerProfile,
+      getOwnerProfile: this.props.links.ownerProfile.href,
     });
   }
 
@@ -100,9 +106,7 @@ class QuestionCard extends React.Component {
           <Card className="customCard" text={"white"}>
             {/* <Card.Img variant="top" src="holder.js/100px180" /> */}
             <div className="shadow-box-example z-depth-1-half">
-              <Card.Body
-                id="cardbody"
-              >
+              <Card.Body id="cardbody">
                 <Row>
                   <Col className="votingColumn" xs={1}>
                     <Row>
@@ -119,27 +123,11 @@ class QuestionCard extends React.Component {
                           className="bi bi-arrow-up-circle-fill upvote"
                           onClick={this.upvoteClicked}
                         />
-
-                        {/* <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill={
-                          this.state.vote === "UPVOTE"
-                            ? "green"
-                            : "currentColor"
-                        }
-                        className="bi bi-arrow-up-circle-fill upvote"
-                        viewBox="0 0 16 16"
-                        onClick={this.upvoteClicked}
-                      >
-                        <path d="M16 8A8 8 0 1 0 0 8a8 8 0 0 0 16 0zm-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V11.5z" />
-                      </svg> */}
                       </Col>
                     </Row>
                     <Row>
                       <Col>
-                        <text id="upvoteCount">{this.state.upvoteCount}</text>
+                        <strong id="upvoteCount">{this.state.upvoteCount}</strong>
                       </Col>
                     </Row>
                     <Row>
@@ -156,29 +144,12 @@ class QuestionCard extends React.Component {
                           className="bi bi-arrow-down-circle-fill downvote"
                           onClick={this.downvoteClicked}
                         />
-
-                        {/* <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill={
-                          this.state.vote === "DOWNVOTE"
-                            ? "red"
-                            : "currentColor"
-                        }
-                        className="bi bi-arrow-down-circle-fill downvote"
-                        viewBox="0 0 16 16"
-                        onClick={this.downvoteClicked}
-                      >
-                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z" />
-                      </svg> */}
                       </Col>
                     </Row>
                   </Col>
-                  <Col
-                onClick={this.questionClickedShowAnswers}
-                  >
+                  <Col>
                     <Row
+                      onClick={this.questionClickedShowAnswers}
                       style={{
                         textAlign: "left",
                         marginTop: "-1px",
@@ -190,14 +161,12 @@ class QuestionCard extends React.Component {
                         {" "}
                         <Card.Subtitle>
                           <div
-                            dangerouslySetInnerHTML={{
-                              __html: this.props.body,
-                            }}
                             className="clickable-paragraph"
                             onClick={this.questionClickedShowAnswers}
                             color="white"
+                            style={{whiteSpace: "pre-wrap"}}
                           >
-                            {/* {this.props.body} */}
+                            {this.props.body}
                           </div>
                         </Card.Subtitle>
                       </Col>
@@ -215,17 +184,21 @@ class QuestionCard extends React.Component {
                             width="25"
                             height="25"
                           />
-                          <text> Posted by {this.props.ownerDisplayName}</text>
+                          <text style={{ color: "white" }}>
+                            {" "}
+                            Asked by -{" "}
+                            <strong
+                              className="answererName"
+                              onClick={this.visitOwner}
+                            >
+                              {this.props.ownerDisplayName}
+                            </strong>
+                          </text>
                         </div>
                       </Col>
 
-                      <Col>5 Days ago</Col>
-                      <Col
-                        onClick={this.questionClickedShowAnswers}
-                        id="showansicon"
-                      >
-                        <ChatBubbleOutlineOutlinedIcon />
-                        50+
+                      <Col padding="3px">
+                        Posted On - {this.props.creationDate.substring(0, 10)}
                       </Col>
                     </Row>
                   </Col>

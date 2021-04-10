@@ -6,10 +6,12 @@ class UserService {
   }
 
   getProfileData(link) {
-    console.log("the link to get user data was ", link);
-    return axios.get(link, {
+    console.log("link to get user data is ", link);
+    return axios({
+      url: link,
+      method: "GET",
       headers: {
-        Authorization: "Bearer " + localStorage.getItem("jwt"),
+        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
       },
     });
   }

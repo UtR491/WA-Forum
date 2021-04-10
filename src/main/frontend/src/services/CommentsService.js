@@ -10,7 +10,7 @@ class CommentsService {
             url : link,
             method : "GET",
             headers: {
-                Authorization : "Bearer " + localStorage.getItem('jwt'),
+                Authorization : "Bearer " + sessionStorage.getItem('jwt'),
             }
         })
     }
@@ -20,7 +20,7 @@ class CommentsService {
             method: "POST",
             data: JSON.stringify(comment),
             headers: {
-                Authorization : "Bearer " + localStorage.getItem('jwt'),
+                Authorization : "Bearer " + sessionStorage.getItem('jwt'),
                 "Content-Type": "application/json",
             }
         })

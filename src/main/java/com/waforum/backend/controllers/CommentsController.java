@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,6 +47,7 @@ public class CommentsController {
     public EntityModel<SingleAnswerAllCommentsWrapper> getCommentsByAnswerId(@PathVariable Integer aid){
         List<EntityModel<Comments>> c=commentsRepository.findAllByPostId(aid).stream().
                 map(comments -> commentsAssembler.toModel(comments)).collect(Collectors.toList());
+        Collections.reverse(c);
         CollectionModel<EntityModel<Comments>> collectionModel=CollectionModel.of(c,
                 linkTo(methodOn(CommentsController.class).getCommentsByAnswerId(aid)).withSelfRel());
          EntityModel<SingleAnswerAllCommentsWrapper> singleAnswerAllCommentsWrapperEntityModel=  singleAnswerAllCommentsWrapperAssembler.toModel(new SingleAnswerAllCommentsWrapper(postsRepository.findById(aid).

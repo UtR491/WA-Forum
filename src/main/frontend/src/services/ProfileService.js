@@ -6,7 +6,7 @@ class ProfileService {
       url: link,
       method: "GET",
       headers: {
-        Authorization: "Bearer " + localStorage.getItem("jwt"),
+        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
       },
     });
   }

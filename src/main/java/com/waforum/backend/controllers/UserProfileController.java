@@ -8,6 +8,7 @@ import com.waforum.backend.repository.FollowingRepository;
 import com.waforum.backend.repository.PostsRepository;
 import com.waforum.backend.repository.UserRepository;
 import com.waforum.backend.util.JwtUtil;
+import com.waforum.backend.util.PostsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -37,6 +38,8 @@ public class UserProfileController {
     @Autowired
     PostsAssembler postsAssembler;
 
+    @Autowired
+    PostsUtil postsUtil;
 
     @Autowired
     SingleQuestionAnswerWrapperAssembler singleQuestionAnswerWrapperAssembler;
@@ -66,7 +69,11 @@ public class UserProfileController {
     @GetMapping("/profile/{id}/questions")
     public CollectionModel<EntityModel<Posts>> getQuestionsByUserId(@PathVariable Integer id) {
         List<EntityModel<Posts>> questions = postsRepository.findAllByPostTypeIdAndOwnerUserId(1, id).stream().
-                map((ques) -> postsAssembler.toModel(ques)).collect(Collectors.toList());
+                map((ques) -> {
+                    postsUtil.setVoteStatus(ques, null);
+                    postsUtil.setPostTags(ques);
+                    return postsAssembler.toModel(ques);
+                }).collect(Collectors.toList());
         return CollectionModel.of(questions,
                 linkTo(methodOn(UserProfileController.class).getQuestionsByUserId(id)).withSelfRel(),
                 linkTo(methodOn(PostsController.class).getQuestions(null)).withRel("home"));

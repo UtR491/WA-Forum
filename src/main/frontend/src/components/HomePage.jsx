@@ -1,20 +1,19 @@
 import React from "react";
-import  { Redirect } from 'react-router-dom'
-// import ReactDOM from 'react-dom';
+import { Redirect } from "react-router-dom";
+import questionService from "../services/QuestionService";
 import "./homestyle.css";
 import QuestionCard from "./QuestionCard";
 import NavbarComponent from "./NavbarComponent";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-css-only/css/bootstrap.min.css";
 import "mdbreact/dist/css/mdb.css";
-import { Row, Container, Col, Button } from "react-bootstrap";
-
-import questionService from "../services/QuestionService";
+import { Card, Form, Row, Container, Col, Button } from "react-bootstrap";
 
 class HomePage extends React.Component {
   constructor(props) {
     super(props);
     this.myProfile = this.myProfile.bind(this);
+    this.sendAnswer = this.sendAnswer.bind(this);
     this.state = {
       questions: {
         _embedded: {
@@ -27,78 +26,107 @@ class HomePage extends React.Component {
         },
       },
     };
+    this.questionObject = {
+      body: "",
+      tags: [],
+    };
   }
 
   myProfile(event) {
-    console.log("user url stored in local storage is ", localStorage.getItem("getOwnerProfile"))
     this.props.history.push("/profile/my", {
       //history: this.props.history
-      getOwnerProfile: localStorage.getItem("getOwnerProfile"),
+      getOwnerProfile: sessionStorage.getItem("getOwnerProfile"),
     });
   }
 
+  sendAnswer(event) {
+    if (this.questionObject.body.length > 0) {
+      questionService
+        .postQuestion(this.questionObject)
+        .then((response) => {
+          console.log("question was asked....", response);
+          this.props.history.go(0);
+        })
+        .catch((error) => {
+          console.log("error");
+          this.props.history.go(0);
+        });
+    }
+  }
+
   componentDidMount() {
-    console.log("Question service = ", questionService);
     questionService.getQuestions().then((response) => {
-      console.log("The response was ", response);
-      console.log("Resopnse.data = ", response.data);
       this.setState({
         questions: response.data,
         loaded: true,
       });
-      console.log("Question service = ", this.state.questions);
     });
   }
 
   render() {
-    
-    console.log("The jwt is ", localStorage.getItem("jwt"));
-    if(localStorage.getItem("jwt") === null) {
-      console.log("so it is undefined");
-      return <Redirect to={{
-        pathname : "/",
-        state: {
-          redirected : true
-        }
-      }}/>;
+    if (sessionStorage.getItem("jwt") === null) {
+      return (
+        <Redirect
+          to={{
+            pathname: "/",
+            state: {
+              redirected: true,
+            },
+          }}
+        />
+      );
     }
 
     return (
       <div className="App">
         <NavbarComponent history={this.props.history} isHome={true} />
 
-        <Container>
-          <Row>
-            <Col md="auto" id="col1">
-              <Container id="sideNav">
-                <Col>
-                  <Row>
-                    <Button variant="outline-primary" onClick={this.myProfile}>
-                      My Profile
-                    </Button>
-                  </Row>
-                </Col>
-              </Container>
-            </Col>
-            <Col xs={8} id="col2">
-              {this.state.questions._embedded.postses.map((question) => (
-                <QuestionCard
-                  id={question.id}
-                  body={question.body}
-                  ownerUserId={question.ownerUserId}
-                  ownerDisplayName={question.ownerDisplayName}
-                  upvoteCount={question.upvoteCount}
-                  creationDate={question.creationDate}
-                  tags={question.tags}
-                  links={question._links}
-                  currentHasVoted={question.currentHasVoted}
-                  previousPageLink={this.state.questions._links.self.href}
-                  history={this.props.history}
-                />
-              ))}
-            </Col>
-          </Row>
-        </Container>
+        <Row>
+          <Col xs={8} id="col2" style={{ marginLeft: "80px" }}>
+            {this.state.questions._embedded.postses.map((question) => (
+              <QuestionCard
+                id={question.id}
+                body={question.body}
+                ownerUserId={question.ownerUserId}
+                ownerDisplayName={question.ownerDisplayName}
+                upvoteCount={question.upvoteCount}
+                creationDate={question.creationDate}
+                tags={question.tags}
+                links={question._links}
+                currentHasVoted={question.currentHasVoted}
+                previousPageLink={this.state.questions._links.self.href}
+                history={this.props.history}
+              />
+            ))}
+          </Col>
+          <Col style={{ margin: "0px" }}>
+            <br />
+            <br />
+            <Card style={{ marginLeft: "10px", marginRight: "80px" }}>
+              <Card.Header style={{ textDecorationAlign: "left" }}>
+                Have a doubt?
+              </Card.Header>
+              <Card.Body>
+                <Form.Group
+                  controlId="exampleForm.ControlTextarea1"
+                  style={{ margin: "0px" }}
+                >
+                  <Form.Control
+                    as="textarea"
+                    rows={15}
+                    placeholder="Ask your doubt..."
+                    onChange={(event) => {
+                      this.questionObject.body = event.target.value;
+                    }}
+                  />
+                  <button className="submitButton" onClick={this.sendAnswer}>
+                    Ask
+                  </button>
+                </Form.Group>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
       </div>
     );
   }

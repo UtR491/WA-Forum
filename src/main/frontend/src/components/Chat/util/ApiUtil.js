@@ -8,10 +8,10 @@ const request = (options) => {
     headers.append("Content-Type", "application/json");
   }
 
-  if (localStorage.getItem("jwt")) {
+  if (sessionStorage.getItem("jwt")) {
     headers.append(
       "Authorization",
-      "Bearer " + localStorage.getItem("jwt")
+      "Bearer " + sessionStorage.getItem("jwt")
     );
   }
 
@@ -45,7 +45,7 @@ const request = (options) => {
 // }
 
 export function getCurrentUser() {
-  if (!localStorage.getItem("jwt")) {
+  if (!sessionStorage.getItem("jwt")) {
     return Promise.reject("No access token set.");
   }
 
@@ -56,7 +56,7 @@ export function getCurrentUser() {
 }
 
 export function getUsers() {
-  if (!localStorage.getItem("jwt")) {
+  if (!sessionStorage.getItem("jwt")) {
     return Promise.reject("No access token set.");
   }
   return request({
@@ -66,7 +66,7 @@ export function getUsers() {
 }
 
 export function countNewMessages(senderId, recipientId) {
-  if (!localStorage.getItem("jwt")) {
+  if (!sessionStorage.getItem("jwt")) {
     return Promise.reject("No access token set.");
   }
 
@@ -77,7 +77,7 @@ export function countNewMessages(senderId, recipientId) {
 }
 
 export function findChatMessages(senderId, recipientId) {
-  if (!localStorage.getItem("jwt")) {
+  if (!sessionStorage.getItem("jwt")) {
     return Promise.reject("No access token set.");
   }
 
@@ -88,7 +88,7 @@ export function findChatMessages(senderId, recipientId) {
 }
 
 export function findChatMessage(id) {
-  if (!localStorage.getItem("jwt")) {
+  if (!sessionStorage.getItem("jwt")) {
     return Promise.reject("No access token set.");
   }
 

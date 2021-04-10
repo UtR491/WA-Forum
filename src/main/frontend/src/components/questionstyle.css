@@ -46,12 +46,8 @@
     padding: 10px;
 }
 
-#cardbody:hover {
-  cursor: pointer;
-}
-
-#cardbody:active{
-  background-color: #4285f4;
+.clickable-paragraph:hover {
+  text-decoration: underline;
 }
 
 .commentButton:hover{

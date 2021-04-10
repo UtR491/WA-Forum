@@ -25,7 +25,7 @@ const Chat = (props) => {
   const [messages, setMessages] = useRecoilState(chatMessages);
 
   useEffect(() => {
-    if (localStorage.getItem("jwt") === null) {
+    if (sessionStorage.getItem("jwt") === null) {
       props.history.push("/login");
     }
     connect();

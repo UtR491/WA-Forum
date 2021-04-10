@@ -10,7 +10,6 @@ class LoginService {
   }
 
   loginAndGetJwt(creds) {
-    console.log("credentials entered are ", creds);
     return axios({
       url: LOGIN_URL,
       data: JSON.stringify(creds),

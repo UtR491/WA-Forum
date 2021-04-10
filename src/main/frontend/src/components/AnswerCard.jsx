@@ -10,6 +10,9 @@ import {
 } from "react-bootstrap";
 import ChatBubbleOutlineOutlinedIcon from "@material-ui/icons/ChatBubbleOutlineOutlined";
 import votingService from "../services/VotingService";
+import bxUpvote from "@iconify-icons/bx/bx-upvote";
+import { Icon } from "@iconify/react";
+import bxDownvote from "@iconify-icons/bx/bx-downvote";
 import commentsService from "../services/CommentsService";
 import profileService from "../services/ProfileService";
 
@@ -31,7 +34,6 @@ class AnswerCard extends React.Component {
   }
 
   upvoteClicked() {
-    console.log("upvote clicked");
     if (this.state.vote === "UPVOTE") {
       votingService.removeVote(this.props.id).then(
         this.setState({
@@ -57,7 +59,6 @@ class AnswerCard extends React.Component {
   }
 
   downvoteClicked() {
-    console.log("downvote clicked");
     if (this.state.vote === "DOWNVOTE") {
       votingService.removeVote(this.props.id).then(
         this.setState({
@@ -87,7 +88,6 @@ class AnswerCard extends React.Component {
       commentsService
         .getCommentsForAnswer(this.props.links.getComments.href)
         .then((response) => {
-          console.log(response);
           this.setState({
             comments: response.data.comments._embedded.commentses,
           });
@@ -100,11 +100,9 @@ class AnswerCard extends React.Component {
   }
 
   visitOwner() {
-    console.log("answerer name clicked");
     this.props.history.push("/profile/" + this.props.ownerUserId, 
     {
       getAnswers: this.props.links.answers,
-
       ownerUserId: this.props.ownerUserId,
       getOwnerProfile: this.props.links.ownerProfile.href,
     }
@@ -112,13 +110,9 @@ class AnswerCard extends React.Component {
   }
 
   sendingComment(event) {
-    console.log("The event is event ", event)
-    console.log("sending comment written as ", this.state.typedComment);
     if(this.state.typedComment.length > 0) {
       commentsService.sendCommentToAnswer({body : this.state.typedComment}, this.props.links.postComment.href).then((response) => {
-        console.log(response);
         if(response.status === 201) {
-          console.log("This is the history object ", this.props.history);
           this.props.history.go(0);
         }
       })
@@ -145,37 +139,45 @@ class AnswerCard extends React.Component {
           <div className="shadow-box-example z-depth-1-half">
             <Card.Body id="cardbody">
               <Row>
-                <Col className="votingColumn" xs={1}>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill={
-                      this.state.vote === "UPVOTE" ? "green" : "currentColor"
-                    }
-                    className="bi bi-arrow-up-circle-fill upvote"
-                    viewBox="0 0 16 16"
-                    onClick={this.upvoteClicked}
-                  >
-                    <path d="M16 8A8 8 0 1 0 0 8a8 8 0 0 0 16 0zm-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V11.5z" />
-                  </svg>
-                  <br />
-                  <strong>{this.state.upvoteCount}</strong>
-                  <br />
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill={
-                      this.state.vote === "DOWNVOTE" ? "red" : "currentColor"
-                    }
-                    className="bi bi-arrow-down-circle-fill downvote"
-                    viewBox="0 0 16 16"
-                    onClick={this.downvoteClicked}
-                  >
-                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z" />
-                  </svg>
-                </Col>
+                  <Col className="votingColumn" xs={1}>
+                    <Row>
+                      <Col>
+                        <Icon
+                          icon={bxUpvote}
+                          color={
+                            this.state.vote === "UPVOTE"
+                              ? "green"
+                              : "currentColor"
+                          }
+                          height="20"
+                          width="20"
+                          className="bi bi-arrow-up-circle-fill upvote"
+                          onClick={this.upvoteClicked}
+                        />
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col>
+                        <strong id="upvoteCount">{this.state.upvoteCount}</strong>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col>
+                        <Icon
+                          icon={bxDownvote}
+                          color={
+                            this.state.vote === "DOWNVOTE"
+                              ? "red"
+                              : "currentColor"
+                          }
+                          height="20"
+                          width="20"
+                          className="bi bi-arrow-down-circle-fill downvote"
+                          onClick={this.downvoteClicked}
+                        />
+                      </Col>
+                    </Row>
+                  </Col>
                 <Col>
                   <Row
                     style={{
@@ -191,6 +193,7 @@ class AnswerCard extends React.Component {
                         <p
                           onClick={this.questionClickedShowAnswers}
                           color="white"
+                          style={{whiteSpace: "pre-wrap"}}
                         >
                           {this.props.body}
                         </p>

@@ -2,102 +2,145 @@ import React from "react";
 import { Col, Row } from "react-bootstrap";
 import allAnswersService from "../services/AllAnswersService";
 import NavbarComponent from "./NavbarComponent";
-import {Redirect} from "react-router-dom"
+import { Redirect } from "react-router-dom";
 import AnswerCard from "./AnswerCard";
 import "./AnswerStyle.css";
+import "./LoginSignupHolderStyling.css";
+import { Accordion, Card, Form } from "react-bootstrap";
 
 class AllAnswersComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       answers: [],
+      question: {},
+    };
+    this.sendAnswer = this.sendAnswer.bind(this);
+    this.answerObject = {
+      body: "",
     };
     this.onAskerClick = this.onAskerClick.bind(this);
   }
 
   onAskerClick(event) {
-    console.log("asker has been clicked upon");
-    console.log("ayopppp ", this.props.location.state);
-    console.log(
-      "The link to get the profile of the user is ",
-      localStorage.getItem("getOwnerProfile")
-    );
-    console.log("this.props.location - ", this.props.location);
     this.props.history.push(
       "/profile/" + this.props.location.state.ownerUserId,
-      { getOwnerProfile: this.props.location.state.ownerProfile.href }
+      { getOwnerProfile: this.props.location.state.ownerProfile }
     );
+  }
+
+  sendAnswer() {
+    console.log("the text in textarea is ", this.answerObject);
+    if(this.answerObject.length !== 0)
+    allAnswersService.sendAnswer(this.state.answers.data._links.answerQuestion.href, this.answerObject).then((response) => {
+      this.props.history.go(0);
+    });
   }
 
   componentDidMount() {
     allAnswersService
       .getAllAnswersForAQuestion(this.props.location.state.getAnswers.href)
       .then((response) => {
-        console.log("answers for the question are ", response);
-        this.setState({ answers: response });
+        this.setState({ answers: response, question: response.data.question });
+        console.log("response, ", response);
       });
   }
 
   render() {
-    console.log("Inside render of all answers component");
-    if(localStorage.getItem("jwt") === null) {
-      console.log("so it is undefined");
-      return <Redirect to={{
-        pathname : "/",
-        state: {
-          redirected : true
-        }
-      }}/>;
-    }
-
-    if (this.state.answers === undefined || this.state.answers.length === 0) {
-      return <h1><strong>There are no answers for this question.</strong></h1>;
-    } else {
+    if (sessionStorage.getItem("jwt") === null) {
       return (
-        <div>
-          <NavbarComponent history={this.props.history}/>
-          <br />
-          <Row>
-            <Col></Col>
-            <Col xs={7}>
-              <div>
-                <div
-                  style={{ color: "white" }}
-                  dangerouslySetInnerHTML={{
-                    __html: this.state.answers.data.question.body,
-                  }}
-                ></div>
-                <p style={{ color: "white" }}>
-                  {" "}
-                  - Asked By{""}
-                  <strong className="asker" onClick={this.onAskerClick}>
-                    Darpan Mittal
-                  </strong>
-                </p>
-                <br />
-                <div>
-                  {this.state.answers.data.answers.map((answer) => (
-                    <AnswerCard
-                      body={answer.body}
-                      id={answer.id}
-                      upvoteCount={answer.upvoteCount}
-                      currentHasVoted={answer.currentHasVoted}
-                      ownerDisplayName={answer.ownerDisplayName}
-                      commentCount={answer.commentCount}
-                      ownerUserId={answer.ownerUserId}
-                      links={answer._links}
-                      creationDate={answer.creationDate}
-                      history={this.props.history}
-                    />
-                  ))}
-                </div>
-              </div>
-            </Col>
-            <Col></Col>
-          </Row>
-        </div>
+        <Redirect
+          to={{
+            pathname: "/",
+            state: {
+              redirected: true,
+            },
+          }}
+        />
       );
     }
+    return (
+      <div>
+        <NavbarComponent history={this.props.history} />
+        <br />
+        <Row>
+          <Col></Col>
+          <Col xs={7}>
+            <div>
+              <div style={{ color: "white" }}>
+                {this.state.answers.data !== undefined
+                  ? this.state.answers.data.question.body
+                  : ""}
+              </div>
+              <p style={{ color: "white" }}>
+                {" "}
+                - Asked By{""}
+                <strong className="asker" onClick={this.onAskerClick}>
+                  {this.state.question !== undefined
+                    ? this.state.question.ownerDisplayName
+                    : ""}
+                </strong>
+              </p>
+              <br />
+              <Accordion defaultActiveKey="0">
+                <Card>
+                  <Accordion.Toggle as={Card.Header} eventKey="1">
+                    Give Answer...
+                  </Accordion.Toggle>
+                  <Accordion.Collapse eventKey="1">
+                    <Card.Body>
+                      <Form.Group controlId="exampleForm.ControlTextarea1">
+                        <Form.Control as="textarea" rows={3} 
+                        onChange={(event) => {
+                          this.answerObject.body = event.target.value;
+                        }}
+                        />
+                      </Form.Group>
+                      <button
+                        className="submitButton"
+                        onClick={this.sendAnswer}
+                      >
+                        Add your answer
+                      </button>
+                    </Card.Body>
+                  </Accordion.Collapse>
+                </Card>
+              </Accordion>
+              <br />
+              <br />
+              <div>
+                {this.state.answers !== undefined &&
+                this.state.answers.data !== undefined &&
+                this.state.answers.data.answers.length !== 0 ? (
+                  this.state.answers.data.answers.map((answer) => {
+                    console.log("answer object ", answer);
+                    return (
+                      <AnswerCard
+                        body={answer.body}
+                        id={answer.id}
+                        upvoteCount={answer.upvoteCount}
+                        currentHasVoted={answer.currentHasVoted}
+                        ownerDisplayName={answer.ownerDisplayName}
+                        commentCount={answer.commentCount}
+                        ownerUserId={answer.ownerUserId}
+                        links={answer._links}
+                        creationDate={answer.creationDate}
+                        history={this.props.history}
+                      />
+                    );
+                  })
+                ) : (
+                  <h1>
+                    <strong>There are no answers for this question.</strong>
+                  </h1>
+                )}
+              </div>
+            </div>
+          </Col>
+          <Col></Col>
+        </Row>
+      </div>
+    );
   }
 }
 

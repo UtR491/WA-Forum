@@ -19,28 +19,25 @@ class SignupComponent extends React.Component {
       confirmPassowrd: "",
       invalidReg: false,
       passwordConfimMismatch: false,
+      errorInSignup: false,
     };
     this.handleInput = this.handleInput.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleInput(event) {
-    console.log("target is ", event.target);
-    console.log("target id is ", event.target.id);
-    console.log("taget value is ", event.target.value);
     this.setState({
       [event.target.id]: event.target.value,
     });
   }
 
   handleSubmit(event) {
-    console.log("on the signup page helloooooo");
-    console.log("signup data is ", this.state);
-    var acceptedValues = new RegExp("/ ^ [0-9] + $ /")
-    if(!this.state.registrationNumber.match(acceptedValues) || this.state.registrationNumber.length !== 8) {
+    let isnum = /^\d+$/.test(this.state.registrationNumber);
+    if(!isnum || this.state.registrationNumber.length !== 8) {
       this.setState({
         invalidReg : true,
         passwordConfimMismatch: false,
+        errorInSignup: false,
       })
       return;
     }
@@ -49,28 +46,29 @@ class SignupComponent extends React.Component {
       this.setState({
         passwordConfimMismatch: true,
         invalidReg: false,
+        errorInSignup: false,
       })
       return;
     }
 
     if(this.state.displayName.length > 0 && this.state.password.length > 0 && !this.state.invalidReg && !this.state.passwordConfimMismatch) {
     loginService.signup(this.state).then((response) => {
-      console.log("the signup response is ", response);
+      console.log("response was == ", response);
       if (response.status === 200) {
-        console.log(this.props.history);
         this.props.history.go(0);
       }
+    }).catch((error) => {
+      console.log("error on signup = ", error);
+      this.setState({
+        passwordConfimMismatch: false,
+        invalidReg: false,
+        errorInSignup: true,
+      })
     });
+    } else {
+      console.log("empty fields");
+      console.log("state = ", this.setState);
     }
-    // loginService.loginAndGetJwt(this.state).then((response) => {
-    //   console.log(response);
-    //   console.log("JWT received ", response.data.jwt.jwt);
-    //   localStorage.setItem("jwt", response.data.jwt.jwt);
-    //   localStorage.setItem("userId", response.data.id);
-    //   this.props.history.push("/home", {
-    //     getOwnerProfile: response.data._links.ownerId,
-    //   });
-    // });
   }
 
   render() {
@@ -88,8 +86,13 @@ class SignupComponent extends React.Component {
                 <Alert variant="danger">
                   Password and Confirm Password don't match.
                 </Alert>
+                : (
+                  this.state.errorInSignup ?
+                <Alert variant="danger">
+                  There was an error in signup. Maybe the registration number already exists in our databases.
+                </Alert>
                 :
-                <br />
+                <br /> )
               )}
               <br />
               <Form style={{ color: "black" }}>
@@ -192,11 +195,11 @@ class SignupComponent extends React.Component {
                 </Form.Group>
               <Row>
                 <Col xs={4}></Col>
+              </Row>
+              </Form>
                 <button className="submitButton" onClick={this.handleSubmit}>
                   Sign Up
                 </button>
-              </Row>
-              </Form>
             </Col>
           </Row>
         </div>
