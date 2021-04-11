@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface FollowersRepository extends JpaRepository<Followers,Integer> {
     List<Followers> findAllByUserId(Integer userId);
+    Followers findByUserIdAndFollowerId(Integer userId, Integer followerId);
 }

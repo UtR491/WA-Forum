@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 @Entity
 public class User {
@@ -17,6 +18,10 @@ public class User {
     private String codeforces;
     private String email;
     private String password;
+    @Transient
+    private FollowStatus followStatus;
+    @Transient
+    private boolean isItYou;
 
     public Integer getId() {
         return id;
@@ -99,6 +104,14 @@ public class User {
         this.password = password;
     }
 
+    public FollowStatus getFollowStatus() {
+        return followStatus;
+    }
+
+    public void setFollowStatus(FollowStatus followStatus) {
+        this.followStatus = followStatus;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -113,5 +126,13 @@ public class User {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 '}';
+    }
+
+    public boolean isItYou() {
+        return isItYou;
+    }
+
+    public void setItYou(boolean itYou) {
+        isItYou = itYou;
     }
 }

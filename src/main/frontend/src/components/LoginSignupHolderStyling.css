@@ -1,0 +1,18 @@
+.submitButton {
+    border-radius: 30px;
+    background-color: lightblue;
+    border-width: 1px;
+    border-color: blueviolet;
+    padding: 5px;
+    padding-left: 25px;
+    padding-right: 25px;
+    margin: 5px;
+}
+
+.submitButton:hover {
+    background-color: aquamarine;
+}
+
+body {
+    background-color: cadetblue;
+}

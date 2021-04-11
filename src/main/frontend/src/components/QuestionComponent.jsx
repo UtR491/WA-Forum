@@ -14,15 +14,11 @@ class QuestionComponent extends React.Component {
   }
 
   componentDidMount() {
-    console.log("Question service = ", questionService);
     questionService.getQuestions().then((response) => {
-      console.log("The response was ", response);
-      console.log("Resopnse.data = ", response.data);
       this.setState({
         questions: response.data,
         loaded: true,
       });
-      console.log("Question service = ", this.state.questions);
     });
   }
 

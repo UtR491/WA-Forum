@@ -12,12 +12,14 @@ class Tags extends React.Component {
           <Col xs={6} sm>
             <Row>
               {
-                // eslint-disable-next-line array-callback-return
+                this.props.tags !== null ?
+                (
                 this.props.tags.map((tag) => (
                   <div className="individualTag">
                     <text className="tagText ">{tag}</text>
                   </div>
-                ))
+                ))) :
+                <br/>
               }
             </Row>
           </Col>

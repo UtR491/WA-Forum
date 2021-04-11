@@ -6,14 +6,13 @@ class CreateQuestionSerivce{
         this.createQuestion=this.createQuestion.bind(this);
     }
     createQuestion(posts){
-        console.log(posts)
         return axios({
             url: POST_QUESTION,
             data: JSON.stringify(posts),
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": "Bearer " + localStorage.getItem("jwt")
+              "Authorization": "Bearer " + sessionStorage.getItem("jwt")
             },
           });
     }

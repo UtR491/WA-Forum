@@ -25,7 +25,7 @@ const Chat = (props) => {
   const [messages, setMessages] = useRecoilState(chatMessages);
 
   useEffect(() => {
-    if (localStorage.getItem("jwt") === null) {
+    if (sessionStorage.getItem("jwt") === null) {
       props.history.push("/login");
     }
     connect();
@@ -49,7 +49,6 @@ const Chat = (props) => {
   };
 
   const onConnected = () => {
-    console.log("connected");
     console.log(currentUser);
     stompClient.subscribe(
       "/user/" + currentUser.id + "/queue/messages",

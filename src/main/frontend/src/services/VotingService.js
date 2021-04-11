@@ -10,17 +10,16 @@ class VotingService {
   }
 
   addVote(type, postId) {
-    console.log('sending vote of type ', type, ' for postid ', postId, ' of user ', localStorage.getItem('userId'))
     return axios({
       url: ADD_VOTE_URL,
       data: {
-        userId: localStorage.getItem("userId"),
+        userId: sessionStorage.getItem("userId"),
         postId: postId,
         typeOf: type,
       },
       method: "POST",
       headers: {
-        Authorization: "Bearer " + localStorage.getItem("jwt"),
+        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
       },
     });
   }
@@ -29,12 +28,12 @@ class VotingService {
     return axios({
       url: REMOVE_VOTE_URL,
       data: {
-        userId: localStorage.getItem("userId"),
+        userId: sessionStorage.getItem("userId"),
         postId: postId,
       },
       method: "POST",
       headers: {
-        Authorization: "Bearer " + localStorage.getItem("jwt"),
+        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
       },
     });
   }

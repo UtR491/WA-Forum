@@ -1,19 +1,46 @@
 import React from "react";
 import { Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { MDBCol, MDBIcon } from "mdbreact";
+import { Redirect } from "react-router-dom";
 
 class NavbarComponent extends React.Component {
   constructor(props) {
     super(props);
-
+    this.state = {
+      logout : false
+    }
     this.goToHome = this.goToHome.bind(this);
+    this.logout = this.logout.bind(this);
+    this.myProfile = this.myProfile.bind(this);
   }
+
   goToHome(event) {
     if (this.props.isHome) this.props.history.go(0);
     else this.props.history.push("/home");
   }
 
+  myProfile(event) {
+    this.props.history.push("/profile/my", {
+      //history: this.props.history
+      getOwnerProfile: sessionStorage.getItem("getOwnerProfile"),
+    });
+  }
+
+  logout() {
+    this.setState({
+      logout : true
+    })
+  }
+
   render() {
+    if(this.state.logout) {
+      return <Redirect to={{
+        pathname : "/",
+        state: {
+          loggedOut : true
+        }
+      }}/>;
+    }
     return (
       <Navbar bg="#364153" expand="lg">
         <Navbar.Brand
@@ -40,11 +67,11 @@ class NavbarComponent extends React.Component {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">
-              <NavDropdown title="Notifications" id="basic-nav-dropdown">
-                <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.2">
-                  Another action
+              <NavDropdown title="Actions" id="basic-nav-dropdown">
+                <NavDropdown.Item onClick={this.myProfile}>
+                  My Profile
                 </NavDropdown.Item>
+                <NavDropdown.Item onClick={this.logout}>Log Out</NavDropdown.Item>
                 <NavDropdown.Item href="#action/3.3">
                   Something
                 </NavDropdown.Item>

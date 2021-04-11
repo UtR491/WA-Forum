@@ -11,7 +11,7 @@ const { Meta } = Card;
 const Profile = (props) => {
   const [currentUser, setLoggedInUser] = useRecoilState(loggedInUser);
   useEffect(() => {
-    if (localStorage.getItem("jwt") === null) {
+    if (sessionStorage.getItem("jwt") === null) {
       props.history.push("/login");
     }
     loadCurrentUser();
@@ -21,14 +21,11 @@ const Profile = (props) => {
     getCurrentUser()
       .then((response) => {
         setLoggedInUser(response);
-      })
-      .catch((error) => {
-        console.log(error);
       });
   };
 
   const logout = () => {
-    localStorage.removeItem("jwt");
+    sessionStorage.removeItem("jwt");
     props.history.push("/login");
   };
 

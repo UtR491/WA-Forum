@@ -3,8 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@ckeditor/ckeditor5-build-classic": "^27.0.0",
-    "@ckeditor/ckeditor5-react": "^3.0.2",
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
     "@testing-library/jest-dom": "^5.11.10",
@@ -15,6 +13,7 @@
     "bootstrap": "^4.6.0",
     "draft-js": "^0.11.7",
     "draft-js-export-html": "^1.4.1",
+    "formik": "^2.2.6",
     "history": "^5.0.0",
     "html-react-parser": "^1.2.4",
     "mdbreact": "^5.0.1",
@@ -22,14 +21,13 @@
     "react-bootstrap": "^1.5.2",
     "react-bootstrap-icons": "^1.4.0",
     "react-dom": "^17.0.2",
-    "react-draft-wysiwyg": "^1.14.5",
     "react-router-dom": "^5.2.0",
+    "react-rte": "^0.16.3",
     "react-scripts": "4.0.3",
     "react-scroll-to-bottom": "^4.1.0",
     "recoil": "^0.2.0",
     "run": "^1.4.0",
     "stompjs": "^2.3.3",
-    "suneditor-react": "^2.16.2",
     "web-vitals": "^1.1.1"
   },
   "scripts": {
@@ -56,7 +54,6 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:8080",
   "devDependencies": {
     "@iconify-icons/akar-icons": "^1.1.6",
     "@iconify-icons/bx": "^1.1.0",

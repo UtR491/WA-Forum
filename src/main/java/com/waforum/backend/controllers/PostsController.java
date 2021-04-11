@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -91,6 +92,7 @@ public class PostsController {
                         return postsAssembler.toModel(question);
                     }).collect(Collectors.toList());
         }
+        Collections.reverse(questions);
         return CollectionModel.of(questions,
                 WebMvcLinkBuilder
                         .linkTo(WebMvcLinkBuilder.methodOn(PostsController.class).getQuestions(null))
@@ -117,10 +119,24 @@ public class PostsController {
             postsUtil.setPostTags(answer);
             return postsAssembler.toModel(answer);
         }).collect(Collectors.toList());
+        Collections.reverse(answers);
         return questionWithAllAnswerWrapperAssembler.toModel(new QuestionWithAllAnswerWrapper(question.get(),
                 acceptedAnswerId==null?
                         null: postsRepository.findById(acceptedAnswerId).orElseThrow(()->new AnswerNotFoundException(acceptedAnswerId)),
                 answers));
+    }
+
+    @PostMapping("/posts/questions/{id}/accept")
+    public ResponseEntity<?> acceptAnswer(@PathVariable Integer id, @RequestBody Integer acceptingAnswerId) {
+        try {
+            Posts question = postsRepository.findById(id).orElseThrow(() -> new QuestionNotFoundException(id));
+            postsRepository.findById(id).orElseThrow(() -> new AnswerNotFoundException(acceptingAnswerId));
+            question.setAcceptedAnswerId(acceptingAnswerId);
+            postsRepository.save(question);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(404).build();
+        }
     }
 
     @GetMapping("/posts/questions/{qid}/answers/{aid}")
@@ -157,12 +173,13 @@ public class PostsController {
     public ResponseEntity<EntityModel<Posts>> answerQuestion(@PathVariable Integer id, @RequestBody Posts posts) {
         UserDetailsImpl user=((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         posts.setOwnerUserId(user.getId());
-        posts.setPostTypeId(1);
+        posts.setPostTypeId(2);
         posts.setOwnerDisplayName(user.getDisplayName());
         posts.setCreationDate(new Date());
         posts.setLastActivityDate(new Date());
         posts.setUpvoteCount(0);
         posts.setCommentCount(0);
+        posts.setParentId(id);
         EntityModel<Posts> postsEntityModel = postsAssembler.toModel(postsRepository.save(posts));
         return ResponseEntity
                 .created(postsEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
