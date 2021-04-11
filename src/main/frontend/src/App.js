@@ -20,7 +20,7 @@ class App extends React.Component {
             <Route exact path={"/profile/my"} component={ProfilePage} />
             <Route path={"/posts/questions/"} component={AllAnswersComponent} />
             <Route path={"/profile/"} component={ProfilePage} />
-            <Route exact path="/chat" render={(props) => <Chat {...props} />} />
+            <Route exact path="/talk" render={(props) => <Chat {...props} />} />
           </Switch>
         </BrowserRouter>
       </div>

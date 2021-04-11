@@ -38,15 +38,17 @@ const Chat = (props) => {
     }
     connect();
     loadContacts();
+    console.log("connect method and load contact method called and executed");
   }, []);
 
   useEffect(() => {
     console.log("component has been rerendered,now current user is ",currentUser);
     if (activeContact === undefined||currentUser.id===undefined) return;
     console.log(currentUser.displayName,"marker");
-    findChatMessages(activeContact.id, currentUser.id).then((msgs) =>
+    findChatMessages(activeContact.id, currentUser.id).then((msgs) =>{
       setMessages(msgs)
-    );
+      console.log(msgs,"old chat messages  state updated");
+    });
     loadContacts();
   }, [activeContact]);
 
@@ -99,27 +101,28 @@ const Chat = (props) => {
         content: msg,
         timestamp: new Date(),
       };
-      stompClient.send("/dmForum/chat", {}, JSON.stringify(message));
-
+      console.log("message is ready to be snet to client",message);
+      stompClient.send("/app/chat", {}, JSON.stringify(message));
+      console.log("message has been sent",JSON.stringify(message));
       const newMessages = [...messages];
       newMessages.push(message);
       setMessages(newMessages);
+      console.log("message state is updated",newMessages);
     }
   };
 
   const loadContacts = () => {
-    console.log(getUsers());
     const promise = getUsers().then((users) =>
       users.map((contact) =>
         countNewMessages(contact.id, currentUser.id).then((count) => {
           contact.newMessages = count;
+          console.log("count new messages in returned and added to contact",contact);
           return contact;
         })
       )
     );
     promise.then((promises) =>
       Promise.all(promises).then((users) => {
-        console.log(users);
         setContacts(users);
         if (activeContact === undefined && users.length > 0) {
           setActiveContact(users[0]);
