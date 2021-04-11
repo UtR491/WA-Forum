@@ -53,21 +53,16 @@ class SignupComponent extends React.Component {
 
     if(this.state.displayName.length > 0 && this.state.password.length > 0 && !this.state.invalidReg && !this.state.passwordConfimMismatch) {
     loginService.signup(this.state).then((response) => {
-      console.log("response was == ", response);
       if (response.status === 200) {
         this.props.history.go(0);
       }
     }).catch((error) => {
-      console.log("error on signup = ", error);
       this.setState({
         passwordConfimMismatch: false,
         invalidReg: false,
         errorInSignup: true,
       })
     });
-    } else {
-      console.log("empty fields");
-      console.log("state = ", this.setState);
     }
   }
 

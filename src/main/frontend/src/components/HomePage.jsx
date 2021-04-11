@@ -30,6 +30,7 @@ class HomePage extends React.Component {
       body: "",
       tags: [],
     };
+    this.tagsString = "";
   }
 
   myProfile(event) {
@@ -41,14 +42,13 @@ class HomePage extends React.Component {
 
   sendAnswer(event) {
     if (this.questionObject.body.length > 0) {
+      this.questionObject.tags = this.tagsString.split(/(\s+)/).filter((e) => e.trim().length> 0);
       questionService
         .postQuestion(this.questionObject)
         .then((response) => {
-          console.log("question was asked....", response);
           this.props.history.go(0);
         })
         .catch((error) => {
-          console.log("error");
           this.props.history.go(0);
         });
     }
@@ -117,6 +117,14 @@ class HomePage extends React.Component {
                     placeholder="Ask your doubt..."
                     onChange={(event) => {
                       this.questionObject.body = event.target.value;
+                    }}
+                  />
+                  <Form.Control
+                    as="textarea"
+                    rows={2}
+                    placeholder="Space separated list of relevant tags. Use - for multi-word tags."
+                    onChange={(event) => {
+                      this.tagsString = event.target.value;
                     }}
                   />
                   <button className="submitButton" onClick={this.sendAnswer}>

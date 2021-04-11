@@ -6,7 +6,7 @@ import NavbarComponent from "./NavbarComponent";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-css-only/css/bootstrap.min.css";
 import "mdbreact/dist/css/mdb.css";
-import {Redirect} from "react-router-dom"
+import { Redirect } from "react-router-dom";
 import {
   Row,
   Container,
@@ -16,6 +16,7 @@ import {
   Tab,
   OverlayTrigger,
   Popover,
+  ListGroup,
 } from "react-bootstrap";
 
 import questionService from "../services/QuestionService";
@@ -29,6 +30,8 @@ import githubFill from "@iconify-icons/akar-icons/github-fill";
 import codeforcesIcon from "@iconify-icons/simple-icons/codeforces";
 import userService from "../services/UserService";
 import QuestionAnswerComponent from "./QuestionAnswerComponent";
+import ProfileService from "../services/ProfileService";
+import UserService from "../services/UserService";
 class ProfilePage extends React.Component {
   constructor(props) {
     super(props);
@@ -43,20 +46,47 @@ class ProfilePage extends React.Component {
           postses: [],
         },
       },
+      followers : [],
+      following: [],
       displayName: "",
       aboutMe: "",
       codeforces: "",
       codechef: "",
       github: "",
       links: [],
+      followStatus: "YOU_DONT",
     };
+    this.isItYou = false;
+    this.getFollowers = this.getFollowers.bind(this);
+    this.getFollowing = this.getFollowing.bind(this);
+    this.followToggle = this.followToggle.bind(this);
+    this.goToProfile = this.goToProfile.bind(this);
+    this.goToEditPage = this.goToEditPage.bind(this);
+  }
+
+  followToggle() {
+    ProfileService.followUser(this.state.links.follow.href).then((response) => {
+      if (this.state.followStatus === "YOU_DONT") {
+        this.setState({
+          followStatus: "YOU_FOLLOW",
+        });
+      } else {
+        this.setState({
+          followStatus: "YOU_DONT",
+        });
+      }
+    });
+  }
+
+  goToEditPage() {
+    this.props.history.push("/profile/my/edit");
   }
 
   componentDidMount() {
-    console.log("The states from the history api are ", this.props.location.state);
     userService
       .getProfileData(this.props.location.state.getOwnerProfile)
       .then((response) => {
+        this.isItYou = response.data.itYou;
         this.setState({
           displayName: response.data.displayName,
           codechef: response.data.codechef,
@@ -64,6 +94,7 @@ class ProfilePage extends React.Component {
           github: response.data.github,
           aboutMe: response.data.aboutMe,
           links: response.data._links,
+          followStatus: response.data.followStatus,
         });
         questionService
           .getQuestionsByLink(this.state.links.userQuestions.href)
@@ -83,6 +114,32 @@ class ProfilePage extends React.Component {
       });
   }
 
+  getFollowers() {
+    UserService.getFollowers(this.state.links.getFollowers.href).then((response) => {
+      if(response.data._embedded !== undefined)
+      this.setState({
+        followers: response.data._embedded.followerses,
+      })
+    })
+  }
+
+  getFollowing() {
+    UserService.getFollowers(this.state.links.getFollowing.href).then((response) => {
+      if(response.data._embedded !== undefined)
+      this.setState({
+        followers: response.data._embedded.followings,
+      })
+    })
+  }
+
+  goToProfile(event) {
+    this.props.history.push(
+      "/profile/" + event.target.id,
+      { getOwnerProfile: "http://localhost:8080/api/profile/" + event.target.id}
+    );
+    this.props.history.go(0);
+  }
+
   render() {
     if (sessionStorage.getItem("jwt") === null) {
       return (
@@ -96,13 +153,37 @@ class ProfilePage extends React.Component {
         />
       );
     }
-    console.log("this.state.answers ", this.state.answers);
-    const popover = (
+    const following = (
       <Popover id="popover-basic">
-        <Popover.Title as="h3">Popover right</Popover.Title>
         <Popover.Content>
-          And here's some <strong>amazing</strong> content. It's very engaging.
-          right?
+          {
+            this.state.following === undefined || this.state.following === [] ?
+            <text><strong>The user does not follow anybody.</strong></text> :
+            <ListGroup>
+              {
+                this.state.following.map((following) => {
+                  return <ListGroup.Item className={following.followingId} id={following.followingId} onClick={this.goToProfile}>{following.name}</ListGroup.Item>
+                })
+              }
+            </ListGroup>
+          }
+        </Popover.Content>
+      </Popover>
+    );
+    const followers = (
+      <Popover id="popover-basic">
+        <Popover.Content>
+          {
+            this.state.followers === undefined || this.state.followers === [] ?
+            <text><strong>The user has no followers.</strong></text> :
+            <ListGroup>
+              {
+                this.state.followers.map((follower) => {
+                  return <ListGroup.Item className={follower.followerId} id={follower.followerId} onClick={this.goToProfile}>{follower.name}</ListGroup.Item>
+                })
+              }
+            </ListGroup>
+          }
         </Popover.Content>
       </Popover>
     );
@@ -138,23 +219,29 @@ class ProfilePage extends React.Component {
                   <p>{this.state.aboutMe}</p>
                 </Col>
               </Row>
-
-              <Row id="follow">
-                <Col>Followers</Col>
-                <Col>Following</Col>
-              </Row>
-
               <Row id="followNumber">
-                <Col>
+                <Col
+                    onClick={this.getFollowers}
+                >
                   <OverlayTrigger
                     trigger="click"
                     placement="right"
-                    overlay={popover}
+                    onClick={this.getFollowing}
+                    overlay={followers}
                   >
-                    <span variant="success">12</span>
+                    <text variant="success"><strong>Followers</strong></text>
                   </OverlayTrigger>
                 </Col>
-                <Col>8</Col>
+                <Col>
+                  <OverlayTrigger
+                    trigger="click"
+                    onClick={this.getFollowing}
+                    placement="right"
+                    overlay={following}
+                  >
+                    <text variant="success"><strong>Following</strong></text>
+                  </OverlayTrigger>
+                </Col>
               </Row>
 
               <Row id="links">
@@ -181,7 +268,7 @@ class ProfilePage extends React.Component {
                   <a
                     href={
                       "https://www.github.com/" +
-                      (this.state.codechef === null ? "" : this.state.codechef)
+                      (this.state.github === null ? "" : this.state.github)
                     }
                   >
                     <Icon
@@ -213,9 +300,23 @@ class ProfilePage extends React.Component {
 
               <Row md="auto" id="followedit">
                 <Col>
-                  <Button variant="outline-primary" block>
-                    Edit Profile
-                  </Button>
+                  {this.isItYou ? (
+                    <Button onClick={this.goToEditPage}>Edit Profile</Button>
+                  ) : this.state.followStatus === "YOU_DONT" ? (
+                    <Button
+                      style={{ color: "white" }}
+                      onClick={this.followToggle}
+                    >
+                      Follow
+                    </Button>
+                  ) : (
+                    <Button
+                      style={{ color: "orange" }}
+                      onClick={this.followToggle}
+                    >
+                      Unfollow
+                    </Button>
+                  )}
                 </Col>
               </Row>
             </Col>
@@ -268,14 +369,6 @@ class ProfilePage extends React.Component {
                     undefined ? (
                     this.state.answers._embedded.singleQuestionAnswerWrappers.map(
                       (wrapper) => {
-                        console.log(
-                          "wrapper.answer.body = ",
-                          wrapper.answer.body
-                        );
-                        console.log(
-                          "wrapper.question.body = ",
-                          wrapper.question.body
-                        );
                         return (
                           <QuestionAnswerComponent
                             history={this.props.history}

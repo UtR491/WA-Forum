@@ -9,6 +9,7 @@ import com.waforum.backend.repository.PostsRepository;
 import com.waforum.backend.repository.UserRepository;
 import com.waforum.backend.util.JwtUtil;
 import com.waforum.backend.util.PostsUtil;
+import com.waforum.backend.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -42,6 +43,9 @@ public class UserProfileController {
     PostsUtil postsUtil;
 
     @Autowired
+    UserUtil userUtil;
+
+    @Autowired
     SingleQuestionAnswerWrapperAssembler singleQuestionAnswerWrapperAssembler;
 
     @Autowired
@@ -62,7 +66,10 @@ public class UserProfileController {
 
     @GetMapping("/profile/{id}")
     public EntityModel<User> getProfileInfoById(@PathVariable Integer id) {
-        return profileAssembler.toModel(userRepository.findById(id).orElseThrow(() -> new ProfileNotFoundException(id)));
+        User user = userRepository.findById(id).orElseThrow(() -> new ProfileNotFoundException(id));
+        userUtil.setFollowStatus(user, null);
+        userUtil.setIsItYou(user);
+        return profileAssembler.toModel(user);
     }
 
     //method to show all the questions asked by the user
@@ -104,7 +111,10 @@ public class UserProfileController {
     @GetMapping("/profile/{id}/followers")
     public CollectionModel<EntityModel<Followers>>getFollowersById(@PathVariable Integer id){
         List<EntityModel<Followers>>followerList= followersRepository.findAllByUserId(id).stream().
-                map(fr->followersAssembler.toModel(fr)).collect(Collectors.toList());
+                map(fr->{
+                    fr.setName(userRepository.findById(fr.getFollowerId()).orElseThrow(() -> new ProfileNotFoundException(fr.getFollowerId())).getDisplayName());
+                    return followersAssembler.toModel(fr);
+                }).collect(Collectors.toList());
         return CollectionModel.of(followerList,
                 linkTo(methodOn(UserProfileController.class).getFollowersById(id)).withSelfRel(),
                 linkTo(methodOn(UserProfileController.class).getProfileInfoById(id)).withRel("userProfile"));
@@ -113,7 +123,10 @@ public class UserProfileController {
     @GetMapping("/profile/{id}/following")
     public CollectionModel<EntityModel<Following>>getFollowingById(@PathVariable Integer id){
         List<EntityModel<Following>>followingList=followingRepository.findAllByUserId(id).stream().
-                map(fg->followingAssembler.toModel(fg)).collect(Collectors.toList());
+                map(fg->{
+                    fg.setName(userRepository.findById(fg.getFollowingId()).orElseThrow(() -> new ProfileNotFoundException(fg.getFollowingId())).getDisplayName());
+                    return followingAssembler.toModel(fg);
+                }).collect(Collectors.toList());
         return CollectionModel.of(followingList,
                 linkTo(methodOn(UserProfileController.class).getFollowingById(id)).withSelfRel(),
                 linkTo(methodOn(UserProfileController.class).getProfileInfoById(id)).withRel("userProfile"));
@@ -121,26 +134,32 @@ public class UserProfileController {
 
     @PostMapping("/profile/{id}/follow")
     public ResponseEntity<?>follow(@PathVariable Integer id){
-        Integer userId=userRepository.findByRegistrationNumber(Integer.parseInt(jwtUtil.extractRegistrationNumber((String) SecurityContextHolder.getContext().getAuthentication().getCredentials()))).getId();
-        if (userId.equals(id))throw new CanNotFollowException(id);
+        UserDetailsImpl user=((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        if (user.getId().equals(id))throw new CanNotFollowException(id);
         else {
-            followersRepository.save(new Followers(id,userId));
-            followingRepository.save(new Following(userId,id));
+            try {
+                followersRepository.save(new Followers(id,user.getId()));
+                followingRepository.save(new Following(user.getId(),id));
+            } catch (Exception e) { // if it already exists and has been clicked again, it means unfollow.
+                followersRepository.delete(followersRepository.findByUserIdAndFollowerId(id, user.getId()));
+                followingRepository.delete(followingRepository.findByUserIdAndFollowingId(user.getId(), id));
+            }
             return ResponseEntity.noContent().build();
         }
     }
     @PostMapping("/profile/{id}/edit")
     public ResponseEntity<?>editProfile(@PathVariable Integer id,@RequestBody User editedProfile){
-        Integer userId=userRepository.findByRegistrationNumber(Integer.parseInt(jwtUtil.extractRegistrationNumber((String) SecurityContextHolder.getContext().getAuthentication().getCredentials()))).getId();
+        UserDetailsImpl user=((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        Integer userId=user.getId();
         if(!userId.equals(id))throw new CanNotEditProfileException();
         else {
             User oldProfile = userRepository.findById(id).orElseThrow(() -> new ProfileNotFoundException(id));
-            oldProfile.setDisplayName(editedProfile.getDisplayName());
-            oldProfile.setAboutMe(editedProfile.getAboutMe());
-            oldProfile.setCodechef(editedProfile.getCodechef());
-            oldProfile.setCodeforces(editedProfile.getCodeforces());
-            oldProfile.setGithub(editedProfile.getGithub());
-            oldProfile.setEmail(editedProfile.getEmail());
+            if(!editedProfile.getDisplayName().equals("")) oldProfile.setDisplayName(editedProfile.getDisplayName());
+            if(!editedProfile.getAboutMe().equals("")) oldProfile.setAboutMe(editedProfile.getAboutMe());
+            if(!editedProfile.getCodechef().equals("")) oldProfile.setCodechef(editedProfile.getCodechef());
+            if(!editedProfile.getCodeforces().equals("")) oldProfile.setCodeforces(editedProfile.getCodeforces());
+            if(!editedProfile.getGithub().equals("")) oldProfile.setGithub(editedProfile.getGithub());
+            if(!editedProfile.getEmail().equals("")) oldProfile.setEmail(editedProfile.getEmail());
             userRepository.save(oldProfile);
             return ResponseEntity.noContent().build();
         }

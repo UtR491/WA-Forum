@@ -26,6 +26,18 @@ class AllAnswersService {
       },
     });
   }
+
+  acceptAnswer(link, answerId) {
+    return axios({
+      url: link,
+      method: "POST",
+      data: JSON.stringify(answerId),
+      headers: {
+        Authorization: "Bearer " + sessionStorage.getItem("jwt"),
+        "Content-Type": "application/json",
+      },
+    });
+  }
 }
 
 export default new AllAnswersService();

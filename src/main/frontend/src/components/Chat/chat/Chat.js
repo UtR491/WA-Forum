@@ -49,7 +49,6 @@ const Chat = (props) => {
   };
 
   const onConnected = () => {
-    console.log("connected");
     console.log(currentUser);
     stompClient.subscribe(
       "/user/" + currentUser.id + "/queue/messages",
