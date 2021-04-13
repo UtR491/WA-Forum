@@ -23,7 +23,7 @@ class UserService {
       headers: {
         Authorization: "Bearer " + sessionStorage.getItem("jwt"),
       },
-    })
+    });
   }
 }
 

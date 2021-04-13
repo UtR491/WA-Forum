@@ -5,14 +5,16 @@
 }
 
 #cardbody {
-  background-color: #56768f;
-  border: #707070;
   border-radius: 15px;
+
+  background-image: linear-gradient(315deg, #7f53ac 0%, #7f53ac 74%);
 }
 
 .customCard {
-  background-color: #364153 !important;
+  background-image: linear-gradient(315deg, #7f53ac 0%, #647dee 74%);
   box-shadow: none !important;
+  border-radius: 15px !important;
+  font-family: "Poppins", sans-serif;
 }
 
 .asker {
@@ -41,21 +43,20 @@
   color: pink;
 }
 
-
-#answercard{
-    padding: 10px;
+#answercard {
+  padding: 10px;
 }
 
 .clickable-paragraph:hover {
   text-decoration: underline;
 }
 
-.commentButton:hover{
+.commentButton:hover {
   cursor: pointer;
   color: #364153;
 }
 
-.answererName:hover{
+.answererName:hover {
   cursor: pointer;
   text-decoration: underline;
 }
@@ -66,4 +67,8 @@
 #showansicon:hover {
   cursor: pointer;
   color: #4285f4;
+}
+
+#wrapperanswer {
+  text-align: left !important;
 }

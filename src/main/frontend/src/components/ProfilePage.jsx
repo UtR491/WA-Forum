@@ -17,6 +17,7 @@ import {
   OverlayTrigger,
   Popover,
   ListGroup,
+  Modal,
 } from "react-bootstrap";
 
 import questionService from "../services/QuestionService";
@@ -46,7 +47,7 @@ class ProfilePage extends React.Component {
           postses: [],
         },
       },
-      followers : [],
+      followers: [],
       following: [],
       displayName: "",
       aboutMe: "",
@@ -115,28 +116,31 @@ class ProfilePage extends React.Component {
   }
 
   getFollowers() {
-    UserService.getFollowers(this.state.links.getFollowers.href).then((response) => {
-      if(response.data._embedded !== undefined)
-      this.setState({
-        followers: response.data._embedded.followerses,
-      })
-    })
+    UserService.getFollowers(this.state.links.getFollowers.href).then(
+      (response) => {
+        if (response.data._embedded !== undefined)
+          this.setState({
+            followers: response.data._embedded.followerses,
+          });
+      }
+    );
   }
 
   getFollowing() {
-    UserService.getFollowers(this.state.links.getFollowing.href).then((response) => {
-      if(response.data._embedded !== undefined)
-      this.setState({
-        followers: response.data._embedded.followings,
-      })
-    })
+    UserService.getFollowers(this.state.links.getFollowing.href).then(
+      (response) => {
+        if (response.data._embedded !== undefined)
+          this.setState({
+            followers: response.data._embedded.followings,
+          });
+      }
+    );
   }
 
   goToProfile(event) {
-    this.props.history.push(
-      "/profile/" + event.target.id,
-      { getOwnerProfile: "http://localhost:8080/api/profile/" + event.target.id}
-    );
+    this.props.history.push("/profile/" + event.target.id, {
+      getOwnerProfile: "http://localhost:8080/api/profile/" + event.target.id,
+    });
     this.props.history.go(0);
   }
 
@@ -156,34 +160,50 @@ class ProfilePage extends React.Component {
     const following = (
       <Popover id="popover-basic">
         <Popover.Content>
-          {
-            this.state.following === undefined || this.state.following === [] ?
-            <text><strong>The user does not follow anybody.</strong></text> :
+          {this.state.following === undefined || this.state.following === [] ? (
+            <text>
+              <strong>The user does not follow anybody.</strong>
+            </text>
+          ) : (
             <ListGroup>
-              {
-                this.state.following.map((following) => {
-                  return <ListGroup.Item className={following.followingId} id={following.followingId} onClick={this.goToProfile}>{following.name}</ListGroup.Item>
-                })
-              }
+              {this.state.following.map((following) => {
+                return (
+                  <ListGroup.Item
+                    className={following.followingId}
+                    id={following.followingId}
+                    onClick={this.goToProfile}
+                  >
+                    {following.name}
+                  </ListGroup.Item>
+                );
+              })}
             </ListGroup>
-          }
+          )}
         </Popover.Content>
       </Popover>
     );
     const followers = (
       <Popover id="popover-basic">
         <Popover.Content>
-          {
-            this.state.followers === undefined || this.state.followers === [] ?
-            <text><strong>The user has no followers.</strong></text> :
+          {this.state.followers === undefined || this.state.followers === [] ? (
+            <text>
+              <strong>The user has no followers.</strong>
+            </text>
+          ) : (
             <ListGroup>
-              {
-                this.state.followers.map((follower) => {
-                  return <ListGroup.Item className={follower.followerId} id={follower.followerId} onClick={this.goToProfile}>{follower.name}</ListGroup.Item>
-                })
-              }
+              {this.state.followers.map((follower) => {
+                return (
+                  <ListGroup.Item
+                    className={follower.followerId}
+                    id={follower.followerId}
+                    onClick={this.goToProfile}
+                  >
+                    {follower.name}
+                  </ListGroup.Item>
+                );
+              })}
             </ListGroup>
-          }
+          )}
         </Popover.Content>
       </Popover>
     );
@@ -191,7 +211,6 @@ class ProfilePage extends React.Component {
     return (
       <div className="App">
         <NavbarComponent history={this.props.history} />
-
         <Container>
           <Row id="sidedetails">
             <Col sm>
@@ -220,16 +239,16 @@ class ProfilePage extends React.Component {
                 </Col>
               </Row>
               <Row id="followNumber">
-                <Col
-                    onClick={this.getFollowers}
-                >
+                <Col onClick={this.getFollowers}>
                   <OverlayTrigger
                     trigger="click"
                     placement="right"
                     onClick={this.getFollowing}
                     overlay={followers}
                   >
-                    <text variant="success"><strong>Followers</strong></text>
+                    <text variant="success">
+                      <strong>Followers</strong>
+                    </text>
                   </OverlayTrigger>
                 </Col>
                 <Col>
@@ -239,7 +258,9 @@ class ProfilePage extends React.Component {
                     placement="right"
                     overlay={following}
                   >
-                    <text variant="success"><strong>Following</strong></text>
+                    <text variant="success">
+                      <strong>Following</strong>
+                    </text>
                   </OverlayTrigger>
                 </Col>
               </Row>
