@@ -9,13 +9,23 @@ import "bootstrap-css-only/css/bootstrap.min.css";
 import "mdbreact/dist/css/mdb.css";
 import { Card, Form, Row, Container, Col, Button } from "react-bootstrap";
 
-class HomePage extends React.Component {
+class SearchLandingPage extends React.Component {
   constructor(props) {
     super(props);
     this.myProfile = this.myProfile.bind(this);
     this.sendAnswer = this.sendAnswer.bind(this);
     this.state = {
-      questions: {
+      questions1: {
+        _embedded: {
+          postses: [],
+        },
+        _links: {
+          self: {
+            href: "",
+          },
+        },
+      },
+      questions2: {
         _embedded: {
           postses: [],
         },
@@ -26,6 +36,7 @@ class HomePage extends React.Component {
         },
       },
     };
+  
     this.questionObject = {
       body: "",
       tags: [],
@@ -55,12 +66,17 @@ class HomePage extends React.Component {
   }
 
   componentDidMount() {
-    questionService.getQuestions().then((response) => {
-      this.setState({
-        questions: response.data,
-        loaded: true,
+    questionService.elasticSearchByBody(this.props.location.state.data).then((response1) => {
+        questionService.elasticSearchByName(this.props.location.state.data).then((response2) => {
+            this.setState({
+              questions2: response2.data,
+              questions1: response1.data,
+              loaded: true,
+            });
+            console.log(this.state.questions1)
+          })
       });
-    });
+      
   }
 
   render() {
@@ -79,21 +95,37 @@ class HomePage extends React.Component {
 
     return (
       <div className="App">
-        <NavbarComponent history={this.props.history} isHome={true} />
+        <NavbarComponent history={this.props.history}  />
+
         <Row>
           <Col xs={8} id="col2" style={{ marginLeft: "80px" }}>
-            {this.state.questions._embedded.postses.map((question) => (
+            {this.state.questions1._embedded.postses.map((question1) => (
               <QuestionCard
-                id={question.id}
-                body={question.body}
-                ownerUserId={question.ownerUserId}
-                ownerDisplayName={question.ownerDisplayName}
-                upvoteCount={question.upvoteCount}
-                creationDate={question.creationDate}
-                tags={question.tags}
-                links={question._links}
-                currentHasVoted={question.currentHasVoted}
-                previousPageLink={this.state.questions._links.self.href}
+                id={question1.id}
+                body={question1.body}
+                ownerUserId={question1.ownerUserId}
+                ownerDisplayName={question1.ownerDisplayName}
+                upvoteCount={question1.upvoteCount}
+                creationDate={question1.creationDate}
+                tags={question1.tags}
+                links={question1._links}
+                currentHasVoted={question1.currentHasVoted}
+                previousPageLink={this.state.questions1._links.self.href}
+                history={this.props.history}
+              />
+            ))}
+            {this.state.questions2._embedded.postses.map((question2) => (
+              <QuestionCard
+                id={question2.id}
+                body={question2.body}
+                ownerUserId={question2.ownerUserId}
+                ownerDisplayName={question2.ownerDisplayName}
+                upvoteCount={question2.upvoteCount}
+                creationDate={question2.creationDate}
+                tags={question2.tags}
+                links={question2._links}
+                currentHasVoted={question2.currentHasVoted}
+                previousPageLink={this.state.questions2._links.self.href}
                 history={this.props.history}
               />
             ))}
@@ -139,4 +171,4 @@ class HomePage extends React.Component {
   }
 }
 
-export default HomePage;
+export default SearchLandingPage;

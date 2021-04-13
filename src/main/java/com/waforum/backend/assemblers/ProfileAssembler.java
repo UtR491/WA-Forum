@@ -15,6 +15,10 @@ public class ProfileAssembler implements RepresentationModelAssembler<User, Enti
                 linkTo(methodOn(PostsController.class).getQuestions(null)).withRel("home"),
                 linkTo(methodOn(UserProfileController.class).getProfileInfoById(profile.getId())).withSelfRel(),
                 linkTo(methodOn(UserProfileController.class).getQuestionsByUserId(profile.getId())).withRel("userQuestions"),
+                linkTo(methodOn(UserProfileController.class).editProfile(profile.getId(), null)).withRel("editProfile"),
+                linkTo(methodOn(UserProfileController.class).follow(profile.getId())).withRel("follow"),
+                linkTo(methodOn(UserProfileController.class).getFollowersById(profile.getId())).withRel("getFollowers"),
+                linkTo(methodOn(UserProfileController.class).getFollowingById(profile.getId())).withRel("getFollowing"),
                 linkTo(methodOn(UserProfileController.class).getAnswersById(profile.getId())).withRel("userAnswers"));
         return entityModel;
     }

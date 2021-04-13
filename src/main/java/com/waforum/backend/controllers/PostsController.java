@@ -126,6 +126,19 @@ public class PostsController {
                 answers));
     }
 
+    @PostMapping("/posts/questions/{id}/accept")
+    public ResponseEntity<?> acceptAnswer(@PathVariable Integer id, @RequestBody Integer acceptingAnswerId) {
+        try {
+            Posts question = postsRepository.findById(id).orElseThrow(() -> new QuestionNotFoundException(id));
+            postsRepository.findById(id).orElseThrow(() -> new AnswerNotFoundException(acceptingAnswerId));
+            question.setAcceptedAnswerId(acceptingAnswerId);
+            postsRepository.save(question);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(404).build();
+        }
+    }
+
     @GetMapping("/posts/questions/{qid}/answers/{aid}")
     public EntityModel<SingleQuestionAnswerWrapper> getAnswerByIdByQuestionId(@PathVariable Integer qid, @PathVariable Integer aid) {
 

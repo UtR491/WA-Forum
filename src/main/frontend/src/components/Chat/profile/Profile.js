@@ -21,9 +21,6 @@ const Profile = (props) => {
     getCurrentUser()
       .then((response) => {
         setLoggedInUser(response);
-      })
-      .catch((error) => {
-        console.log(error);
       });
   };
 

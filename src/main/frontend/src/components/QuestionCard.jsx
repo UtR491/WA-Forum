@@ -86,7 +86,6 @@ class QuestionCard extends React.Component {
   visitOwner() {
     this.props.history.push("/profile/" + this.props.ownerUserId, {
       getAnswers: this.props.links.answers,
-
       ownerUserId: this.props.ownerUserId,
       getOwnerProfile: this.props.links.ownerProfile.href,
     });

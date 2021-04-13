@@ -14,6 +14,7 @@ class AllAnswersComponent extends React.Component {
     this.state = {
       answers: [],
       question: {},
+      links: {},
     };
     this.sendAnswer = this.sendAnswer.bind(this);
     this.answerObject = {
@@ -30,19 +31,22 @@ class AllAnswersComponent extends React.Component {
   }
 
   sendAnswer() {
-    console.log("the text in textarea is ", this.answerObject);
-    if(this.answerObject.length !== 0)
-    allAnswersService.sendAnswer(this.state.answers.data._links.answerQuestion.href, this.answerObject).then((response) => {
-      this.props.history.go(0);
-    });
+    if (this.answerObject.length !== 0)
+      allAnswersService
+        .sendAnswer(
+          this.state.answers.data._links.answerQuestion.href,
+          this.answerObject
+        )
+        .then((response) => {
+          this.props.history.go(0);
+        });
   }
 
   componentDidMount() {
     allAnswersService
       .getAllAnswersForAQuestion(this.props.location.state.getAnswers.href)
       .then((response) => {
-        this.setState({ answers: response, question: response.data.question });
-        console.log("response, ", response);
+        this.setState({ answers: response, question: response.data.question, links: response.data._links });
       });
   }
 
@@ -90,10 +94,12 @@ class AllAnswersComponent extends React.Component {
                   <Accordion.Collapse eventKey="1">
                     <Card.Body>
                       <Form.Group controlId="exampleForm.ControlTextarea1">
-                        <Form.Control as="textarea" rows={3} 
-                        onChange={(event) => {
-                          this.answerObject.body = event.target.value;
-                        }}
+                        <Form.Control
+                          as="textarea"
+                          rows={3}
+                          onChange={(event) => {
+                            this.answerObject.body = event.target.value;
+                          }}
                         />
                       </Form.Group>
                       <button
@@ -110,10 +116,10 @@ class AllAnswersComponent extends React.Component {
               <br />
               <div>
                 {this.state.answers !== undefined &&
+                this.state.links.acceptAnswer !== undefined &&
                 this.state.answers.data !== undefined &&
                 this.state.answers.data.answers.length !== 0 ? (
                   this.state.answers.data.answers.map((answer) => {
-                    console.log("answer object ", answer);
                     return (
                       <AnswerCard
                         body={answer.body}
@@ -126,6 +132,16 @@ class AllAnswersComponent extends React.Component {
                         links={answer._links}
                         creationDate={answer.creationDate}
                         history={this.props.history}
+                        acceptAnswerLink={this.state.links.acceptAnswer.href}
+                        accepted={
+                          this.state.question !== undefined &&
+                          this.state.question.acceptedAnswerId === answer.id
+                        }
+                        showAcceptButton={
+                          this.state.question.acceptedAnswerId === null &&
+                          this.state.question.ownerUserId ===
+                            parseInt(sessionStorage.getItem("userId"))
+                        }
                       />
                     );
                   })

@@ -11,19 +11,22 @@ import {
 import ChatBubbleOutlineOutlinedIcon from "@material-ui/icons/ChatBubbleOutlineOutlined";
 import votingService from "../services/VotingService";
 import bxUpvote from "@iconify-icons/bx/bx-upvote";
+import "./LoginSignupHolderStyling.css"
 import { Icon } from "@iconify/react";
 import bxDownvote from "@iconify-icons/bx/bx-downvote";
 import commentsService from "../services/CommentsService";
 import profileService from "../services/ProfileService";
+import AllAnswersService from "../services/AllAnswersService";
 
 class AnswerCard extends React.Component {
   constructor(props) {
     super(props);
+    this.acceptAnswer = this.acceptAnswer.bind(this);
     this.state = {
       vote: "NOTHING",
       upvoteCount: 0,
       comments: [],
-      typedComment : "",
+      typedComment: "",
     };
     this.upvoteClicked = this.upvoteClicked.bind(this);
     this.downvoteClicked = this.downvoteClicked.bind(this);
@@ -88,9 +91,11 @@ class AnswerCard extends React.Component {
       commentsService
         .getCommentsForAnswer(this.props.links.getComments.href)
         .then((response) => {
-          this.setState({
-            comments: response.data.comments._embedded.commentses,
-          });
+          if (response.data.comments._embedded !== undefined) {
+            this.setState({
+              comments: response.data.comments._embedded.commentses,
+            });
+          }
         });
     } else {
       this.setState({
@@ -100,29 +105,38 @@ class AnswerCard extends React.Component {
   }
 
   visitOwner() {
-    this.props.history.push("/profile/" + this.props.ownerUserId, 
-    {
+    this.props.history.push("/profile/" + this.props.ownerUserId, {
       getAnswers: this.props.links.answers,
       ownerUserId: this.props.ownerUserId,
       getOwnerProfile: this.props.links.ownerProfile.href,
-    }
-    );
+    });
   }
 
   sendingComment(event) {
-    if(this.state.typedComment.length > 0) {
-      commentsService.sendCommentToAnswer({body : this.state.typedComment}, this.props.links.postComment.href).then((response) => {
-        if(response.status === 201) {
-          this.props.history.go(0);
-        }
-      })
+    if (this.state.typedComment.length > 0) {
+      commentsService
+        .sendCommentToAnswer(
+          { body: this.state.typedComment },
+          this.props.links.postComment.href
+        )
+        .then((response) => {
+          if (response.status === 201) {
+            this.props.history.go(0);
+          }
+        });
     }
+  }
+
+  acceptAnswer() {
+    AllAnswersService.acceptAnswer(this.props.acceptAnswerLink, this.props.id).then((response) => {
+      this.props.history.go(0);
+    });
   }
 
   commentInput(event) {
     this.setState({
-      typedComment: event.target.value
-    })
+      typedComment: event.target.value,
+    });
   }
 
   componentDidMount() {
@@ -139,45 +153,62 @@ class AnswerCard extends React.Component {
           <div className="shadow-box-example z-depth-1-half">
             <Card.Body id="cardbody">
               <Row>
-                  <Col className="votingColumn" xs={1}>
-                    <Row>
-                      <Col>
-                        <Icon
-                          icon={bxUpvote}
-                          color={
-                            this.state.vote === "UPVOTE"
-                              ? "green"
-                              : "currentColor"
-                          }
-                          height="20"
-                          width="20"
-                          className="bi bi-arrow-up-circle-fill upvote"
-                          onClick={this.upvoteClicked}
-                        />
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col>
-                        <strong id="upvoteCount">{this.state.upvoteCount}</strong>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col>
-                        <Icon
-                          icon={bxDownvote}
-                          color={
-                            this.state.vote === "DOWNVOTE"
-                              ? "red"
-                              : "currentColor"
-                          }
-                          height="20"
-                          width="20"
-                          className="bi bi-arrow-down-circle-fill downvote"
-                          onClick={this.downvoteClicked}
-                        />
-                      </Col>
-                    </Row>
-                  </Col>
+                <Col className="votingColumn" xs={1}>
+                  <Row>
+                    <Col>
+                      {this.props.accepted ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          fill="currentColor"
+                          class="bi bi-check"
+                          viewBox="0 0 16 16"
+                          style={{ color: "green" }}
+                        >
+                          <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z" />
+                        </svg>
+                      ) : (
+                        <br />
+                      )}
+                    </Col>
+                    <Col>
+                      <Icon
+                        icon={bxUpvote}
+                        color={
+                          this.state.vote === "UPVOTE"
+                            ? "green"
+                            : "currentColor"
+                        }
+                        height="20"
+                        width="20"
+                        className="bi bi-arrow-up-circle-fill upvote"
+                        onClick={this.upvoteClicked}
+                      />
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <strong id="upvoteCount">{this.state.upvoteCount}</strong>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <Icon
+                        icon={bxDownvote}
+                        color={
+                          this.state.vote === "DOWNVOTE"
+                            ? "red"
+                            : "currentColor"
+                        }
+                        height="20"
+                        width="20"
+                        className="bi bi-arrow-down-circle-fill downvote"
+                        onClick={this.downvoteClicked}
+                      />
+                    </Col>
+                  </Row>
+                </Col>
                 <Col>
                   <Row
                     style={{
@@ -193,7 +224,7 @@ class AnswerCard extends React.Component {
                         <p
                           onClick={this.questionClickedShowAnswers}
                           color="white"
-                          style={{whiteSpace: "pre-wrap"}}
+                          style={{ whiteSpace: "pre-wrap" }}
                         >
                           {this.props.body}
                         </p>
@@ -208,7 +239,7 @@ class AnswerCard extends React.Component {
                 <Card style={{ padding: "0px" }}>
                   <Card.Header style={{ padding: "0px" }}>
                     <Row>
-                      <Col xs={2}>
+                      <Col md="auto">
                         <Accordion.Toggle
                           as={Button}
                           variant="link"
@@ -252,6 +283,13 @@ class AnswerCard extends React.Component {
                       >
                         Answered On - {this.props.creationDate.substring(0, 10)}
                       </Col>
+                      <Col>
+                      {
+                        this.props.showAcceptButton ?
+                        <button className="submitButton" onClick={this.acceptAnswer}>Accept Answer</button>
+                        : <br/>
+                      }
+                      </Col>
                     </Row>
                   </Card.Header>
                   {this.state.comments.map((comment) => (
@@ -262,7 +300,7 @@ class AnswerCard extends React.Component {
                     </Accordion.Collapse>
                   ))}
                   <Card.Footer style={{ padding: "0px" }}>
-                    <Row style={{padding : "0px"}}>
+                    <Row style={{ padding: "0px" }}>
                       <Col>
                         <Form.Group
                           controlId="exampleForm.ControlTextarea1"
@@ -294,7 +332,9 @@ class AnswerCard extends React.Component {
                           />
                         </svg>
                       </Col>
-                      <Col md="auto"><text> </text></Col>
+                      <Col md="auto">
+                        <text> </text>
+                      </Col>
                     </Row>
                   </Card.Footer>
                 </Card>
