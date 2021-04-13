@@ -17,6 +17,7 @@ import {
   OverlayTrigger,
   Popover,
   ListGroup,
+  Modal,
 } from "react-bootstrap";
 
 import questionService from "../services/QuestionService";
@@ -210,7 +211,6 @@ class ProfilePage extends React.Component {
     return (
       <div className="App">
         <NavbarComponent history={this.props.history} />
-
         <Container>
           <Row id="sidedetails">
             <Col sm>

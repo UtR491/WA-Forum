@@ -10,10 +10,6 @@ import votingService from "../services/VotingService";
 import bxUpvote from "@iconify-icons/bx/bx-upvote";
 import bxDownvote from "@iconify-icons/bx/bx-downvote";
 
-import { Icon, InlineIcon } from "@iconify/react";
-import bxUpvote from "@iconify-icons/bx/bx-upvote";
-import bxDownvote from "@iconify-icons/bx/bx-downvote";
-
 class QuestionCard extends React.Component {
   constructor(props) {
     super(props);

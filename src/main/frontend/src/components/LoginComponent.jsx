@@ -46,6 +46,10 @@ class LoginComponent extends React.Component {
     sessionStorage.removeItem("userId");
     return (
       <Container>
+        <script
+          async
+          src="https://cpwebassets.codepen.io/assets/embed/ei.js"
+        ></script>
         <div>
           {this.state.invalidCreds ? (
             <Alert variant="danger">
