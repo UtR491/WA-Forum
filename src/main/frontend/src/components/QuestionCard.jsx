@@ -4,12 +4,11 @@ import "./questionstyle.css";
 //import questionService from '../services/QuestionService';
 import { Icon } from "@iconify/react";
 import { Card, Row, Col, Container } from "react-bootstrap";
-import ChatBubbleOutlineOutlinedIcon from "@material-ui/icons/ChatBubbleOutlineOutlined";
 import Tags from "./Tags";
 import votingService from "../services/VotingService";
 import bxUpvote from "@iconify-icons/bx/bx-upvote";
 import bxDownvote from "@iconify-icons/bx/bx-downvote";
-
+import logo from "./logo.png";
 class QuestionCard extends React.Component {
   constructor(props) {
     super(props);
@@ -166,9 +165,10 @@ class QuestionCard extends React.Component {
                             onClick={this.questionClickedShowAnswers}
                             color="white"
                             style={{ whiteSpace: "pre-wrap" }}
-                          >
-                            {this.props.body}
-                          </div>
+                            dangerouslySetInnerHTML={{
+                              __html: this.props.body,
+                            }}
+                          ></div>
                         </Card.Subtitle>
                       </Col>
                     </Row>
@@ -178,13 +178,6 @@ class QuestionCard extends React.Component {
                     <Row>
                       <Col md="auto">
                         <div>
-                          <img
-                            className="asker"
-                            src="https://upload.wikimedia.org/wikipedia/en/a/a1/NafSadh_Profile.jpg"
-                            alt="user pic"
-                            width="25"
-                            height="25"
-                          />
                           <text style={{ color: "white" }}>
                             {" "}
                             Asked by -{" "}

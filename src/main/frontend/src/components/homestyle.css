@@ -74,3 +74,7 @@ div.form {
 #haveaques:hover {
   cursor: pointer;
 }
+
+#basic-nav-dropdown {
+  color: white;
+}
