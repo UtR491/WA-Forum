@@ -1,7 +1,7 @@
 import React from "react";
 import profileService from "../services/ProfileService";
 import "./LoginSignupHolderStyling.css";
-import { Container, Form, Row, Col, InputGroup, Navbar } from "react-bootstrap";
+import { Container, Form, Row, Col } from "react-bootstrap";
 import NavBar from "./NavbarComponent";
 
 class EditMyProfile extends React.Component {

@@ -1,5 +1,5 @@
 import React from "react";
-import { ListGroup, Row, Col, Container, Button } from "react-bootstrap";
+import {  Row, Col, Container } from "react-bootstrap";
 import "./Tags.css";
 
 class Tags extends React.Component {
@@ -11,16 +11,15 @@ class Tags extends React.Component {
           <Col sm></Col>
           <Col xs={6} sm>
             <Row>
-              {
-                this.props.tags !== null ?
-                (
+              {this.props.tags !== null ? (
                 this.props.tags.map((tag) => (
                   <div className="individualTag">
                     <text className="tagText ">{tag}</text>
                   </div>
-                ))) :
-                <br/>
-              }
+                ))
+              ) : (
+                <br />
+              )}
             </Row>
           </Col>
         </Row>

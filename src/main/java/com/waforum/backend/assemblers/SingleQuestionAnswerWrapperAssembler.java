@@ -12,13 +12,13 @@ public class SingleQuestionAnswerWrapperAssembler implements RepresentationModel
     @Override
     public EntityModel<SingleQuestionAnswerWrapper> toModel(SingleQuestionAnswerWrapper entity) {
         return EntityModel.of(entity,
-                linkTo(methodOn(PostsController.class).getAnswerByIdByQuestionId(entity.getQuestion().getId(),entity.getAnswer().getId())).withSelfRel(),
-                linkTo(methodOn(UserProfileController.class).getProfileInfoById(entity.getQuestion().getOwnerUserId())).withRel("answeredBy"),
-                linkTo(methodOn(UserProfileController.class).getProfileInfoById(entity.getAnswer().getOwnerUserId())).withRel("askedBy"),
+                linkTo(methodOn(PostsController.class).getAnswerByIdByQuestionId(entity.getQuestion().getContent().getId(),entity.getAnswer().getContent().getId())).withSelfRel(),
+                linkTo(methodOn(UserProfileController.class).getProfileInfoById(entity.getQuestion().getContent().getOwnerUserId())).withRel("answeredBy"),
+                linkTo(methodOn(UserProfileController.class).getProfileInfoById(entity.getAnswer().getContent().getOwnerUserId())).withRel("askedBy"),
                 linkTo(methodOn(PostsController.class).getQuestions(null)).withRel("home"),
-                linkTo(methodOn(CommentsController.class).getCommentsByAnswerId(entity.getAnswer().getId())).withRel("comments"),
-                linkTo(methodOn(PostsController.class).getAnswerByQuestionId(entity.getQuestion().getId())).withRel("allAnswers"),
-                linkTo(methodOn(PostsController.class).answerQuestion(entity.getQuestion().getId(), null)).withRel("answerQuestion")
+                linkTo(methodOn(CommentsController.class).getCommentsByAnswerId(entity.getAnswer().getContent().getId())).withRel("comments"),
+                linkTo(methodOn(PostsController.class).getAnswerByQuestionId(entity.getQuestion().getContent().getId())).withRel("allAnswers"),
+                linkTo(methodOn(PostsController.class).answerQuestion(entity.getQuestion().getContent().getId(), null)).withRel("answerQuestion")
         );
     }
 }

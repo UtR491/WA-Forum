@@ -13,7 +13,9 @@ import com.waforum.backend.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -72,6 +74,16 @@ public class UserProfileController {
         return profileAssembler.toModel(user);
     }
 
+    @GetMapping(value = "/profile/summaries", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> findAllUserSummaries() {
+        UserDetailsImpl userDetails = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        return ResponseEntity.ok(userRepository
+                .findAll()
+                .stream()
+                .filter(user -> !user.getRegistrationNumber().equals(userDetails.getRegistrationNumber()))
+                .map(user -> profileAssembler.toModel(user)));
+    }
+
     //method to show all the questions asked by the user
     @GetMapping("/profile/{id}/questions")
     public CollectionModel<EntityModel<Posts>> getQuestionsByUserId(@PathVariable Integer id) {
@@ -91,7 +103,7 @@ public class UserProfileController {
         List<SingleQuestionAnswerWrapper>wrappers=new ArrayList<>();
         for (Posts ans: postsRepository.findAllByPostTypeIdAndOwnerUserId(2, id)) {
             wrappers.add(new SingleQuestionAnswerWrapper(
-                    postsRepository.findById(ans.getParentId()).orElseThrow(()->new QuestionNotFoundException(ans.getParentId())), ans));
+                    postsAssembler.toModel(postsRepository.findById(ans.getParentId()).orElseThrow(()->new QuestionNotFoundException(ans.getParentId()))), postsAssembler.toModel(ans)));
         }
         List<EntityModel<SingleQuestionAnswerWrapper>> wrapperEntityModel=wrappers.stream().map(w->singleQuestionAnswerWrapperAssembler.toModel(w)).collect(Collectors.toList());
         return CollectionModel.of(wrapperEntityModel,

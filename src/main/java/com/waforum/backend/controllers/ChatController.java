@@ -22,7 +22,6 @@ import java.util.Optional;
 import java.util.function.Function;
 
 @RestController
-@RequestMapping("/api")
 public class ChatController {
     @Autowired
     SimpMessagingTemplate simpMessagingTemplate;
@@ -47,11 +46,11 @@ public class ChatController {
                 "/user/chat",
                 new MessageNotification(saved.getId(),saved.getSenderUserId(),saved.getRecipientUserId()));
     }
-    @GetMapping("/messages/{sid}/{rid}/count")
+    @GetMapping("/api/messages/{sid}/{rid}/count")
     public ResponseEntity<Integer>countNewMessages(@PathVariable Integer sid,@PathVariable Integer rid){
         return ResponseEntity.ok(messageRepository.countBySenderUserIdAndRecipientUserIdAndStatus(sid,rid, MessageStatus.DELIVERED));
     }
-    @GetMapping("/messages/{sid}/{rid}")
+    @GetMapping("/api/messages/{sid}/{rid}")
     public ResponseEntity<?>findMessages(@PathVariable Integer sid,@PathVariable Integer rid){
         Optional<Integer> chatId = chatRoomService.getChatId(sid, rid, false);
         List<Messages>messagesList=chatId.map(cId->messageRepository.findByChatId(cId)).orElse(new ArrayList<>());
@@ -60,7 +59,7 @@ public class ChatController {
         }
         return ResponseEntity.ok(messagesList);
     }
-    @GetMapping("/messages/{id}")
+    @GetMapping("/api/messages/{id}")
     public ResponseEntity<?>findMessage(@PathVariable Integer id){
         return ResponseEntity.ok(messageRepository.findById(id).map(messages -> {
             messages.setStatus(MessageStatus.DELIVERED); return messageRepository.save(messages);})

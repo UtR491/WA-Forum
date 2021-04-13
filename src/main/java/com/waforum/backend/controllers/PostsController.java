@@ -120,9 +120,9 @@ public class PostsController {
             return postsAssembler.toModel(answer);
         }).collect(Collectors.toList());
         Collections.reverse(answers);
-        return questionWithAllAnswerWrapperAssembler.toModel(new QuestionWithAllAnswerWrapper(question.get(),
+        return questionWithAllAnswerWrapperAssembler.toModel(new QuestionWithAllAnswerWrapper(postsAssembler.toModel(question.get()),
                 acceptedAnswerId==null?
-                        null: postsRepository.findById(acceptedAnswerId).orElseThrow(()->new AnswerNotFoundException(acceptedAnswerId)),
+                        null: postsAssembler.toModel(postsRepository.findById(acceptedAnswerId).orElseThrow(()->new AnswerNotFoundException(acceptedAnswerId))),
                 answers));
     }
 
@@ -148,7 +148,9 @@ public class PostsController {
         Optional<Posts> answer = Optional.ofNullable(postsRepository.findById(aid).orElseThrow(() -> new AnswerNotForQuestionException(aid, qid)));
         postsUtil.setVoteStatus(answer.get(), null);
         postsUtil.setPostTags(answer.get());
-        return singleQuestionAnswerWrapperAssembler.toModel(new SingleQuestionAnswerWrapper(question.get(), answer.get()));
+        return singleQuestionAnswerWrapperAssembler.toModel(
+                new SingleQuestionAnswerWrapper(postsAssembler.toModel(question.get()),
+                        postsAssembler.toModel(answer.get())));
     }
 
     @PostMapping("/posts/create/questions")

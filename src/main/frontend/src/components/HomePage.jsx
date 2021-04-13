@@ -8,26 +8,18 @@ import NavbarComponent from "./NavbarComponent";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-css-only/css/bootstrap.min.css";
 import "mdbreact/dist/css/mdb.css";
-import Rich from "./editor";
-import { EditorState, convertToRaw } from "draft-js";
+import { EditorState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import "./editor.css";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import {
-  Card,
-  Form,
-  Row,
-  Container,
-  Col,
-  Button,
-  Modal,
-} from "react-bootstrap";
+import { Form, Row, Container, Col, Button, Modal } from "react-bootstrap";
 
 class HomePage extends React.Component {
   constructor(props) {
     super(props);
     this.myProfile = this.myProfile.bind(this);
     this.sendAnswer = this.sendAnswer.bind(this);
+    this.setEditorState = this.setEditorState.bind(this);
     this.onQuestionChange = this.onQuestionChange.bind(this);
 
     this.state = {
@@ -59,12 +51,14 @@ class HomePage extends React.Component {
   }
 
   sendAnswer(event) {
-    console.log("this.questinObject = ", this.questionObject.body);
+    this.questionObject.body = convertToHTML(
+      this.state.editorState !== undefined
+        ? this.state.editorState.getCurrentContent()
+        : ""
+    );
     if (this.questionObject.body.length > 0) {
-      this.questionObject.tags = this.tagsString
-        .split(/(\s+)/)
-        .filter((e) => e.trim().length > 0);
-
+      this.questionObject.tags = this.tagsString.split(/\s\s+/g);
+      console.log("tags are ", this.questionObject.tags);
       questionService
         .postQuestion(this.questionObject)
         .then((response) => {
@@ -80,15 +74,12 @@ class HomePage extends React.Component {
     this.questionObject.body = event.target.value;
   }
 
-  // saveBlogPostToStore(blogPost) {
-  //   const JSBlogPost = {
-  //     ...blogPost,
-  //     content: JSON.stringify(
-  //       convertToRaw(blogPost.content.getCurrentContent())
-  //     ),
-  //   };
-  //   this.props.dispatch(blogActions.saveBlogPostToStore(JSBlogPost));
-  // }
+  setEditorState(state) {
+    this.setState({
+      editorState: state,
+    });
+  }
+
   componentDidMount() {
     questionService.getQuestions().then((response) => {
       this.setState({
@@ -130,50 +121,20 @@ class HomePage extends React.Component {
             <Form.Group>
               <Editor
                 defaultEditorState={this.state.editorState}
-                onEditorStateChange={(state) => {
-                  console.log("event is=====", state);
-                  this.setState({ editorState: state.getCurrentContent() });
-                  console.log("this.editorState = ", this.editorState);
-                  this.questionObject.body = convertToHTML(
-                    this.state.editorState !== undefined
-                      ? this.state.editorState.getCurrentContent()
-                      : ""
-                  );
-                  console.log("question object is", this.questionObject.body);
-                }}
+                onEditorStateChange={this.setEditorState}
                 wrapperClassName="wrapper-class"
                 editorClassName="editor-class"
                 toolbarClassName="toolbar-class"
               />
+              <Form.Group controlId="exampleForm.ControlTextarea1">
+                <Form.Control
+                  placeholder="Space separated list of tags..."
+                  onChange={(event) => {
+                    this.tagsString = event.target.value;
+                  }}
+                />
+              </Form.Group>
             </Form.Group>
-            {/* <Card>
-              <Card.Header style={{ textDecorationAlign: "left" }}>
-                Enter Your Question
-              </Card.Header>
-              <Card.Body>
-                <Form.Group
-                  controlId="exampleForm.ControlTextarea1"
-                  style={{ margin: "0px" }}
-                >
-                  <Form.Control
-                    as="textarea"
-                    rows={10}
-                    placeholder="Ask your doubt..."
-                    onChange={(event) => {
-                      this.questionObject.body = event.target.value;
-                    }}
-                  />
-                  <Form.Control
-                    as="textarea"
-                    rows={2}
-                    placeholder="Space separated list of relevant tags. Use - for multi-word tags."
-                    onChange={(event) => {
-                      this.tagsString = event.target.value;
-                    }}
-                  />
-                </Form.Group>
-              </Card.Body>
-            </Card> */}
           </Modal.Body>
           <Modal.Footer>
             <Button
@@ -192,12 +153,25 @@ class HomePage extends React.Component {
         <Row>
           <Col></Col>
           <Col xs={8} id="col2">
-            <Container onClick={() => this.setState({ show: true })}>
-              <Card id="haveaques">
-                <br></br>
-                <h4 style={{ color: "black" }}>Have a Question?Ask here</h4>
-                <br></br>
-              </Card>
+            <Container
+              onClick={() => this.setState({ show: true })}
+              style={{ borderColor: "white", borderWidth: "10px" }}
+            >
+              <Form.Group
+                style={{
+                  margin: "10px",
+                  opacity: "0.3",
+                  backgroundColor: "pink",
+                }}
+              >
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  placeholder="Have a question? Ask here..."
+                  size="lg"
+                  readOnly
+                />
+              </Form.Group>
             </Container>
             {this.state.questions._embedded.postses.map((question) => (
               <QuestionCard
@@ -208,6 +182,7 @@ class HomePage extends React.Component {
                 upvoteCount={question.upvoteCount}
                 creationDate={question.creationDate}
                 tags={question.tags}
+                onAllAnswer={false}
                 links={question._links}
                 currentHasVoted={question.currentHasVoted}
                 previousPageLink={this.state.questions._links.self.href}

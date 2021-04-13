@@ -1,4 +1,6 @@
 import React from "react";
+import { convertToHTML } from "draft-convert";
+import { Editor } from "react-draft-wysiwyg";
 import { Col, Row } from "react-bootstrap";
 import allAnswersService from "../services/AllAnswersService";
 import NavbarComponent from "./NavbarComponent";
@@ -6,7 +8,8 @@ import { Redirect } from "react-router-dom";
 import AnswerCard from "./AnswerCard";
 import "./AnswerStyle.css";
 import "./LoginSignupHolderStyling.css";
-import { Accordion, Card, Form } from "react-bootstrap";
+import { Accordion, Card } from "react-bootstrap";
+import QuestionCard from "./QuestionCard";
 
 class AllAnswersComponent extends React.Component {
   constructor(props) {
@@ -21,6 +24,13 @@ class AllAnswersComponent extends React.Component {
       body: "",
     };
     this.onAskerClick = this.onAskerClick.bind(this);
+    this.setEditorState = this.setEditorState.bind(this);
+  }
+
+  setEditorState(state) {
+    this.setState({
+      editorState: state,
+    });
   }
 
   onAskerClick(event) {
@@ -31,6 +41,11 @@ class AllAnswersComponent extends React.Component {
   }
 
   sendAnswer() {
+    this.answerObject.body = convertToHTML(
+      this.state.editorState !== undefined
+        ? this.state.editorState.getCurrentContent()
+        : ""
+    );
     if (this.answerObject.length !== 0)
       allAnswersService
         .sendAnswer(
@@ -75,20 +90,28 @@ class AllAnswersComponent extends React.Component {
           <Col></Col>
           <Col xs={7}>
             <div>
-              <div style={{ color: "white" }}>
-                {this.state.answers.data !== undefined
-                  ? this.state.answers.data.question.body
-                  : ""}
-              </div>
-              <p style={{ color: "white" }}>
-                {" "}
-                - Asked By{""}
-                <strong className="asker" onClick={this.onAskerClick}>
-                  {this.state.question !== undefined
-                    ? this.state.question.ownerDisplayName
-                    : ""}
-                </strong>
-              </p>
+              {this.state.answers.data !== undefined ? (
+                <QuestionCard
+                  id={this.state.answers.data.question.id}
+                  body={this.state.answers.data.question.body}
+                  ownerUserId={this.state.answers.data.question.ownerUserId}
+                  ownerDisplayName={
+                    this.state.answers.data.question.ownerDisplayName
+                  }
+                  upvoteCount={this.state.answers.data.question.upvoteCount}
+                  creationDate={this.state.answers.data.question.creationDate}
+                  tags={this.state.answers.data.question.tags}
+                  onAllAnswer={true}
+                  links={this.state.question._links}
+                  currentHasVoted={
+                    this.state.answers.data.question.currentHasVoted
+                  }
+                  previousPageLink={this.state.question._links.self.href}
+                  history={this.props.history}
+                />
+              ) : (
+                <br />
+              )}
               <br />
               <Accordion defaultActiveKey="0">
                 <Card>
@@ -97,15 +120,13 @@ class AllAnswersComponent extends React.Component {
                   </Accordion.Toggle>
                   <Accordion.Collapse eventKey="1">
                     <Card.Body>
-                      <Form.Group controlId="exampleForm.ControlTextarea1">
-                        <Form.Control
-                          as="textarea"
-                          rows={3}
-                          onChange={(event) => {
-                            this.answerObject.body = event.target.value;
-                          }}
-                        />
-                      </Form.Group>
+                      <Editor
+                        defaultEditorState={this.state.editorState}
+                        onEditorStateChange={this.setEditorState}
+                        wrapperClassName="wrapper-class"
+                        editorClassName="editor-class"
+                        toolbarClassName="toolbar-class"
+                      />
                       <button
                         className="submitButton"
                         onClick={this.sendAnswer}

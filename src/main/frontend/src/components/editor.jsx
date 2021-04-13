@@ -9,10 +9,6 @@ const Rich = () => {
   let _contentState = ContentState.createFromText("Sample content state");
   const raw = convertToRaw(_contentState);
   const [contentState, setContentState] = useState(raw);
-  const onInputPropagate = (event) => {
-    setContentState(event.target.value);
-    console.log("SetContentState==", setContentState);
-  };
   return (
     <div className="App">
       <Form.Group>
