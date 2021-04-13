@@ -7,6 +7,7 @@ import AnswerCard from "./AnswerCard";
 import "./AnswerStyle.css";
 import "./LoginSignupHolderStyling.css";
 import { Accordion, Card, Form } from "react-bootstrap";
+import QuestionCard from "./QuestionCard";
 
 class AllAnswersComponent extends React.Component {
   constructor(props) {
@@ -47,6 +48,7 @@ class AllAnswersComponent extends React.Component {
       .getAllAnswersForAQuestion(this.props.location.state.getAnswers.href)
       .then((response) => {
         this.setState({ answers: response, question: response.data.question, links: response.data._links });
+        console.log("the response that will be stored in answers state is ", this.state.answers);
       });
   }
 
@@ -71,20 +73,23 @@ class AllAnswersComponent extends React.Component {
           <Col></Col>
           <Col xs={7}>
             <div>
-              <div style={{ color: "white" }}>
-                {this.state.answers.data !== undefined
-                  ? this.state.answers.data.question.body
-                  : ""}
-              </div>
-              <p style={{ color: "white" }}>
-                {" "}
-                - Asked By{""}
-                <strong className="asker" onClick={this.onAskerClick}>
-                  {this.state.question !== undefined
-                    ? this.state.question.ownerDisplayName
-                    : ""}
-                </strong>
-              </p>
+              {
+                this.state.answers.data !== undefined ?
+              <QuestionCard
+                id={this.state.answers.data.question.id}
+                body={this.state.answers.data.question.body}
+                ownerUserId={this.state.answers.data.question.ownerUserId}
+                ownerDisplayName={this.state.answers.data.question.ownerDisplayName}
+                upvoteCount={this.state.answers.data.question.upvoteCount}
+                creationDate={this.state.answers.data.question.creationDate}
+                tags={this.state.answers.data.question.tags}
+                onAllAnswer={true}
+                links={this.state.question._links}
+                currentHasVoted={this.state.answers.data.question.currentHasVoted}
+                previousPageLink={this.state.question._links.self.href}
+                history={this.props.history}
+              /> : <br/>
+              }
               <br />
               <Accordion defaultActiveKey="0">
                 <Card>

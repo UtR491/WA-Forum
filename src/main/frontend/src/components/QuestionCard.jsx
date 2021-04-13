@@ -23,7 +23,10 @@ class QuestionCard extends React.Component {
     this.upvoteClicked = this.upvoteClicked.bind(this);
     this.downvoteClicked = this.downvoteClicked.bind(this);
     this.visitOwner = this.visitOwner.bind(this);
+    this.doNothing = this.doNothing.bind(this);
   }
+
+  doNothing() {/*literally nothing*/}
 
   upvoteClicked() {
     if (this.state.vote === "UPVOTE") {
@@ -160,8 +163,8 @@ class QuestionCard extends React.Component {
                         {" "}
                         <Card.Subtitle>
                           <div
-                            className="clickable-paragraph"
-                            onClick={this.questionClickedShowAnswers}
+                            className={this.props.onAllAnswers? "do-nothing" : "clickable-paragraph"}
+                            onClick={this.props.onAllAnswers ? this.doNothing:this.questionClickedShowAnswers}
                             color="white"
                             style={{whiteSpace: "pre-wrap"}}
                           >

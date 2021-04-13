@@ -92,6 +92,7 @@ class HomePage extends React.Component {
                 upvoteCount={question.upvoteCount}
                 creationDate={question.creationDate}
                 tags={question.tags}
+                onAllAnswer={false}
                 links={question._links}
                 currentHasVoted={question.currentHasVoted}
                 previousPageLink={this.state.questions._links.self.href}
@@ -100,6 +101,7 @@ class HomePage extends React.Component {
             ))}
           </Col>
           <Col style={{ margin: "0px" }}>
+            <Card></Card>
             <br />
             <br />
             <Card style={{ marginLeft: "10px", marginRight: "80px" }}>

@@ -12,10 +12,10 @@ public class QuestionWithAllAnswerWrapperAssembler implements RepresentationMode
     @Override
     public EntityModel<QuestionWithAllAnswerWrapper> toModel(QuestionWithAllAnswerWrapper entity) {
         return EntityModel.of(entity,
-                linkTo(methodOn(PostsController.class).getAnswerByQuestionId(entity.getQuestion().getId())).withSelfRel(),
-                linkTo(methodOn(PostsController.class).getQuestions(null)).withRel("home"),
-                linkTo(methodOn(PostsController.class).acceptAnswer(entity.getQuestion().getId(), null)).withRel("acceptAnswer"),
-                linkTo(methodOn(UserProfileController.class).getProfileInfoById(entity.getQuestion().getOwnerUserId())).withRel("userProfile"),
-                linkTo(methodOn(PostsController.class).answerQuestion(entity.getQuestion().getId(), null)).withRel("answerQuestion"));
+                linkTo(methodOn(PostsController.class).getAnswerByQuestionId(entity.getQuestion().getContent().getId())).withSelfRel(),
+                linkTo(methodOn(PostsController.class).getQuestions(null).getContent()).withRel("home"),
+                linkTo(methodOn(PostsController.class).acceptAnswer(entity.getQuestion().getContent().getId(), null)).withRel("acceptAnswer"),
+                linkTo(methodOn(UserProfileController.class).getProfileInfoById(entity.getQuestion().getContent().getOwnerUserId())).withRel("userProfile"),
+                linkTo(methodOn(PostsController.class).answerQuestion(entity.getQuestion().getContent().getId(), null)).withRel("answerQuestion"));
     }
 }

@@ -8,19 +8,20 @@ import java.util.List;
 public class QuestionWithAllAnswerWrapper {
 
     List<EntityModel<Posts>> answers;
-    Posts question, acceptedAnswer;
+    EntityModel<Posts> question;
+    EntityModel<Posts> acceptedAnswer;
 
-    public QuestionWithAllAnswerWrapper(Posts question, Posts acceptedAnswer, List<EntityModel<Posts>> answers) {
+    public QuestionWithAllAnswerWrapper(EntityModel<Posts> question, EntityModel<Posts> acceptedAnswer, List<EntityModel<Posts>> answers) {
         this.question = question;
         this.acceptedAnswer = acceptedAnswer;
         this.answers = answers;
     }
 
-    public Posts getQuestion() {
+    public EntityModel<Posts> getQuestion() {
         return question;
     }
 
-    public void setQuestion(Posts question) {
+    public void setQuestion(EntityModel<Posts> question) {
         this.question = question;
     }
 

@@ -50,7 +50,7 @@ export function getCurrentUser() {
   }
 
   return request({
-    url: AUTH_SERVICE + "/users/me",
+    url: AUTH_SERVICE + "/profile/" + sessionStorage.getItem("userId"),
     method: "GET",
   });
 }
@@ -60,7 +60,7 @@ export function getUsers() {
     return Promise.reject("No access token set.");
   }
   return request({
-    url: AUTH_SERVICE + "/users/summaries",
+    url: AUTH_SERVICE + "/profile/summaries",
     method: "GET",
   });
 }

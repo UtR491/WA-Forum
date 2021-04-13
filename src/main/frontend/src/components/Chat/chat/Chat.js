@@ -14,7 +14,7 @@ import {
   chatMessages,
 } from "../atom/globalState";
 import ScrollToBottom from "react-scroll-to-bottom";
-import "./Chat.css";
+import "./Chat.css"
 
 var stompClient = null;
 const Chat = (props) => {
@@ -28,32 +28,41 @@ const Chat = (props) => {
     if (sessionStorage.getItem("jwt") === null) {
       props.history.push("/login");
     }
+    console.log("calling connect");
     connect();
     loadContacts();
   }, []);
 
   useEffect(() => {
     if (activeContact === undefined) return;
-    findChatMessages(activeContact.id, currentUser.id).then((msgs) =>
-      setMessages(msgs)
-    );
+    findChatMessages(activeContact.id, sessionStorage.getItem("userId")).then((msgs) => {
+      console.log("the messages are ", msgs);
+      return setMessages(msgs);
+    });
     loadContacts();
   }, [activeContact]);
 
   const connect = () => {
     const Stomp = require("stompjs");
     var SockJS = require("sockjs-client");
-    SockJS = new SockJS("http://localhost:3000/ws");
+    console.log("attempting to connect to backend");
+    SockJS = new SockJS("http://localhost:8080/ws");
+    console.log("the sock js object ", SockJS);
     stompClient = Stomp.over(SockJS);
-    stompClient.connect({}, onConnected, onError);
+    console.log("stomp.over stompclient is ", stompClient);
+    console.log("sending as jwt ", sessionStorage.getItem("jwt"));
+    stompClient.connect({ "Authorization" : "Bearer " + sessionStorage.getItem("jwt")}, onConnected, onError);
   };
 
   const onConnected = () => {
+    console.log("stomp client now ", stompClient);
+    console.log("if you see this chat will get completed today.")
     console.log(currentUser);
     stompClient.subscribe(
-      "/user/" + currentUser.id + "/queue/messages",
+      "http://localhost:8080/user/" + sessionStorage.getItem("userId") + "/queue/messages",
       onMessageReceived
     );
+    console.log("after connecting and subscribing, stomp client is ", stompClient);
   };
 
   const onError = (err) => {
@@ -61,6 +70,7 @@ const Chat = (props) => {
   };
 
   const onMessageReceived = (msg) => {
+    console.log("The message received ", msg);
     const notification = JSON.parse(msg.body);
     const active = JSON.parse(sessionStorage.getItem("recoil-persist"))
       .chatActiveContact;
@@ -81,14 +91,16 @@ const Chat = (props) => {
   const sendMessage = (msg) => {
     if (msg.trim() !== "") {
       const message = {
-        senderId: currentUser.id,
+        senderId: sessionStorage.getItem("userId"),
         recipientId: activeContact.id,
         senderName: currentUser.name,
         recipientName: activeContact.name,
         content: msg,
         timestamp: new Date(),
       };
-      stompClient.send("/dmForum/chat", {}, JSON.stringify(message));
+
+      console.log("sending the message as ", message);
+      stompClient.send("http://localhost:8080/api/chat", {}, JSON.stringify(message));
 
       const newMessages = [...messages];
       newMessages.push(message);
@@ -99,7 +111,7 @@ const Chat = (props) => {
   const loadContacts = () => {
     const promise = getUsers().then((users) =>
       users.map((contact) =>
-        countNewMessages(contact.id, currentUser.id).then((count) => {
+        countNewMessages(contact.id, sessionStorage.getItem("userId")).then((count) => {
           contact.newMessages = count;
           return contact;
         })
@@ -188,8 +200,8 @@ const Chat = (props) => {
         <ScrollToBottom className="messages">
           <ul>
             {messages.map((msg) => (
-              <li class={msg.senderId === currentUser.id ? "sent" : "replies"}>
-                {msg.senderId !== currentUser.id 
+              <li class={msg.senderId === sessionStorage.getItem("userId") ? "sent" : "replies"}>
+                {msg.senderId !== sessionStorage.getItem("userId") 
                   // <img src={activeContact.profilePicture} alt="" />
                 }
                 <p>{msg.content}</p>
