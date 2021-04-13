@@ -57,7 +57,7 @@ p {
   align-items: center;
 }
 
-.icon:hover{
+.icon:hover {
   color: gray !important;
   cursor: pointer !important;
 }

@@ -1,6 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500&display=swap");
 body {
-  background: cadetblue !important;
 }
 
 .navbar {
@@ -57,4 +56,21 @@ div.form {
 
 #sideNav {
   margin-top: 25px;
+}
+
+#quesModal {
+  font-family: "Poppins", sans-serif;
+}
+
+#haveaques {
+  align-items: center;
+  font-family: "Poppins", sans-serif;
+  margin: 10px;
+  border-radius: 8px;
+
+  background-color: aliceblue;
+}
+
+#haveaques:hover {
+  cursor: pointer;
 }
