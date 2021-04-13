@@ -8,6 +8,7 @@ import AllAnswersComponent from "./components/AllAnswersComponent";
 import ProfilePage from "./components/ProfilePage";
 import EditMyProfile from "./components/EditMyProfile";
 import Chat from "./components/Chat/chat/Chat";
+import SearchLandingPage from './components/SearchLandingPage';
 
 class App extends React.Component {
 
@@ -22,7 +23,8 @@ class App extends React.Component {
             <Route exact path={"/profile/my/edit"} component={EditMyProfile}/>
             <Route path={"/posts/questions/"} component={AllAnswersComponent} />
             <Route path={"/profile/"} component={ProfilePage} />
-            <Route exact path="/chat" render={(props) => <Chat {...props} />} />
+            <Route exact path="/talk" render={(props) => <Chat {...props} />} />
+            <Route exact path={"/home/search"} component={SearchLandingPage}/>
           </Switch>
         </BrowserRouter>
       </div>

@@ -169,9 +169,8 @@ class QuestionCard extends React.Component {
                             onClick={this.props.onAllAnswers ? this.doNothing:this.questionClickedShowAnswers}
                             color="white"
                             style={{ whiteSpace: "pre-wrap" }}
-                          >
-                            {this.props.body}
-                          </div>
+                            dangerouslySetInnerHTML={{__html: this.props.body}}
+                          />
                         </Card.Subtitle>
                       </Col>
                     </Row>

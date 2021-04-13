@@ -226,13 +226,12 @@ class AnswerCard extends React.Component {
                     <Col>
                       {" "}
                       <Card.Subtitle>
-                        <p
+                        <div
                           onClick={this.questionClickedShowAnswers}
                           color="white"
                           style={{ whiteSpace: "pre-wrap" }}
-                        >
-                          {this.props.body}
-                        </p>
+                          dangerouslySetInnerHTML={{__html: this.props.body}}
+                        />
                       </Card.Subtitle>
                     </Col>
                   </Row>

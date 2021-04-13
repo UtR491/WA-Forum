@@ -1,24 +1,25 @@
 package com.waforum.backend.controllers;
 
 import com.waforum.backend.exceptions.MessageNotFoundException;
-import com.waforum.backend.models.MessageNotification;
-import com.waforum.backend.models.MessageStatus;
-import com.waforum.backend.models.Messages;
+import com.waforum.backend.models.*;
 import com.waforum.backend.repository.MessageRepository;
+import com.waforum.backend.repository.UserRepository;
 import com.waforum.backend.services.ChatRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 @RestController
 public class ChatController {
@@ -28,15 +29,18 @@ public class ChatController {
     ChatRoomService chatRoomService;
     @Autowired
     MessageRepository messageRepository;
+    @Autowired
+    UserRepository userRepository;
+
 
     @MessageMapping("/chat")
+    @SendTo("/user/chat")
     public void processMessage(@Payload Messages message){
         Optional<Integer> chatId=chatRoomService.getChatId(message.getSenderUserId(),message.getRecipientUserId(),true);
         message.setChatId(chatId.get());
-        System.out.println("The message is being saved inside the repo " + message);
         Messages saved = messageRepository.save(message);
         simpMessagingTemplate.convertAndSendToUser(String.valueOf(message.getRecipientUserId()),
-                "/queue/messages",
+                "/user/chat",
                 new MessageNotification(saved.getId(),saved.getSenderUserId(),saved.getRecipientUserId()));
     }
     @GetMapping("/api/messages/{sid}/{rid}/count")
@@ -65,4 +69,27 @@ public class ChatController {
             messageRepository.save(m);
         }
     }
+    @GetMapping(value = "/users/summaries", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> findAllUserSummaries(
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(userRepository
+                .findAll()
+                .stream()
+                .map((Function<User, Object>) UserDetailsImpl::new)
+                .filter(user -> !((UserDetailsImpl) user).getUsername().equals(userDetails.getUsername()))
+                );
+    }
+
+    @GetMapping(value = "/users/me", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public UserDetailsImpl getCurrentUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return userDetails;
+    }
+
+    @GetMapping(value = "/users/summary/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getUserSummary(@PathVariable("username") String username) {
+        return  ResponseEntity.ok(new UserDetailsImpl(userRepository
+                .findByRegistrationNumber(Integer.parseInt(username))));
+    }
+
 }
