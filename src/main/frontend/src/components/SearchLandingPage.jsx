@@ -7,7 +7,7 @@ import NavbarComponent from "./NavbarComponent";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-css-only/css/bootstrap.min.css";
 import "mdbreact/dist/css/mdb.css";
-import { Card, Form, Row, Container, Col, Button } from "react-bootstrap";
+import { Card, Form, Row, Col } from "react-bootstrap";
 
 class SearchLandingPage extends React.Component {
   constructor(props) {
@@ -36,7 +36,7 @@ class SearchLandingPage extends React.Component {
         },
       },
     };
-  
+
     this.questionObject = {
       body: "",
       tags: [],
@@ -53,7 +53,9 @@ class SearchLandingPage extends React.Component {
 
   sendAnswer(event) {
     if (this.questionObject.body.length > 0) {
-      this.questionObject.tags = this.tagsString.split(/(\s+)/).filter((e) => e.trim().length> 0);
+      this.questionObject.tags = this.tagsString
+        .split(/(\s+)/)
+        .filter((e) => e.trim().length > 0);
       questionService
         .postQuestion(this.questionObject)
         .then((response) => {
@@ -66,17 +68,29 @@ class SearchLandingPage extends React.Component {
   }
 
   componentDidMount() {
-    questionService.elasticSearchByBody(this.props.location.state.data).then((response1) => {
-        questionService.elasticSearchByName(this.props.location.state.data).then((response2) => {
-            this.setState({
-              questions2: response2.data,
-              questions1: response1.data,
-              loaded: true,
-            });
-            console.log(this.state.questions1)
-          })
+    if (this.props.location.state.searchByTags) {
+      var tags = this.props.location.state.data.replace(/\s\s+/g, ",");
+      questionService.searchByTags(tags).then((response) => {
+        this.setState({
+          questions1: response.data,
+          loaded: true,
+        });
       });
-      
+    } else {
+      questionService
+        .elasticSearchByBody(this.props.location.state.data)
+        .then((response1) => {
+          questionService
+            .elasticSearchByName(this.props.location.state.data)
+            .then((response2) => {
+              this.setState({
+                questions2: response2.data,
+                questions1: response1.data,
+                loaded: true,
+              });
+            });
+        });
+    }
   }
 
   render() {
@@ -95,40 +109,49 @@ class SearchLandingPage extends React.Component {
 
     return (
       <div className="App">
-        <NavbarComponent history={this.props.history}  />
+        <NavbarComponent history={this.props.history} />
 
         <Row>
           <Col xs={8} id="col2" style={{ marginLeft: "80px" }}>
-            {this.state.questions1._embedded.postses.map((question1) => (
-              <QuestionCard
-                id={question1.id}
-                body={question1.body}
-                ownerUserId={question1.ownerUserId}
-                ownerDisplayName={question1.ownerDisplayName}
-                upvoteCount={question1.upvoteCount}
-                creationDate={question1.creationDate}
-                tags={question1.tags}
-                links={question1._links}
-                currentHasVoted={question1.currentHasVoted}
-                previousPageLink={this.state.questions1._links.self.href}
-                history={this.props.history}
-              />
-            ))}
-            {this.state.questions2._embedded.postses.map((question2) => (
-              <QuestionCard
-                id={question2.id}
-                body={question2.body}
-                ownerUserId={question2.ownerUserId}
-                ownerDisplayName={question2.ownerDisplayName}
-                upvoteCount={question2.upvoteCount}
-                creationDate={question2.creationDate}
-                tags={question2.tags}
-                links={question2._links}
-                currentHasVoted={question2.currentHasVoted}
-                previousPageLink={this.state.questions2._links.self.href}
-                history={this.props.history}
-              />
-            ))}
+            {this.state.questions1._embedded !== undefined ? (
+              this.state.questions1._embedded.postses.map((question1) => (
+                <QuestionCard
+                  id={question1.id}
+                  body={question1.body}
+                  ownerUserId={question1.ownerUserId}
+                  ownerDisplayName={question1.ownerDisplayName}
+                  upvoteCount={question1.upvoteCount}
+                  creationDate={question1.creationDate}
+                  tags={question1.tags}
+                  links={question1._links}
+                  currentHasVoted={question1.currentHasVoted}
+                  previousPageLink={this.state.questions1._links.self.href}
+                  history={this.props.history}
+                />
+              ))
+            ) : (
+              <br />
+            )}
+            {!this.props.location.state.searchByTags &&
+            this.state.questions2._embedded !== undefined ? (
+              this.state.questions2._embedded.postses.map((question2) => (
+                <QuestionCard
+                  id={question2.id}
+                  body={question2.body}
+                  ownerUserId={question2.ownerUserId}
+                  ownerDisplayName={question2.ownerDisplayName}
+                  upvoteCount={question2.upvoteCount}
+                  creationDate={question2.creationDate}
+                  tags={question2.tags}
+                  links={question2._links}
+                  currentHasVoted={question2.currentHasVoted}
+                  previousPageLink={this.state.questions2._links.self.href}
+                  history={this.props.history}
+                />
+              ))
+            ) : (
+              <br />
+            )}
           </Col>
           <Col style={{ margin: "0px" }}>
             <br />

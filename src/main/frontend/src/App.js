@@ -1,13 +1,11 @@
 import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import "./App.css";
-import LoginComponent from "./components/LoginComponent";
 import LoginSignupHolder from "./components/LoginSignupHolder"
 import HomePage from "./components/HomePage";
 import AllAnswersComponent from "./components/AllAnswersComponent";
 import ProfilePage from "./components/ProfilePage";
 import EditMyProfile from "./components/EditMyProfile";
-import Chat from "./components/Chat/chat/Chat";
 import SearchLandingPage from './components/SearchLandingPage';
 
 class App extends React.Component {
@@ -23,7 +21,6 @@ class App extends React.Component {
             <Route exact path={"/profile/my/edit"} component={EditMyProfile}/>
             <Route path={"/posts/questions/"} component={AllAnswersComponent} />
             <Route path={"/profile/"} component={ProfilePage} />
-            <Route exact path="/talk" render={(props) => <Chat {...props} />} />
             <Route exact path={"/home/search"} component={SearchLandingPage}/>
           </Switch>
         </BrowserRouter>

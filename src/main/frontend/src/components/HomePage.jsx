@@ -8,20 +8,11 @@ import NavbarComponent from "./NavbarComponent";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-css-only/css/bootstrap.min.css";
 import "mdbreact/dist/css/mdb.css";
-import Rich from "./editor";
-import { EditorState, convertToRaw } from "draft-js";
+import { EditorState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import "./editor.css";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import {
-  Card,
-  Form,
-  Row,
-  Container,
-  Col,
-  Button,
-  Modal,
-} from "react-bootstrap";
+import { Form, Row, Container, Col, Button, Modal } from "react-bootstrap";
 
 class HomePage extends React.Component {
   constructor(props) {
@@ -60,19 +51,14 @@ class HomePage extends React.Component {
   }
 
   sendAnswer(event) {
-    console.log("the ste of the editor is ", this.state.editorState);
-    console.log("this.questinObject = ", this.questionObject.body);
     this.questionObject.body = convertToHTML(
       this.state.editorState !== undefined
         ? this.state.editorState.getCurrentContent()
         : ""
     );
-    console.log("question object is", this.questionObject.body);
     if (this.questionObject.body.length > 0) {
-      this.questionObject.tags = this.tagsString
-        .split(/(\s+)/)
-        .filter((e) => e.trim().length > 0);
-
+      this.questionObject.tags = this.tagsString.split(/\s\s+/g);
+      console.log("tags are ", this.questionObject.tags);
       questionService
         .postQuestion(this.questionObject)
         .then((response) => {
@@ -140,6 +126,14 @@ class HomePage extends React.Component {
                 editorClassName="editor-class"
                 toolbarClassName="toolbar-class"
               />
+              <Form.Group controlId="exampleForm.ControlTextarea1">
+                <Form.Control
+                  placeholder="Space separated list of tags..."
+                  onChange={(event) => {
+                    this.tagsString = event.target.value;
+                  }}
+                />
+              </Form.Group>
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>
@@ -161,10 +155,22 @@ class HomePage extends React.Component {
           <Col xs={8} id="col2">
             <Container
               onClick={() => this.setState({ show: true })}
-              style={{borderColor: "white", borderWidth: "10px"}}
+              style={{ borderColor: "white", borderWidth: "10px" }}
             >
-              <Form.Group style={{margin: "10px", opacity: "0.3", backgroundColor: "pink"}}>
-                <Form.Control as="textarea" rows={3} placeholder="Have a question? Ask here..." size="lg" readOnly/>
+              <Form.Group
+                style={{
+                  margin: "10px",
+                  opacity: "0.3",
+                  backgroundColor: "pink",
+                }}
+              >
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  placeholder="Have a question? Ask here..."
+                  size="lg"
+                  readOnly
+                />
               </Form.Group>
             </Container>
             {this.state.questions._embedded.postses.map((question) => (

@@ -4,7 +4,6 @@ import "./questionstyle.css";
 //import questionService from '../services/QuestionService';
 import { Icon } from "@iconify/react";
 import { Card, Row, Col, Container } from "react-bootstrap";
-import ChatBubbleOutlineOutlinedIcon from "@material-ui/icons/ChatBubbleOutlineOutlined";
 import Tags from "./Tags";
 import votingService from "../services/VotingService";
 import bxUpvote from "@iconify-icons/bx/bx-upvote";
@@ -26,7 +25,9 @@ class QuestionCard extends React.Component {
     this.doNothing = this.doNothing.bind(this);
   }
 
-  doNothing() {/*literally nothing*/}
+  doNothing() {
+    /*literally nothing*/
+  }
 
   upvoteClicked() {
     if (this.state.vote === "UPVOTE") {
@@ -165,11 +166,21 @@ class QuestionCard extends React.Component {
                         {" "}
                         <Card.Subtitle>
                           <div
-                            className={this.props.onAllAnswers? "do-nothing" : "clickable-paragraph"}
-                            onClick={this.props.onAllAnswers ? this.doNothing:this.questionClickedShowAnswers}
+                            className={
+                              this.props.onAllAnswers
+                                ? "do-nothing"
+                                : "clickable-paragraph"
+                            }
+                            onClick={
+                              this.props.onAllAnswers
+                                ? this.doNothing
+                                : this.questionClickedShowAnswers
+                            }
                             color="white"
                             style={{ whiteSpace: "pre-wrap" }}
-                            dangerouslySetInnerHTML={{__html: this.props.body}}
+                            dangerouslySetInnerHTML={{
+                              __html: this.props.body,
+                            }}
                           />
                         </Card.Subtitle>
                       </Col>

@@ -1,14 +1,14 @@
 import React from "react";
-import { Navbar, Nav, NavDropdown } from "react-bootstrap";
+import { Form, Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { MDBCol, MDBIcon } from "mdbreact";
 import { Redirect } from "react-router-dom";
-import questionService from "../services/QuestionService";
 
 class NavbarComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       logout: false,
+      searchByTags: false,
     };
     this.goToHome = this.goToHome.bind(this);
     this.logout = this.logout.bind(this);
@@ -16,12 +16,13 @@ class NavbarComponent extends React.Component {
     this.onSearch = this.onSearch.bind(this);
     this.onSearchClick = this.onSearchClick.bind(this);
     this.searchInput = "";
-
   }
 
   onSearchClick(event) {
-    console.log(this.searchInput);
-    this.props.history.push("/home/search", { data: this.searchInput });
+    this.props.history.push("/home/search", {
+      data: this.searchInput,
+      searchByTags: this.state.searchByTags,
+    });
   }
   onSearch(event) {
     this.searchInput = event.target.value;
@@ -74,11 +75,28 @@ class NavbarComponent extends React.Component {
               onChange={this.onSearch}
               className="form-control form-control-sm ml-3 w-75"
               type="text"
-              placeholder="Search here..."
+              placeholder={
+                this.state.searchByTags
+                  ? "Enter space separated list of tags. Use - for multiword tags."
+                  : "Search here..."
+              }
               aria-label="Search"
             />
-            
           </form>
+          <Form.Check
+            custom
+            type="checkbox"
+            id={"custom-checkbox"}
+            style={{
+              color: "white",
+            }}
+            onChange={() => {
+              this.setState({
+                searchByTags: !this.state.searchByTags,
+              });
+            }}
+            label={"Search by tags?"}
+          />
           <button onClick={this.onSearchClick}>Search</button>
         </MDBCol>
         <Nav className="ml-auto">

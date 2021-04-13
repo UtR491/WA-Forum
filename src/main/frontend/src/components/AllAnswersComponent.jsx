@@ -1,6 +1,5 @@
 import React from "react";
 import { convertToHTML } from "draft-convert";
-import { EditorState, convertToRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import { Col, Row } from "react-bootstrap";
 import allAnswersService from "../services/AllAnswersService";
@@ -9,7 +8,7 @@ import { Redirect } from "react-router-dom";
 import AnswerCard from "./AnswerCard";
 import "./AnswerStyle.css";
 import "./LoginSignupHolderStyling.css";
-import { Accordion, Card, Form } from "react-bootstrap";
+import { Accordion, Card } from "react-bootstrap";
 import QuestionCard from "./QuestionCard";
 
 class AllAnswersComponent extends React.Component {
