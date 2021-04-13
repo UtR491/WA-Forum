@@ -1,24 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { Button, message } from "antd";
-import {withRouter} from 'react-router-dom';
+import { withRouter } from "react-router-dom";
 import {
   getUsers,
+  getCurrentUser,
   countNewMessages,
   findChatMessages,
   findChatMessage,
 } from "../util/ApiUtil";
 import { useRecoilValue, useRecoilState } from "recoil";
-import {
-  loggedInUser,
-  chatActiveContact,
-  chatMessages,
-} from "../atom/globalState";
+import { chatActiveContact, chatMessages } from "../atom/globalState";
 import ScrollToBottom from "react-scroll-to-bottom";
 import "./Chat.css";
 
 var stompClient = null;
+var currentUser={};
 const Chat = (props) => {
-  const currentUser = useRecoilValue(loggedInUser);
+  const [loaded,setLoaded]=useState(false);
+  //const [currentUser, setCurrentUser] = useState({});
+ 
+  getCurrentUser().then((response) => {
+    if(!loaded)
+    {console.log("resonse has been received");
+    currentUser=response;
+    console.log("response assigned to current user , the object now is, ",currentUser);
+    setLoaded(true)}
+  });
+  
   const [text, setText] = useState("");
   const [contacts, setContacts] = useState([]);
   const [activeContact, setActiveContact] = useRecoilState(chatActiveContact);
@@ -26,17 +34,21 @@ const Chat = (props) => {
 
   useEffect(() => {
     if (sessionStorage.getItem("jwt") === null) {
-      props.history.push("/login");
+      props.history.push("/");
     }
     connect();
     loadContacts();
+    console.log("connect method and load contact method called and executed");
   }, []);
 
   useEffect(() => {
-    if (activeContact === undefined) return;
-    findChatMessages(activeContact.id, currentUser.id).then((msgs) =>
+    console.log("component has been rerendered,now current user is ",currentUser);
+    if (activeContact === undefined||currentUser.id===undefined) return;
+    console.log(currentUser.displayName,"marker");
+    findChatMessages(activeContact.id, currentUser.id).then((msgs) =>{
       setMessages(msgs)
-    );
+      console.log(msgs,"old chat messages  state updated");
+    });
     loadContacts();
   }, [activeContact]);
 
@@ -46,9 +58,11 @@ const Chat = (props) => {
     SockJS = new SockJS("http://localhost:3000/ws");
     stompClient = Stomp.over(SockJS);
     stompClient.connect({}, onConnected, onError);
+    console.log("connected to client");
   };
 
   const onConnected = () => {
+    console.log("inside onconnected");
     console.log(currentUser);
     stompClient.subscribe(
       "/user/" + currentUser.id + "/queue/messages",
@@ -83,16 +97,18 @@ const Chat = (props) => {
       const message = {
         senderId: currentUser.id,
         recipientId: activeContact.id,
-        senderName: currentUser.name,
-        recipientName: activeContact.name,
+        senderName: currentUser.displayName,
+        recipientName: activeContact.displayName,
         content: msg,
         timestamp: new Date(),
       };
-      stompClient.send("/dmForum/chat", {}, JSON.stringify(message));
-
+      console.log("message is ready to be snet to client",message);
+      stompClient.send("/app/chat", {}, JSON.stringify(message));
+      console.log("message has been sent",JSON.stringify(message));
       const newMessages = [...messages];
       newMessages.push(message);
       setMessages(newMessages);
+      console.log("message state is updated",newMessages);
     }
   };
 
@@ -101,11 +117,11 @@ const Chat = (props) => {
       users.map((contact) =>
         countNewMessages(contact.id, currentUser.id).then((count) => {
           contact.newMessages = count;
+          console.log("count new messages in returned and added to contact",contact);
           return contact;
         })
       )
     );
-
     promise.then((promises) =>
       Promise.all(promises).then((users) => {
         setContacts(users);
@@ -116,25 +132,27 @@ const Chat = (props) => {
     );
   };
 
-  return (
+  return currentUser === {} ? (
+    <div>Loading</div>
+  ) : (
     <div id="frame">
       <div id="sidepanel">
         <div id="profile">
-          <div class="wrap">
-            <p>{currentUser.displayName}</p>
+          <div className="wrap">
+            <p>Displaying username :{currentUser.displayName}</p>
             <div id="status-options">
               <ul>
-                <li id="status-online" class="active">
-                  <span class="status-circle"></span> <p>Online</p>
+                <li id="status-online" className="active">
+                  <span className="status-circle"></span> <p>Online</p>
                 </li>
                 <li id="status-away">
-                  <span class="status-circle"></span> <p>Away</p>
+                  <span className="status-circle"></span> <p>Away</p>
                 </li>
                 <li id="status-busy">
-                  <span class="status-circle"></span> <p>Busy</p>
+                  <span className="status-circle"></span> <p>Busy</p>
                 </li>
                 <li id="status-offline">
-                  <span class="status-circle"></span> <p>Offline</p>
+                  <span className="status-circle"></span> <p>Offline</p>
                 </li>
               </ul>
             </div>
@@ -152,14 +170,14 @@ const Chat = (props) => {
                     : "contact"
                 }
               >
-                <div class="wrap">
-                  <span class="contact-status online"></span>
+                <div className="wrap">
+                  <span className="contact-status online"></span>
                   <img id={contact.id} src={contact.profilePicture} alt="" />
-                  <div class="meta">
-                    <p class="name">{contact.displayName}</p>
+                  <div className="meta">
+                    <p className="name">{contact.displayName}</p>
                     {contact.newMessages !== undefined &&
                       contact.newMessages > 0 && (
-                        <p class="preview">
+                        <p className="preview">
                           {contact.newMessages} new messages
                         </p>
                       )}
@@ -171,25 +189,28 @@ const Chat = (props) => {
         </div>
         <div id="bottom-bar">
           <button id="addcontact">
-            <i class="fa fa-user fa-fw" aria-hidden="true"></i>{" "}
+            <i className="fa fa-user fa-fw" aria-hidden="true"></i>{" "}
             <span>Profile</span>
           </button>
           <button id="settings">
-            <i class="fa fa-cog fa-fw" aria-hidden="true"></i>{" "}
+            <i className="fa fa-cog fa-fw" aria-hidden="true"></i>{" "}
             <span>Settings</span>
           </button>
         </div>
       </div>
-      <div class="content">
-        <div class="contact-profile">
+      <div className="content">
+        <div className="contact-profile">
           <img src={activeContact && activeContact.profilePicture} alt="" />
           <p>{activeContact && activeContact.name}</p>
         </div>
         <ScrollToBottom className="messages">
           <ul>
             {messages.map((msg) => (
-              <li class={msg.senderId === currentUser.id ? "sent" : "replies"}>
-                {msg.senderId !== currentUser.id 
+              <li
+                className={msg.senderId === currentUser.id ? "sent" : "replies"}
+              >
+                {
+                  msg.senderId !== currentUser.id
                   // <img src={activeContact.profilePicture} alt="" />
                 }
                 <p>{msg.content}</p>
@@ -197,8 +218,8 @@ const Chat = (props) => {
             ))}
           </ul>
         </ScrollToBottom>
-        <div class="message-input">
-          <div class="wrap">
+        <div className="message-input">
+          <div className="wrap">
             <input
               name="user_input"
               size="large"
@@ -214,7 +235,7 @@ const Chat = (props) => {
             />
 
             <Button
-              icon={<i class="fa fa-paper-plane" aria-hidden="true"></i>}
+              icon={<i className="fa fa-paper-plane" aria-hidden="true"></i>}
               onClick={() => {
                 sendMessage(text);
                 setText("");
@@ -227,4 +248,4 @@ const Chat = (props) => {
   );
 };
 
-export default withRouter(Chat);
+export default Chat;

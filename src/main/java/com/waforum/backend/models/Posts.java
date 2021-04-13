@@ -1,5 +1,7 @@
 package com.waforum.backend.models;
 
+import org.springframework.data.elasticsearch.annotations.Document;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -8,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
+@Document(indexName = "waforum", shards = 2)
 public class Posts {
     @GeneratedValue @Id
     private Integer id;
