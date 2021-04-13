@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  Accordion,
-  Button,
-  Card,
-  Col,
-  Container,
-  Row,
-  Form,
-} from "react-bootstrap";
+import { Accordion, Button, Card, Col, Row, Form } from "react-bootstrap";
 import ChatBubbleOutlineOutlinedIcon from "@material-ui/icons/ChatBubbleOutlineOutlined";
 import votingService from "../services/VotingService";
 import bxUpvote from "@iconify-icons/bx/bx-upvote";
@@ -15,7 +7,6 @@ import "./LoginSignupHolderStyling.css";
 import { Icon } from "@iconify/react";
 import bxDownvote from "@iconify-icons/bx/bx-downvote";
 import commentsService from "../services/CommentsService";
-import profileService from "../services/ProfileService";
 import AllAnswersService from "../services/AllAnswersService";
 
 class AnswerCard extends React.Component {
@@ -163,6 +154,7 @@ class AnswerCard extends React.Component {
                         <img
                           width="20px"
                           src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgNTEyLjA2MyA1MTIuMDYzIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMi4wNjMgNTEyLjA2MyIgd2lkdGg9IjUxMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Zz48Zz48ZWxsaXBzZSBjeD0iMjU2LjAzMiIgY3k9IjI1Ni4wMzIiIGZpbGw9IiMwMGRmNzYiIHJ4PSIyNTUuOTQ5IiByeT0iMjU2LjAzMiIvPjwvZz48cGF0aCBkPSJtMjU2LjAzMiAwYy0uMTE2IDAtLjIzMS4wMDQtLjM0Ny4wMDR2NTEyLjA1NWMuMTE2IDAgLjIzMS4wMDQuMzQ3LjAwNCAxNDEuMzU3IDAgMjU1Ljk0OS0xMTQuNjI5IDI1NS45NDktMjU2LjAzMnMtMTE0LjU5Mi0yNTYuMDMxLTI1NS45NDktMjU2LjAzMXoiIGZpbGw9IiMwMGFiNWUiLz48cGF0aCBkPSJtMTExLjMyNiAyNjEuMTE4IDEwMy41MjQgMTAzLjUyNGM0LjUxNSA0LjUxNSAxMS44MzYgNC41MTUgMTYuMzUxIDBsMTY5Ljk1Ny0xNjkuOTU3YzQuNTE1LTQuNTE1IDQuNTE1LTExLjgzNiAwLTE2LjM1MWwtMzAuOTM1LTMwLjkzNWMtNC41MTUtNC41MTUtMTEuODM2LTQuNTE1LTE2LjM1MSAwbC0xMjMuNjE3IDEyMy42MTVjLTQuNTE1IDQuNTE1LTExLjgzNiA0LjUxNS0xNi4zNTEgMGwtNTUuMzk3LTU1LjM5N2MtNC40MjYtNC40MjYtMTEuNTcxLTQuNTI2LTE2LjExOS0uMjI2bC0zMC44MyAyOS4xNDljLTQuNzMyIDQuNDc1LTQuODM3IDExLjk3My0uMjMyIDE2LjU3OHoiIGZpbGw9IiNmZmY1ZjUiLz48cGF0aCBkPSJtMzcwLjIyMyAxNDcuMzk4Yy00LjUxNS00LjUxNS0xMS44MzYtNC41MTUtMTYuMzUxIDBsLTk4LjE4NyA5OC4xODd2OTQuNTczbDE0NS40NzMtMTQ1LjQ3M2M0LjUxNS00LjUxNSA0LjUxNS0xMS44MzYgMC0xNi4zNTJ6IiBmaWxsPSIjZGZlYmYxIi8+PC9nPjwvc3ZnPg=="
+                          alt="idk"
                         />
                       ) : (
                         <br />
@@ -226,13 +218,12 @@ class AnswerCard extends React.Component {
                     <Col>
                       {" "}
                       <Card.Subtitle>
-                        <p
+                        <div
                           onClick={this.questionClickedShowAnswers}
                           color="white"
                           style={{ whiteSpace: "pre-wrap" }}
-                        >
-                          {this.props.body}
-                        </p>
+                          dangerouslySetInnerHTML={{ __html: this.props.body }}
+                        />
                       </Card.Subtitle>
                     </Col>
                   </Row>
@@ -305,7 +296,8 @@ class AnswerCard extends React.Component {
                   {this.state.comments.map((comment) => (
                     <Accordion.Collapse eventKey="0">
                       <Card.Body style={{ color: "black" }}>
-                        {comment.body}
+                        <span>{comment.body + " - "}</span>{" "}
+                        <strong>{comment.userDisplayName}</strong>
                       </Card.Body>
                     </Accordion.Collapse>
                   ))}

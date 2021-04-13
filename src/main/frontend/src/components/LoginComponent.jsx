@@ -1,7 +1,6 @@
 import React from "react";
-//import { Redirect } from "react-router";
 import loginService from "../services/LoginService";
-import { Form, Container, Button, Row, Col, Alert } from "react-bootstrap";
+import { Form, Container, Row, Col, Alert } from "react-bootstrap";
 import "./LoginSignupHolderStyling.css";
 
 class LoginComponent extends React.Component {

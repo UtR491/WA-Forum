@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import { render } from "react-dom";
-import { convertToRaw, EditorState } from "draft-js";
+import { EditorState } from "draft-js";
 import {
   Editor,
   toolbar,
@@ -20,7 +19,6 @@ class EditorContainer extends Component {
   }
 
   onStateChange(editorState) {
-    console.log(editorState);
     this.setState({
       editorState,
     });

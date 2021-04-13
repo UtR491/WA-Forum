@@ -1,7 +1,6 @@
 import React from "react";
 import "./Profilestyle.css";
 import QuestionCard from "./QuestionCard";
-import AnswerCard from "./AnswerCard";
 import NavbarComponent from "./NavbarComponent";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-css-only/css/bootstrap.min.css";
@@ -19,15 +18,10 @@ import {
   ListGroup,
   Modal,
 } from "react-bootstrap";
-
 import questionService from "../services/QuestionService";
-import SideNavPage from "./SideNavigation";
-
-import { Icon, InlineIcon } from "@iconify/react";
+import { Icon } from "@iconify/react";
 import codechefIcon from "@iconify-icons/simple-icons/codechef";
-
 import githubFill from "@iconify-icons/akar-icons/github-fill";
-
 import codeforcesIcon from "@iconify-icons/simple-icons/codeforces";
 import userService from "../services/UserService";
 import QuestionAnswerComponent from "./QuestionAnswerComponent";

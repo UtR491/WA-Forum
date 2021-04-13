@@ -1,26 +1,28 @@
 package com.waforum.backend.models;
 
-public class SingleQuestionAnswerWrapper {
-    Posts question,answer;
+import org.springframework.hateoas.EntityModel;
 
-    public SingleQuestionAnswerWrapper(Posts question, Posts answer) {
+public class SingleQuestionAnswerWrapper {
+    EntityModel<Posts> question,answer;
+
+    public SingleQuestionAnswerWrapper(EntityModel<Posts> question, EntityModel<Posts> answer) {
         this.question = question;
         this.answer = answer;
     }
 
-    public Posts getQuestion() {
+    public EntityModel<Posts> getQuestion() {
         return question;
     }
 
-    public void setQuestion(Posts question) {
+    public void setQuestion(EntityModel<Posts> question) {
         this.question = question;
     }
 
-    public Posts getAnswer() {
+    public EntityModel<Posts> getAnswer() {
         return answer;
     }
 
-    public void setAnswer(Posts answer) {
+    public void setAnswer(EntityModel<Posts> answer) {
         this.answer = answer;
     }
 }

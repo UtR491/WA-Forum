@@ -1,7 +1,13 @@
 import React from "react";
-//import { Redirect } from "react-router";
 import loginService from "../services/LoginService";
-import { Form, Container, Button, Row, Col, InputGroup, Alert } from "react-bootstrap";
+import {
+  Form,
+  Container,
+  Row,
+  Col,
+  InputGroup,
+  Alert,
+} from "react-bootstrap";
 import "./LoginSignupHolderStyling.css";
 
 class SignupComponent extends React.Component {
@@ -33,36 +39,44 @@ class SignupComponent extends React.Component {
 
   handleSubmit(event) {
     let isnum = /^\d+$/.test(this.state.registrationNumber);
-    if(!isnum || this.state.registrationNumber.length !== 8) {
+    if (!isnum || this.state.registrationNumber.length !== 8) {
       this.setState({
-        invalidReg : true,
+        invalidReg: true,
         passwordConfimMismatch: false,
         errorInSignup: false,
-      })
+      });
       return;
     }
 
-    if(this.state.password !== this.state.confirmPassword) {
+    if (this.state.password !== this.state.confirmPassword) {
       this.setState({
         passwordConfimMismatch: true,
         invalidReg: false,
         errorInSignup: false,
-      })
+      });
       return;
     }
 
-    if(this.state.displayName.length > 0 && this.state.password.length > 0 && !this.state.invalidReg && !this.state.passwordConfimMismatch) {
-    loginService.signup(this.state).then((response) => {
-      if (response.status === 200) {
-        this.props.history.go(0);
-      }
-    }).catch((error) => {
-      this.setState({
-        passwordConfimMismatch: false,
-        invalidReg: false,
-        errorInSignup: true,
-      })
-    });
+    if (
+      this.state.displayName.length > 0 &&
+      this.state.password.length > 0 &&
+      !this.state.invalidReg &&
+      !this.state.passwordConfimMismatch
+    ) {
+      loginService
+        .signup(this.state)
+        .then((response) => {
+          if (response.status === 200) {
+            this.props.history.go(0);
+          }
+        })
+        .catch((error) => {
+          this.setState({
+            passwordConfimMismatch: false,
+            invalidReg: false,
+            errorInSignup: true,
+          });
+        });
     }
   }
 
@@ -74,20 +88,20 @@ class SignupComponent extends React.Component {
             <Col>
               {this.state.invalidReg ? (
                 <Alert variant="danger">
-                  Invalid registration number. Must be all digits and of length 8.
+                  Invalid registration number. Must be all digits and of length
+                  8.
                 </Alert>
-              ) : (
-                this.state.passwordConfimMismatch ?
+              ) : this.state.passwordConfimMismatch ? (
                 <Alert variant="danger">
                   Password and Confirm Password don't match.
                 </Alert>
-                : (
-                  this.state.errorInSignup ?
+              ) : this.state.errorInSignup ? (
                 <Alert variant="danger">
-                  There was an error in signup. Maybe the registration number already exists in our databases.
+                  There was an error in signup. Maybe the registration number
+                  already exists in our databases.
                 </Alert>
-                :
-                <br /> )
+              ) : (
+                <br />
               )}
               <br />
               <Form style={{ color: "black" }}>
@@ -188,13 +202,13 @@ class SignupComponent extends React.Component {
                     onChange={this.handleInput}
                   ></Form.Control>
                 </Form.Group>
-              <Row>
-                <Col xs={4}></Col>
-              </Row>
+                <Row>
+                  <Col xs={4}></Col>
+                </Row>
               </Form>
-                <button className="submitButton" onClick={this.handleSubmit}>
-                  Sign Up
-                </button>
+              <button className="submitButton" onClick={this.handleSubmit}>
+                Sign Up
+              </button>
             </Col>
           </Row>
         </div>
