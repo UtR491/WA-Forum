@@ -11,7 +11,7 @@ import {
 import ChatBubbleOutlineOutlinedIcon from "@material-ui/icons/ChatBubbleOutlineOutlined";
 import votingService from "../services/VotingService";
 import bxUpvote from "@iconify-icons/bx/bx-upvote";
-import "./LoginSignupHolderStyling.css"
+import "./LoginSignupHolderStyling.css";
 import { Icon } from "@iconify/react";
 import bxDownvote from "@iconify-icons/bx/bx-downvote";
 import commentsService from "../services/CommentsService";
@@ -128,7 +128,10 @@ class AnswerCard extends React.Component {
   }
 
   acceptAnswer() {
-    AllAnswersService.acceptAnswer(this.props.acceptAnswerLink, this.props.id).then((response) => {
+    AllAnswersService.acceptAnswer(
+      this.props.acceptAnswerLink,
+      this.props.id
+    ).then((response) => {
       this.props.history.go(0);
     });
   }
@@ -157,21 +160,16 @@ class AnswerCard extends React.Component {
                   <Row>
                     <Col>
                       {this.props.accepted ? (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          fill="currentColor"
-                          class="bi bi-check"
-                          viewBox="0 0 16 16"
-                          style={{ color: "green" }}
-                        >
-                          <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z" />
-                        </svg>
+                        <img
+                          width="20px"
+                          src="data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgNTEyLjA2MyA1MTIuMDYzIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMi4wNjMgNTEyLjA2MyIgd2lkdGg9IjUxMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Zz48Zz48ZWxsaXBzZSBjeD0iMjU2LjAzMiIgY3k9IjI1Ni4wMzIiIGZpbGw9IiMwMGRmNzYiIHJ4PSIyNTUuOTQ5IiByeT0iMjU2LjAzMiIvPjwvZz48cGF0aCBkPSJtMjU2LjAzMiAwYy0uMTE2IDAtLjIzMS4wMDQtLjM0Ny4wMDR2NTEyLjA1NWMuMTE2IDAgLjIzMS4wMDQuMzQ3LjAwNCAxNDEuMzU3IDAgMjU1Ljk0OS0xMTQuNjI5IDI1NS45NDktMjU2LjAzMnMtMTE0LjU5Mi0yNTYuMDMxLTI1NS45NDktMjU2LjAzMXoiIGZpbGw9IiMwMGFiNWUiLz48cGF0aCBkPSJtMTExLjMyNiAyNjEuMTE4IDEwMy41MjQgMTAzLjUyNGM0LjUxNSA0LjUxNSAxMS44MzYgNC41MTUgMTYuMzUxIDBsMTY5Ljk1Ny0xNjkuOTU3YzQuNTE1LTQuNTE1IDQuNTE1LTExLjgzNiAwLTE2LjM1MWwtMzAuOTM1LTMwLjkzNWMtNC41MTUtNC41MTUtMTEuODM2LTQuNTE1LTE2LjM1MSAwbC0xMjMuNjE3IDEyMy42MTVjLTQuNTE1IDQuNTE1LTExLjgzNiA0LjUxNS0xNi4zNTEgMGwtNTUuMzk3LTU1LjM5N2MtNC40MjYtNC40MjYtMTEuNTcxLTQuNTI2LTE2LjExOS0uMjI2bC0zMC44MyAyOS4xNDljLTQuNzMyIDQuNDc1LTQuODM3IDExLjk3My0uMjMyIDE2LjU3OHoiIGZpbGw9IiNmZmY1ZjUiLz48cGF0aCBkPSJtMzcwLjIyMyAxNDcuMzk4Yy00LjUxNS00LjUxNS0xMS44MzYtNC41MTUtMTYuMzUxIDBsLTk4LjE4NyA5OC4xODd2OTQuNTczbDE0NS40NzMtMTQ1LjQ3M2M0LjUxNS00LjUxNSA0LjUxNS0xMS44MzYgMC0xNi4zNTJ6IiBmaWxsPSIjZGZlYmYxIi8+PC9nPjwvc3ZnPg=="
+                        />
                       ) : (
                         <br />
                       )}
                     </Col>
+                  </Row>
+                  <Row>
                     <Col>
                       <Icon
                         icon={bxUpvote}
@@ -189,7 +187,13 @@ class AnswerCard extends React.Component {
                   </Row>
                   <Row>
                     <Col>
-                      <strong id="upvoteCount">{this.state.upvoteCount}</strong>
+                      <Row>
+                        <Col>
+                          <strong id="upvoteCount">
+                            {this.state.upvoteCount}
+                          </strong>
+                        </Col>
+                      </Row>
                     </Col>
                   </Row>
                   <Row>
@@ -209,6 +213,7 @@ class AnswerCard extends React.Component {
                     </Col>
                   </Row>
                 </Col>
+
                 <Col>
                   <Row
                     style={{
@@ -284,11 +289,16 @@ class AnswerCard extends React.Component {
                         Answered On - {this.props.creationDate.substring(0, 10)}
                       </Col>
                       <Col>
-                      {
-                        this.props.showAcceptButton ?
-                        <button className="submitButton" onClick={this.acceptAnswer}>Accept Answer</button>
-                        : <br/>
-                      }
+                        {this.props.showAcceptButton ? (
+                          <button
+                            className="submitButton"
+                            onClick={this.acceptAnswer}
+                          >
+                            Accept Answer
+                          </button>
+                        ) : (
+                          <br />
+                        )}
                       </Col>
                     </Row>
                   </Card.Header>

@@ -46,7 +46,11 @@ class AllAnswersComponent extends React.Component {
     allAnswersService
       .getAllAnswersForAQuestion(this.props.location.state.getAnswers.href)
       .then((response) => {
-        this.setState({ answers: response, question: response.data.question, links: response.data._links });
+        this.setState({
+          answers: response,
+          question: response.data.question,
+          links: response.data._links,
+        });
       });
   }
 

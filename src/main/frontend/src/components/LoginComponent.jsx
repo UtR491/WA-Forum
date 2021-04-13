@@ -26,13 +26,13 @@ class LoginComponent extends React.Component {
     loginService
       .loginAndGetJwt(this.state)
       .then((response) => {
-      sessionStorage.setItem("jwt", response.data.jwt.jwt);
-      sessionStorage.setItem("userId", response.data.id);
-      sessionStorage.setItem(
-        "getOwnerProfile",
-        response.data._links.ownerId.href
-      );
-      this.props.history.push("/home", {});
+        sessionStorage.setItem("jwt", response.data.jwt.jwt);
+        sessionStorage.setItem("userId", response.data.id);
+        sessionStorage.setItem(
+          "getOwnerProfile",
+          response.data._links.ownerId.href
+        );
+        this.props.history.push("/home", {});
       })
       .catch((error) => {
         this.setState({
@@ -46,14 +46,18 @@ class LoginComponent extends React.Component {
     sessionStorage.removeItem("userId");
     return (
       <Container>
+        <script
+          async
+          src="https://cpwebassets.codepen.io/assets/embed/ei.js"
+        ></script>
         <div>
-              {this.state.invalidCreds ? (
-                <Alert variant="danger">
-                  Invalid registration number or password
-                </Alert>
-              ) : (
-                <br />
-              )}
+          {this.state.invalidCreds ? (
+            <Alert variant="danger">
+              Invalid registration number or password
+            </Alert>
+          ) : (
+            <br />
+          )}
           <Row>
             <Col xs={3}></Col>
             <Col>

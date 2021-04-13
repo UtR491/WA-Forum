@@ -1,18 +1,65 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500&display=swap");
+
 .submitButton {
-    border-radius: 30px;
-    background-color: lightblue;
-    border-width: 1px;
-    border-color: blueviolet;
-    padding: 5px;
-    padding-left: 25px;
-    padding-right: 25px;
-    margin: 5px;
+  border-radius: 30px;
+  background-color: lightblue;
+  border-width: 1px;
+  border-color: blueviolet;
+  padding: 5px;
+  padding-left: 25px;
+  padding-right: 25px;
+  margin: 5px;
 }
 
 .submitButton:hover {
-    background-color: aquamarine;
+  background-color: aquamarine;
 }
 
 body {
-    background-color: cadetblue;
+  background-color: #232741 !important;
+}
+
+#introcol {
+  margin-top: auto;
+  margin-bottom: auto;
+  font-family: "Poppins", sans-serif;
+}
+
+#holder {
+  color: white;
+  background-image: linear-gradient(315deg, #7f53ac 0%, #647dee 74%);
+  border-radius: 10px;
+  padding: 10px;
+  border-style: solid;
+  border-color: #6f50b7;
+  font-family: "Poppins", sans-serif;
+}
+
+#intromain {
+  font-weight: 800;
+  margin-left: 20px;
+  padding: 10px;
+}
+
+/* #text_div {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  margin: 10px;
+} */
+
+.center_all {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  color: white;
+}
+
+#logo {
+  margin-right: 5px !important;
 }

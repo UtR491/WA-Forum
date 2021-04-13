@@ -3,17 +3,33 @@ import { Redirect } from "react-router-dom";
 import questionService from "../services/QuestionService";
 import "./homestyle.css";
 import QuestionCard from "./QuestionCard";
+import { convertToHTML } from "draft-convert";
 import NavbarComponent from "./NavbarComponent";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-css-only/css/bootstrap.min.css";
 import "mdbreact/dist/css/mdb.css";
-import { Card, Form, Row, Container, Col, Button } from "react-bootstrap";
+import Rich from "./editor";
+import { EditorState, convertToRaw } from "draft-js";
+import { Editor } from "react-draft-wysiwyg";
+import "./editor.css";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import {
+  Card,
+  Form,
+  Row,
+  Container,
+  Col,
+  Button,
+  Modal,
+} from "react-bootstrap";
 
 class HomePage extends React.Component {
   constructor(props) {
     super(props);
     this.myProfile = this.myProfile.bind(this);
     this.sendAnswer = this.sendAnswer.bind(this);
+    this.onQuestionChange = this.onQuestionChange.bind(this);
+
     this.state = {
       questions: {
         _embedded: {
@@ -25,7 +41,9 @@ class HomePage extends React.Component {
           },
         },
       },
+      editorState: EditorState.createEmpty(),
     };
+
     this.questionObject = {
       body: "",
       tags: [],
@@ -41,8 +59,12 @@ class HomePage extends React.Component {
   }
 
   sendAnswer(event) {
+    console.log("this.questinObject = ", this.questionObject.body);
     if (this.questionObject.body.length > 0) {
-      this.questionObject.tags = this.tagsString.split(/(\s+)/).filter((e) => e.trim().length> 0);
+      this.questionObject.tags = this.tagsString
+        .split(/(\s+)/)
+        .filter((e) => e.trim().length > 0);
+
       questionService
         .postQuestion(this.questionObject)
         .then((response) => {
@@ -54,6 +76,19 @@ class HomePage extends React.Component {
     }
   }
 
+  onQuestionChange(event) {
+    this.questionObject.body = event.target.value;
+  }
+
+  // saveBlogPostToStore(blogPost) {
+  //   const JSBlogPost = {
+  //     ...blogPost,
+  //     content: JSON.stringify(
+  //       convertToRaw(blogPost.content.getCurrentContent())
+  //     ),
+  //   };
+  //   this.props.dispatch(blogActions.saveBlogPostToStore(JSBlogPost));
+  // }
   componentDidMount() {
     questionService.getQuestions().then((response) => {
       this.setState({
@@ -80,9 +115,90 @@ class HomePage extends React.Component {
     return (
       <div className="App">
         <NavbarComponent history={this.props.history} isHome={true} />
+        <Modal
+          id="quesModal"
+          show={this.state.show}
+          onHide={() => this.setState({ show: false })}
+          animation={true}
+          size="lg"
+          centered
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Have a Question?</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form.Group>
+              <Editor
+                defaultEditorState={this.state.editorState}
+                onEditorStateChange={(state) => {
+                  console.log("event is=====", state);
+                  this.setState({ editorState: state.getCurrentContent() });
+                  console.log("this.editorState = ", this.editorState);
+                  this.questionObject.body = convertToHTML(
+                    this.state.editorState !== undefined
+                      ? this.state.editorState.getCurrentContent()
+                      : ""
+                  );
+                  console.log("question object is", this.questionObject.body);
+                }}
+                wrapperClassName="wrapper-class"
+                editorClassName="editor-class"
+                toolbarClassName="toolbar-class"
+              />
+            </Form.Group>
+            {/* <Card>
+              <Card.Header style={{ textDecorationAlign: "left" }}>
+                Enter Your Question
+              </Card.Header>
+              <Card.Body>
+                <Form.Group
+                  controlId="exampleForm.ControlTextarea1"
+                  style={{ margin: "0px" }}
+                >
+                  <Form.Control
+                    as="textarea"
+                    rows={10}
+                    placeholder="Ask your doubt..."
+                    onChange={(event) => {
+                      this.questionObject.body = event.target.value;
+                    }}
+                  />
+                  <Form.Control
+                    as="textarea"
+                    rows={2}
+                    placeholder="Space separated list of relevant tags. Use - for multi-word tags."
+                    onChange={(event) => {
+                      this.tagsString = event.target.value;
+                    }}
+                  />
+                </Form.Group>
+              </Card.Body>
+            </Card> */}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="secondary"
+              onClick={() => this.setState({ show: false })}
+            >
+              Close
+            </Button>
+
+            <Button variant="primary" onClick={this.sendAnswer}>
+              Ask
+            </Button>
+          </Modal.Footer>
+        </Modal>
 
         <Row>
-          <Col xs={8} id="col2" style={{ marginLeft: "80px" }}>
+          <Col></Col>
+          <Col xs={8} id="col2">
+            <Container onClick={() => this.setState({ show: true })}>
+              <Card id="haveaques">
+                <br></br>
+                <h4 style={{ color: "black" }}>Have a Question?Ask here</h4>
+                <br></br>
+              </Card>
+            </Container>
             {this.state.questions._embedded.postses.map((question) => (
               <QuestionCard
                 id={question.id}
@@ -100,39 +216,12 @@ class HomePage extends React.Component {
             ))}
           </Col>
           <Col style={{ margin: "0px" }}>
-            <br />
-            <br />
-            <Card style={{ marginLeft: "10px", marginRight: "80px" }}>
-              <Card.Header style={{ textDecorationAlign: "left" }}>
-                Have a doubt?
-              </Card.Header>
-              <Card.Body>
-                <Form.Group
-                  controlId="exampleForm.ControlTextarea1"
-                  style={{ margin: "0px" }}
-                >
-                  <Form.Control
-                    as="textarea"
-                    rows={15}
-                    placeholder="Ask your doubt..."
-                    onChange={(event) => {
-                      this.questionObject.body = event.target.value;
-                    }}
-                  />
-                  <Form.Control
-                    as="textarea"
-                    rows={2}
-                    placeholder="Space separated list of relevant tags. Use - for multi-word tags."
-                    onChange={(event) => {
-                      this.tagsString = event.target.value;
-                    }}
-                  />
-                  <button className="submitButton" onClick={this.sendAnswer}>
-                    Ask
-                  </button>
-                </Form.Group>
-              </Card.Body>
-            </Card>
+            {/* <button
+              className="submitButton"
+              onClick={() => this.setState({ show: true })}
+            >
+              Have A doubt
+            </button> */}
           </Col>
         </Row>
       </div>

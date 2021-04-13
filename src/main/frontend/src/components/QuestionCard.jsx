@@ -126,7 +126,9 @@ class QuestionCard extends React.Component {
                     </Row>
                     <Row>
                       <Col>
-                        <strong id="upvoteCount">{this.state.upvoteCount}</strong>
+                        <strong id="upvoteCount">
+                          {this.state.upvoteCount}
+                        </strong>
                       </Col>
                     </Row>
                     <Row>
@@ -163,7 +165,7 @@ class QuestionCard extends React.Component {
                             className="clickable-paragraph"
                             onClick={this.questionClickedShowAnswers}
                             color="white"
-                            style={{whiteSpace: "pre-wrap"}}
+                            style={{ whiteSpace: "pre-wrap" }}
                           >
                             {this.props.body}
                           </div>

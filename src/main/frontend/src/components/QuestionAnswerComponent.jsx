@@ -22,18 +22,31 @@ class QuestionAnswerComponent extends React.Component {
 
   render() {
     return (
-      <Container style={{margin: "30px"}}>
-        <Card>
+      <Container style={{ margin: "30px" }}>
+        <Card className="customCard" id="wrapperanswer">
           <Card.Body>
             <Card.Title
               className="clickable-paragraph"
               onClick={this.questionClicked}
-              style={{color: "black", whiteSpace: "pre-wrap", textAlight: "left"}}
+              style={{
+                color: "white",
+                whiteSpace: "pre-wrap",
+                textAlight: "left",
+              }}
             >
               {this.props.question}
             </Card.Title>
-            <hr/>
-            <Card.Text style={{color: "black", alignContent: "flexStart", whiteSpace: "pre-wrap", textAlign: "left"}}>{this.props.answer}</Card.Text>
+            <hr />
+            <Card.Text
+              style={{
+                color: "white",
+                alignContent: "flexStart",
+                whiteSpace: "pre-wrap",
+                textAlign: "left",
+              }}
+            >
+              {this.props.answer}
+            </Card.Text>
           </Card.Body>
         </Card>
       </Container>
