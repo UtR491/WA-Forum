@@ -3,7 +3,8 @@ import { Redirect } from "react-router-dom";
 import questionService from "../services/QuestionService";
 import "./homestyle.css";
 import QuestionCard from "./QuestionCard";
-import { convertToHTML } from "draft-convert";
+import { convertToRaw } from "draft-js";
+import draftToHtml from "draftjs-to-html";
 import NavbarComponent from "./NavbarComponent";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-css-only/css/bootstrap.min.css";
@@ -51,22 +52,30 @@ class HomePage extends React.Component {
   }
 
   sendAnswer(event) {
-    this.questionObject.body = convertToHTML(
-      this.state.editorState !== undefined
-        ? this.state.editorState.getCurrentContent()
-        : ""
-    );
-    if (this.questionObject.body.length > 0) {
-      this.questionObject.tags = this.tagsString.split(/\s\s+/g);
-      console.log("tags are ", this.questionObject.tags);
-      questionService
-        .postQuestion(this.questionObject)
-        .then((response) => {
-          this.props.history.go(0);
-        })
-        .catch((error) => {
-          this.props.history.go(0);
-        });
+    console.log("this.state.editorState ==== ", this.state.editorState);
+    if (this.state.editorState !== undefined) {
+      const rawContentState = convertToRaw(
+        this.state.editorState.getCurrentContent()
+      );
+      this.questionObject.body = draftToHtml(rawContentState, {
+        trigger: "#",
+        separator: " ",
+      });
+      if (this.questionObject.body.length > 0) {
+        this.questionObject.tags =
+          this.tagsString.length > 0
+            ? this.tagsString.split(" ").filter((s) => s.length > 0)
+            : [];
+        console.log("tags are ", this.questionObject.tags);
+        questionService
+          .postQuestion(this.questionObject)
+          .then((response) => {
+            this.props.history.go(0);
+          })
+          .catch((error) => {
+            this.props.history.go(0);
+          });
+      }
     }
   }
 

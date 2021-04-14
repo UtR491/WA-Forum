@@ -72,3 +72,7 @@
 #wrapperanswer {
   text-align: left !important;
 }
+
+.questionCard:hover {
+  cursor: pointer;
+}

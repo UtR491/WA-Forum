@@ -1,7 +1,5 @@
 import React from "react";
-// import ReactDOM from 'react-dom';
 import "./questionstyle.css";
-//import questionService from '../services/QuestionService';
 import { Icon } from "@iconify/react";
 import { Card, Row, Col, Container } from "react-bootstrap";
 import Tags from "./Tags";
@@ -155,6 +153,7 @@ class QuestionCard extends React.Component {
                   <Col>
                     <Row
                       onClick={this.questionClickedShowAnswers}
+                      className="questionCard"
                       style={{
                         textAlign: "left",
                         marginTop: "-1px",
@@ -166,11 +165,6 @@ class QuestionCard extends React.Component {
                         {" "}
                         <Card.Subtitle>
                           <div
-                            className={
-                              this.props.onAllAnswers
-                                ? "do-nothing"
-                                : "clickable-paragraph"
-                            }
                             onClick={
                               this.props.onAllAnswers
                                 ? this.doNothing

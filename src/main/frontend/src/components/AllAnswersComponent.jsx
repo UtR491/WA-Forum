@@ -1,5 +1,6 @@
 import React from "react";
-import { convertToHTML } from "draft-convert";
+import { convertToRaw } from "draft-js";
+import draftToHtml from "draftjs-to-html";
 import { Editor } from "react-draft-wysiwyg";
 import { Col, Row } from "react-bootstrap";
 import allAnswersService from "../services/AllAnswersService";
@@ -41,20 +42,24 @@ class AllAnswersComponent extends React.Component {
   }
 
   sendAnswer() {
-    this.answerObject.body = convertToHTML(
-      this.state.editorState !== undefined
-        ? this.state.editorState.getCurrentContent()
-        : ""
-    );
-    if (this.answerObject.length !== 0)
-      allAnswersService
-        .sendAnswer(
-          this.state.answers.data._links.answerQuestion.href,
-          this.answerObject
-        )
-        .then((response) => {
-          this.props.history.go(0);
-        });
+    if (this.state.editorState !== undefined) {
+      const rawContentState = convertToRaw(
+        this.state.editorState.getCurrentContent()
+      );
+      this.answerObject.body = draftToHtml(rawContentState, {
+        trigger: "#",
+        separator: " ",
+      });
+      if (this.answerObject.length !== 0)
+        allAnswersService
+          .sendAnswer(
+            this.state.answers.data._links.answerQuestion.href,
+            this.answerObject
+          )
+          .then((response) => {
+            this.props.history.go(0);
+          });
+    }
   }
 
   componentDidMount() {
