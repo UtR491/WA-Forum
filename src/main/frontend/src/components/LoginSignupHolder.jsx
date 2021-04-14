@@ -5,6 +5,7 @@ import SignupComponent from "./SignupComponent";
 import "./LoginSignupHolderStyling.css";
 import ParticleBackground from "./ParticleBackground";
 import logo from "./logo.png";
+import logofinal from "./logofinal.png";
 class LoginSignupHolder extends React.Component {
   render() {
     return (
@@ -15,7 +16,7 @@ class LoginSignupHolder extends React.Component {
           <Row>
             <Col id="introcol" sm={4}>
               <Row id="logo">
-                <img src={logo} alt="Logo Here" width="200"></img>
+                <img src={logofinal} alt="Logo Here" width="300"></img>
               </Row>
               <Row>
                 <h1 id="intromain">

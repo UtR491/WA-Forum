@@ -65,12 +65,23 @@ div.form {
 #haveaques {
   align-items: center;
   font-family: "Poppins", sans-serif;
-  margin: 10px;
+  margin-right: 50px;
+  margin-left: 50px;
   border-radius: 8px;
-
-  background-color: aliceblue;
+  padding: 10px;
+  text-decoration-color: black;
+  background-color: aliceblue !important;
 }
 
 #haveaques:hover {
+  cursor: pointer;
+
+  text-decoration-color: white !important;
+}
+
+#basic-nav-dropdown {
+  color: white;
+}
+#haveaques1:hover {
   cursor: pointer;
 }

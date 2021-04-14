@@ -36,7 +36,6 @@ class SearchLandingPage extends React.Component {
         },
       },
     };
-
     this.questionObject = {
       body: "",
       tags: [],
@@ -156,7 +155,7 @@ class SearchLandingPage extends React.Component {
           <Col style={{ margin: "0px" }}>
             <br />
             <br />
-            <Card style={{ marginLeft: "10px", marginRight: "80px" }}>
+            {/* <Card style={{ marginLeft: "10px", marginRight: "80px" }}>
               <Card.Header style={{ textDecorationAlign: "left" }}>
                 Have a doubt?
               </Card.Header>
@@ -186,7 +185,7 @@ class SearchLandingPage extends React.Component {
                   </button>
                 </Form.Group>
               </Card.Body>
-            </Card>
+            </Card> */}
           </Col>
         </Row>
       </div>

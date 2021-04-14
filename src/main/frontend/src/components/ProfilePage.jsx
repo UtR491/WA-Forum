@@ -16,6 +16,7 @@ import {
   OverlayTrigger,
   Popover,
   ListGroup,
+  Modal,
 } from "react-bootstrap";
 import questionService from "../services/QuestionService";
 import { Icon } from "@iconify/react";
@@ -212,7 +213,7 @@ class ProfilePage extends React.Component {
                   {" "}
                   <img
                     className="profile-image"
-                    src="https://www.codechef.com/sites/default/files/uploads/pictures/0c81a144e3c9bf1c5e563a76ffcdc269.jpg"
+                    src="https://icon-library.net/images/code-icon-png/code-icon-png-5.jpg"
                     alt="user pic"
                     width="200"
                     height="200"

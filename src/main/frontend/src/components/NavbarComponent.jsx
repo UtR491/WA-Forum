@@ -1,7 +1,9 @@
 import React from "react";
 import { Form, Navbar, Nav, NavDropdown } from "react-bootstrap";
-import { MDBCol, MDBIcon } from "mdbreact";
+import { MDBCol, MDBIcon, MDBBtn } from "mdbreact";
 import { Redirect } from "react-router-dom";
+import logofinal from "./logofinal.png";
+import questionService from "../services/QuestionService";
 
 class NavbarComponent extends React.Component {
   constructor(props) {
@@ -65,7 +67,7 @@ class NavbarComponent extends React.Component {
           id="brandText"
           style={{ color: "white" }}
         >
-          WA-Forum
+          <img src={logofinal} width="80px"></img>
         </Navbar.Brand>
 
         <MDBCol md="6" className="form mx-auto">
@@ -82,6 +84,9 @@ class NavbarComponent extends React.Component {
               }
               aria-label="Search"
             />
+            <button className="submitButton" onClick={this.onSearchClick}>
+              Search
+            </button>
           </form>
           <Form.Check
             custom
@@ -97,34 +102,25 @@ class NavbarComponent extends React.Component {
             }}
             label={"Search by tags?"}
           />
-          <button onClick={this.onSearchClick}>Search</button>
         </MDBCol>
         <Nav className="ml-auto">
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">
-              <NavDropdown title="Actions" id="basic-nav-dropdown">
+              <NavDropdown title="More" id="basic-nav-dropdown">
                 <NavDropdown.Item onClick={this.myProfile}>
                   My Profile
                 </NavDropdown.Item>
                 <NavDropdown.Item onClick={this.logout}>
                   Log Out
                 </NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.3">
-                  Something
-                </NavDropdown.Item>
-                <NavDropdown.Divider />
-                <NavDropdown.Item href="#action/3.4">
-                  Separated link
-                </NavDropdown.Item>
               </NavDropdown>
 
               <img
-                className="thumbnail-image"
-                src="https://upload.wikimedia.org/wikipedia/en/a/a1/NafSadh_Profile.jpg"
+                src="https://icon-library.net/images/code-icon-png/code-icon-png-5.jpg"
                 alt="user pic"
-                width="40"
-                height="40"
+                width="50"
+                height="50"
               />
             </Nav>
           </Navbar.Collapse>

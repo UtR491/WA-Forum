@@ -14,7 +14,7 @@ import { Editor } from "react-draft-wysiwyg";
 import "./editor.css";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { Form, Row, Container, Col, Button, Modal } from "react-bootstrap";
-
+import Footerpage from "./Footer";
 class HomePage extends React.Component {
   constructor(props) {
     super(props);
@@ -122,6 +122,8 @@ class HomePage extends React.Component {
           animation={true}
           size="lg"
           centered
+          backdrop="static"
+          keyboard={false}
         >
           <Modal.Header closeButton>
             <Modal.Title>Have a Question?</Modal.Title>
@@ -166,19 +168,14 @@ class HomePage extends React.Component {
               onClick={() => this.setState({ show: true })}
               style={{ borderColor: "white", borderWidth: "10px" }}
             >
-              <Form.Group
-                style={{
-                  margin: "10px",
-                  opacity: "0.3",
-                  backgroundColor: "pink",
-                }}
-              >
+              <Form.Group id="haveaques">
                 <Form.Control
                   as="textarea"
                   rows={3}
                   placeholder="Have a question? Ask here..."
                   size="lg"
                   readOnly
+                  id="haveaques1"
                 />
               </Form.Group>
             </Container>
@@ -208,6 +205,7 @@ class HomePage extends React.Component {
             </button> */}
           </Col>
         </Row>
+        <Footerpage></Footerpage>
       </div>
     );
   }

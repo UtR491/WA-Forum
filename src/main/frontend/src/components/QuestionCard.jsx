@@ -6,7 +6,7 @@ import Tags from "./Tags";
 import votingService from "../services/VotingService";
 import bxUpvote from "@iconify-icons/bx/bx-upvote";
 import bxDownvote from "@iconify-icons/bx/bx-downvote";
-
+import logo from "./logo.png";
 class QuestionCard extends React.Component {
   constructor(props) {
     super(props);
@@ -185,13 +185,6 @@ class QuestionCard extends React.Component {
                     <Row>
                       <Col md="auto">
                         <div>
-                          <img
-                            className="asker"
-                            src="https://upload.wikimedia.org/wikipedia/en/a/a1/NafSadh_Profile.jpg"
-                            alt="user pic"
-                            width="25"
-                            height="25"
-                          />
                           <text style={{ color: "white" }}>
                             {" "}
                             Asked by -{" "}
