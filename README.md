@@ -78,6 +78,8 @@
 
 
 ### Developers
-@singhabhyudita 
-@darpan1107 
-@UtR491 
+[Abhyudita Singh](@singhabhyudita) 
+
+[Darpan Mittal](@darpan1107)
+
+[Utkarsh Rai](@UtR491) 
