@@ -2,6 +2,10 @@
 <p align = center><img src="https://user-images.githubusercontent.com/59697798/114752616-20fab300-9d74-11eb-96b5-9ed819e3e13c.png" width="250" align="centre"/></p>
 
 ### Introduction
+   Do you ever get tired of googling the errors while coding? Are the editorials too overwhelming?
+Can’t fathom out the root cause for that WA?
+WA Forum - a React and Spring Boot based web application - offers a platform for all the burgeoning coders to ask and answer problems of all difficulty levels. 
+ So the next time you’re in an enigma, remember to check out WA Forum and get your doubts solved by people you know.
 
 ### Tech-Stack
 -  **Backend**
