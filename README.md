@@ -23,15 +23,24 @@
 
 1. Clone the repository via the command  ``git clone https://github.com/UtR491/WA-Forum``
 2. Inside the WA-Forum directory, run the command `mysql -u yourUserName -p wa_forum < database.sql`. This will initialize the database in your local machine.
-3. Install the backend dependencies by running the command `mvn clean install`
-4. Import the project as a maven project in IntelliJ and set the JDK version as 11. Now run the `BackendApplication.java` file. IntelliJ automatically builds the project before running it.
-5. Install the frontend dependencies by running the commands
+3. Download Elastic Search Stack from the following link: 
+https://www.elastic.co/downloads/elasticsearch
+Unzip the folder, go to config folder and open the .yml file.
+4. Enter the cluster name of your choice and the path of your project
+Go to the bin folder, open cmd in that folder and run the command elasticsearch.bat
+
+This will start the elsstic search server on localhost:9200
+
+This step has to be done before starting the backend server.
+5. Install the backend dependencies by running the command `mvn clean install`
+6. Import the project as a maven project in IntelliJ and set the JDK version as 11. Now run the `BackendApplication.java` file. IntelliJ automatically builds the project before running it.
+7. Install the frontend dependencies by running the commands
 
     ```
     cd src/main/frontend
     npm install
     ```
-6. Run the following command to start the website `npm start`
+8. Run the following command to start the website `npm start`
     ![npmstart](https://user-images.githubusercontent.com/59697798/114817836-55a05600-9dd8-11eb-855a-a5d810dd5d68.gif)
 
 
