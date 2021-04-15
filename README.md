@@ -78,8 +78,8 @@
 
 
 ### Developers
-[Abhyudita Singh](@singhabhyudita) 
+[Abhyudita Singh](https://github.com/singhabhyudita) 
 
-[Darpan Mittal](@darpan1107)
+[Darpan Mittal](https://github.com/darpan1107)
 
-[Utkarsh Rai](@UtR491) 
+[Utkarsh Rai](https://github.com/UtR491) 
